@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "wallpaper.minimalist"
+version = "1.0.0"
+id = "artifacts/wallpaper-minimalist"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23221
+
+[services.development]
+run = "pnpm --filter @workspace/wallpaper-minimalist run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/wallpaper-minimalist", "run", "build" ]
+publicDir = "artifacts/wallpaper-minimalist/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23221"
+BASE_PATH = "/"

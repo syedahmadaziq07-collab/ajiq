@@ -1,0 +1,278 @@
+Build a complete digital products website called "wallpaper.minimalist" using Next.js 14 with App Router, Tailwind CSS, and TypeScript. The design must be pixel-perfect inspired by askalm.com — clean, flat, minimalist. NO shadows, NO gradients anywhere.
+
+=== BRAND INFO ===
+Brand name: wallpaper.minimalist
+Tagline: Refining digital life.
+Description: We craft simple essentials that make every workspace inspiring and every device more productive.
+Support email: support@wallpaper.minimalist
+Products: Wallpapers, Guides, Templates
+
+=== TECH STACK ===
+- Next.js 14 App Router (not pages router)
+- TypeScript
+- Tailwind CSS
+- Google Fonts: Inter (load via next/font/google)
+- No external UI libraries (no shadcn, no chakra, no MUI)
+
+=== DESIGN SYSTEM (STRICTLY FOLLOW) ===
+Colors:
+- Background: #FFFFFF and #FAFAFA
+- Text primary: #000000
+- Text secondary: #747474
+- Border: #EEEEEE
+- CTA links: #0000EE
+- Button hover: #222222
+- Success: #12B33F
+
+Typography (Inter font only):
+- Hero H1: font-size 100px, font-weight 800, letter-spacing -5px (desktop) → 48px (tablet) → 32px (mobile)
+- H2 sections: font-size 54px, font-weight 700, letter-spacing -2px
+- H3: font-size 15px, font-weight 600
+- Body: font-size 15px, font-weight 500, line-height 30px
+- Nav links: font-size 12px, font-weight 400
+- Card labels: font-size 14px
+
+Spacing: use only 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 72px
+
+Components:
+- All buttons: border-radius 10px, min-height 50px
+- Primary button: bg #000, text white, hover bg #222
+- All cards: border-radius 10px, border 1px solid #EEEEEE, NO shadow, flat
+- Nav: frosted glass effect — background rgba(255,255,255,0.85), backdrop-filter blur(12px), border-bottom 1px solid #EEEEEE, height 64px, sticky top-0 z-50
+- Max content width: 1200px centered with mx-auto
+
+=== FOLDER STRUCTURE ===
+app/
+  layout.tsx          ← root layout with nav + footer
+  page.tsx            ← home page
+  wallpapers/
+    page.tsx
+  templates/
+    page.tsx
+  guides/
+    page.tsx
+  blog/
+    page.tsx
+  contact/
+    page.tsx
+components/
+  Navbar.tsx
+  Footer.tsx
+  ProductCard.tsx
+  BlogCard.tsx
+  MarqueeStrip.tsx    ← for image scrolling strip on home
+
+=== PAGE 1: HOME PAGE (app/page.tsx) ===
+
+Build these sections IN ORDER:
+
+[A] NAVBAR (components/Navbar.tsx)
+- Sticky, frosted glass: bg rgba(255,255,255,0.85), backdrop-blur-md, border-bottom 1px #EEEEEE, h-16, z-50
+- Left: brand logo "wallpaper.minimalist®" — font-weight 700, font-size 15px, ® as superscript small
+- Center: "Products" text with dropdown chevron icon ▾
+  - On hover: show dropdown with links: Templates (/templates), Wallpapers (/wallpapers), Guides (/guides)
+  - Dropdown: white bg, border 1px #EEEEEE, border-radius 10px, box-shadow none, fade-in animation
+- Right: "Blogs" link + "Contact" link — color #0000EE, font-size 12px
+- Mobile (<640px): hide center+right, show hamburger menu button. On click → full-screen overlay menu with all links
+
+[B] HERO SECTION
+- Top: italic "®" symbol in gray #747474, font-size 14px
+- Below: brand name "wallpaper.minimalist" as H1 — font-size 100px desktop / 48px tablet / 32px mobile, font-weight 800, letter-spacing -5px, line-height 0.9, color #000
+- Stack the H1 text so it wraps naturally into 2 lines: "wallpaper" on line 1, ".minimalist" on line 2
+- Below H1: paragraph text gray #747474, font-size 15px, max-width 480px, line-height 1.7:
+  "We craft simple essentials that make every workspace inspiring and every device more productive."
+- Padding: pt-12 pb-10 px-8
+
+[C] PRODUCT CATEGORY CARDS (3 cards in a row)
+- Container: px-8, pb-10, grid grid-cols-3 gap-3 (desktop) → grid-cols-1 (mobile)
+- Each card: border 1px solid #EEEEEE, border-radius 10px, padding 20px, bg white, position relative, NO shadow
+- Top-right corner: ↗ arrow icon (use → rotated or just ↗ character), color #000, font-size 16px
+- Card image area: height 120px, border-radius 8px, overflow hidden, use Next.js Image with Unsplash URLs
+  - Wallpapers card image: https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&h=200&fit=crop
+  - Guides card image: https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=200&fit=crop
+  - Templates card image: https://images.unsplash.com/photo-1484788984921-03950022c38b?w=400&h=200&fit=crop
+- Below image: category name bold 14px black, then "Browse all [Category]" in gray #747474 font-size 11px
+- Cards link to their respective pages
+- Hover: very slight scale(1.01) transform, transition 200ms
+
+[D] "REFINING DIGITAL LIFE" SECTION
+- Padding: px-8 pt-10 pb-5
+- H2: "Refining digital life." — font-size 42px, font-weight 700, letter-spacing -1.5px, color #000
+- Below: paragraph gray #747474 font-size 14px line-height 1.7 max-width 500px:
+  "Our designs refine workspaces and devices, proving that the simplest details can make the biggest difference in digital life."
+
+[E] IMAGE GRID (below refining section)
+- Layout: CSS grid, 2 columns: left col 1.2fr, right col 0.9fr, gap 10px, padding px-8 pb-10
+- Left: 1 large image, height 220px, border-radius 10px, overflow hidden
+  URL: https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=800&h=500&fit=crop
+- Right: 2x2 grid of 4 smaller images, each height 105px, border-radius 10px, gap 10px
+  URLs:
+  1. https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop
+  2. https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop
+  3. https://images.unsplash.com/photo-1585399000684-d2f72d71a359?w=400&h=300&fit=crop
+  4. https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop
+- All images: object-fit cover, object-position center
+
+[F] BLOG PREVIEW SECTION
+- Padding: px-8 py-10, border-top 1px solid #EEEEEE
+- H2: "Insights from our blog." — same H2 style as above
+- Subtext: gray #747474 font-size 14px, line-height 1.7, margin-bottom 24px:
+  "Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces."
+- 3 blog cards in a row: grid grid-cols-3 gap-4 (desktop) → grid-cols-1 (mobile)
+- Each blog card:
+  - Image top: height 90px, border-radius 8px, bg #F5F5F5, overflow hidden, object-fit cover
+  - "On Feb 2, 2026" — "On" in gray, date in bold black, font-size 11px, margin-top 10px
+  - Title: font-size 14px, font-weight 700, line-height 1.4, color #000, margin-top 4px
+  - NO card border — just spacing separates them
+  Blog posts data:
+  1. date: "Feb 2, 2026", title: "Ergonomic Essentials: Comfort Meets Productivity", img: https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=200&fit=crop
+  2. date: "Jan 12, 2026", title: "5 Color Palettes for Your Workspace", img: https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop
+  3. date: "Jan 5, 2026", title: "Optimizing Wall Space Around Your Desk", img: https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=200&fit=crop
+
+[G] NEWSLETTER SECTION
+- Padding: px-8 py-10, border-top 1px solid #EEEEEE
+- Paragraph left-aligned gray #747474 font-size 14px line-height 1.7 max-width 400px:
+  "Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups."
+- Below: flex row, gap 8px:
+  - Input: border 1px solid #EEEEEE, border-radius 8px, height 44px, px-4, font-size 13px, placeholder "name@wallpaper.minimalist", focus outline blue #0000EE
+  - Submit button: bg #000, text white, border-radius 8px, height 44px, px-5, font-size 13px font-weight 500, hover bg #222
+
+[H] FOOTER (components/Footer.tsx)
+- Border-top 1px solid #EEEEEE, padding px-8 pt-8 pb-6
+- Top row: 2 column grid
+  - Left: 
+    - Description paragraph gray #747474 font-size 12px max-width 280px line-height 1.7
+    - "support@wallpaper.minimalist" bold font-size 12px color #000 margin-top 8px
+  - Right:
+    - Brand name "wallpaper.minimalist" in HUGE text — font-size 72px, font-weight 800, letter-spacing -3px, line-height 1, text-align right, color #000
+    - Below: "Designed by wallpaper.minimalist" gray 11px, right-aligned
+    - "© wallpaper.minimalist 2026. All Rights Reserved." gray 11px, right-aligned
+- Bottom row: border-top 1px #EEEEEE, padding-top 16px, 2-column link grid
+  - Col 1: Home, Templates, Wallpapers, Guides, Blogs, Contact — each font-size 12px, color #000, display block, padding 2px 0
+  - Col 2: Instagram, TikTok, Threads, Pinterest — same style
+
+=== PAGE 2: WALLPAPERS (/wallpapers) ===
+- Page title H1: "Wallpapers" — same hero H1 style
+- Subtext gray: "Download beautiful minimal wallpapers for every device."
+- Filter tabs row: All | Nature | Abstract | Minimal | Dark — pill buttons, active = bg #000 text white, inactive = bg white border #EEEEEE
+- Grid: grid-cols-3 gap-4 desktop, grid-cols-2 tablet, grid-cols-1 mobile
+- Each wallpaper card:
+  - Image: aspect-ratio 4/3, border-radius 10px, overflow hidden, object-fit cover
+  - On hover: show overlay div with "Download" button (black, border-radius 8px) centered
+  - Title below: font-size 13px font-weight 600
+  - "Free" badge: bg #000 text white font-size 10px px-2 py-0.5 border-radius 4px
+- Use these Unsplash images:
+  1. https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&h=400&fit=crop — "Mountain Mist"
+  2. https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&h=400&fit=crop — "Forest Light"
+  3. https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=600&h=400&fit=crop — "Desert Calm"
+  4. https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop — "Ocean Minimal"
+  5. https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&h=400&fit=crop — "Lake Serenity"
+  6. https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=400&fit=crop — "Rocky Peak"
+- "Load more" button at bottom: secondary style, border 1px #767676, border-radius 10px, height 50px, px-8
+
+=== PAGE 3: TEMPLATES (/templates) ===
+- Page title H1: "Templates"
+- Subtext: "Clean, functional templates for productive workflows."
+- Filter tabs: All | Notion | Productivity | Planning
+- Grid: same as wallpapers page
+- Each template card:
+  - Image top: aspect-ratio 4/3, border-radius 10px, overflow hidden
+  - Below: product name font-weight 700, price or "Free" badge
+  - CTA button: "Get Template" — black, full-width, border-radius 8px, height 40px, font-size 13px
+- Use Unsplash images (workspace/desk/notebook themes):
+  1. https://images.unsplash.com/photo-1484788984921-03950022c38b?w=600&h=400&fit=crop — "Weekly Planner"
+  2. https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&h=400&fit=crop — "Goal Tracker"
+  3. https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&h=400&fit=crop — "Daily Journal"
+
+=== PAGE 4: GUIDES (/guides) ===
+- Page title H1: "Guides"
+- Subtext: "Step-by-step guides to build a cleaner digital life."
+- List layout (not grid) — each guide as a row with border-bottom 1px #EEEEEE
+- Each guide row:
+  - Left: cover image 80x80px, border-radius 8px, object-fit cover
+  - Middle: title font-weight 700 font-size 15px, description gray font-size 13px
+  - Right: "Read Guide →" link color #0000EE font-size 13px
+  - Padding: py-5, flex items-center gap-4
+- Guide items:
+  1. title: "The iPhone Setup Guide", desc: "Optimize your iPhone for a minimal, productive experience.", img: https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&h=200&fit=crop
+  2. title: "Clean Mac Workspace", desc: "Set up your Mac for focus and clean aesthetics.", img: https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop
+  3. title: "Digital Minimalism 101", desc: "Declutter your digital life across all devices.", img: https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&h=200&fit=crop
+
+=== PAGE 5: BLOG (/blog) ===
+- Page title H1: "Blog"
+- Subtext: "Insights and practical tips for a cleaner digital life."
+- Featured post at top (larger): full-width image top, then title H2, excerpt, date — padding-bottom 32px border-bottom 1px #EEEEEE
+- List below: each post row — date left (gray), title right (black, font-weight 700, hover underline) — border-bottom 1px #EEEEEE, padding py-4
+- Blog posts:
+  1. "Feb 2, 2026" — "Ergonomic Essentials: Comfort Meets Productivity"
+  2. "Jan 12, 2026" — "5 Color Palettes for Your Workspace"
+  3. "Jan 5, 2026" — "Optimizing Wall Space Around Your Desk"
+  4. "Dec 22, 2025" — "Stationery That Blends Form & Function"
+
+=== PAGE 6: CONTACT (/contact) ===
+- Page title H1: "Contact"
+- Subtext gray: "We'd love to hear from you."
+- Centered form, max-width 480px, mx-auto
+- Fields (all underline style — no box border, just border-bottom 1px #EEEEEE, focus border-bottom 2px #0000EE):
+  - Name input: placeholder "Your name"
+  - Email input: placeholder "your@email.com"
+  - Message textarea: placeholder "Your message", min-height 120px, resize-none
+  - Each field: width 100%, font-size 15px, padding-bottom 12px, margin-bottom 24px, outline none, background transparent
+- Submit button: bg #000, text white, border-radius 10px, height 50px, width 100%, font-size 15px, font-weight 500, hover bg #222
+- Below form: "Or email us directly at" gray + "support@wallpaper.minimalist" bold link
+
+=== IMPORTANT TECHNICAL REQUIREMENTS ===
+
+1. next.config.js — add Unsplash to allowed image domains:
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    domains: ['images.unsplash.com'],
+  },
+}
+module.exports = nextConfig
+
+2. Use next/image for ALL images with proper width and height props. Never use <img> tag.
+
+3. Load Inter font in app/layout.tsx:
+import { Inter } from 'next/font/google'
+const inter = Inter({ subsets: ['latin'] })
+
+4. tailwind.config.ts — extend with custom colors:
+colors: {
+  brand: {
+    black: '#000000',
+    white: '#FFFFFF',
+    gray: '#747474',
+    border: '#EEEEEE',
+    blue: '#0000EE',
+  }
+}
+
+5. Global CSS (app/globals.css):
+- Remove all default margins/paddings
+- Set body font to Inter
+- Add smooth scroll: html { scroll-behavior: smooth; }
+- Add transition for all interactive elements
+
+6. Each page must have unique metadata:
+export const metadata = {
+  title: '[Page] | wallpaper.minimalist',
+  description: '[unique description]',
+}
+
+7. Navbar active state: use usePathname() from next/navigation to highlight current page link
+
+8. All hover effects:
+- Cards: transform scale(1.01) transition-all duration-200
+- Links: underline slides in (use underline-offset-2)
+- Buttons: bg changes on hover
+
+9. Responsive breakpoints:
+- Mobile < 640px: single column, px-4, reduced font sizes
+- Tablet 640-1024px: 2 columns, px-6
+- Desktop ≥ 1024px: full layout, max-w-[1200px] mx-auto
+
+10. NO dark mode — light mode only. Add suppressHydrationWarning to <html> tag.
+
+Build ALL pages and components completely. Do not use placeholder comments like "// add content here". Every component must be fully implemented with real content. Start with layout.tsx, then Navbar.tsx, Footer.tsx, then home page, then all other pages.
