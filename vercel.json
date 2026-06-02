@@ -1,5 +1,4 @@
 {
   "buildCommand": "pnpm --filter @workspace/wallpaper-minimalist run build",
-  "framework": null,
-  "outputDirectory": "dist"
+  "framework": null
 }
