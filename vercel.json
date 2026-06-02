@@ -1,4 +1,4 @@
 {
-  "buildCommand": "cd artifacts/wallpaper-minimalist && npx --no-install vite build --config vite.config.ts",
+  "buildCommand": "npx --no-install vite build --config artifacts/wallpaper-minimalist/vite.config.ts --root artifacts/wallpaper-minimalist",
   "outputDirectory": "public"
 }
