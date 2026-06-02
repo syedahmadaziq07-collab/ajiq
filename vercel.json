@@ -1,6 +1,6 @@
 {
   "buildCommand": "pnpm --filter @workspace/wallpaper-minimalist run build",
-  "outputDirectory": "artifacts/wallpaper-minimalist/dist/public",
+  "outputDirectory": "artifacts/wallpaper-minimalist/dist",
   "framework": "vite",
   "installCommand": "pnpm install"
 }
