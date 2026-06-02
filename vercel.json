@@ -1,4 +1,5 @@
 {
   "buildCommand": "pnpm --filter @workspace/wallpaper-minimalist run build",
-  "framework": "vite"
+  "framework": null,
+  "outputDirectory": "dist"
 }
