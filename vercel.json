@@ -1,7 +1,13 @@
 {
-  "buildCommand": "pnpm --filter @workspace/wallpaper-minimalist run build",
-  "outputDirectory": "artifacts/wallpaper-minimalist/dist",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "version": 2,
+  "installCommand": "pnpm install",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "artifacts/wallpaper-minimalist/dist"
+      }
+    }
   ]
 }
