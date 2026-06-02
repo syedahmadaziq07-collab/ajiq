@@ -1,6 +1,5 @@
 {
   "framework": "vite",
-  "buildCommand": "pnpm install && pnpm --filter @workspace/mockup-sandbox run build",
-  "outputDirectory": "dist",
-  "installCommand": "pnpm install"
+  "buildCommand": "vite build --config vite.config.ts",
+  "outputDirectory": "dist"
 }
