@@ -6,18 +6,21 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// @ts-expect-error - pino-http v10 types mismatch
 app.use(
   pinoHttp({
     logger,
     serializers: {
-      req(req) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      req(req: any) {
         return {
           id: req.id,
           method: req.method,
           url: req.url?.split("?")[0],
         };
       },
-      res(res) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      res(res: any) {
         return {
           statusCode: res.statusCode,
         };
