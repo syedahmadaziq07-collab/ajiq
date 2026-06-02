@@ -1,4 +1,7 @@
 {
   "buildCommand": "pnpm --filter @workspace/wallpaper-minimalist run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "artifacts/wallpaper-minimalist/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
