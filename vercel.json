@@ -1,5 +1,5 @@
 {
   "buildCommand": "pnpm --filter @workspace/wallpaper-minimalist run build",
   "outputDirectory": "artifacts/wallpaper-minimalist/dist",
-  "installCommand": "pnpm install"
+  "framework": null
 }
