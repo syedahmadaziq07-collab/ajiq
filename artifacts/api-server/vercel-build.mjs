@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { existsSync } from "fs";
+import { rmSync } from "fs";
 
 const isApi = process.env.API_PROJECT === "true";
 
@@ -8,5 +8,9 @@ if (isApi) {
   execSync("node ./build.mjs", { stdio: "inherit", shell: true });
 } else {
   console.log("=== Building frontend (website) ===");
-  execSync("pnpm --filter @workspace/wallpaper-minimalist run build && cp -r ../wallpaper-minimalist/dist/. ./dist/", { stdio: "inherit", shell: true });
+  // Remove api directory so Vercel doesn't try to compile it
+  rmSync("api", { recursive: true, force: true });
+  rmSync("dist", { recursive: true, force: true });
+  execSync("pnpm --filter @workspace/wallpaper-minimalist run build", { stdio: "inherit", shell: true });
+  execSync("cp -r ../wallpaper-minimalist/dist/. ./dist/", { stdio: "inherit", shell: true });
 }
