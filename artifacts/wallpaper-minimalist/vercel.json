@@ -1,5 +1,4 @@
 {
-  "buildCommand": "pnpm --filter @workspace/wallpaper-minimalist run build",
-  "outputDirectory": "artifacts/wallpaper-minimalist/dist",
+  "buildCommand": "vite build --config vite.config.ts",
   "framework": "vite"
 }
