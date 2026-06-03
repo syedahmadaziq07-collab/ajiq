@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db, guidesTable } from "@workspace/db";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 const router: IRouter = Router();
 
@@ -10,6 +10,19 @@ router.get("/guides", async (_req, res) => {
     res.json(guides);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch guides" });
+  }
+});
+
+router.get("/guides/:slug", async (req, res) => {
+  try {
+    const guide = await db.select().from(guidesTable).where(eq(guidesTable.slug, req.params.slug)).limit(1);
+    if (guide.length === 0) {
+      res.status(404).json({ error: "Guide not found" });
+      return;
+    }
+    res.json(guide[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch guide" });
   }
 });
 

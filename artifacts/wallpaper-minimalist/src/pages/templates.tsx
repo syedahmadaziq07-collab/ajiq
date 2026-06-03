@@ -91,7 +91,7 @@ export default function Templates() {
                   </button>
                 ) : (
                   <a
-                    href={`/api/download/template/${template.id}`}
+                    href={`${API}/api/download/template/${template.id}`}
                     className="w-full bg-[#000] text-white rounded-[8px] h-[40px] text-[13px] font-[500] hover:bg-[#222] transition-colors flex items-center justify-center"
                   >
                     Get Template

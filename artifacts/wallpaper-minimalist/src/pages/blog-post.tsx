@@ -30,7 +30,7 @@ export default function BlogPost() {
           {post.title}
         </h1>
         <p className="text-[#747474] text-[14px] mt-3">
-          {new Date(post.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} &middot; By {post.author}
+          {(() => { const d = new Date(post.publishedAt); return isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }); })()} &middot; By {post.author}
         </p>
       </section>
 

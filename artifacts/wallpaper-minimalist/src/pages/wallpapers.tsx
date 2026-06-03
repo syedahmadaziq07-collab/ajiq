@@ -76,7 +76,7 @@ export default function Wallpapers() {
                 {!wallpaper.price && (
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
                     <a
-                      href={`/api/download/wallpaper/${wallpaper.id}`}
+                      href={`${API}/api/download/wallpaper/${wallpaper.id}`}
                       className="bg-[#000] text-white rounded-[8px] px-4 py-2 text-[13px] font-[500] hover:bg-[#222]"
                     >
                       Download

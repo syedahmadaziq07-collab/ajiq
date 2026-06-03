@@ -28,7 +28,7 @@ export default function Guides() {
                 <p className="text-[#747474] text-[13px] mt-1 line-clamp-2">{guide.description}</p>
               </div>
               <div className="shrink-0 pl-2">
-                <Link href="#" className="text-[#0000EE] text-[13px] hover:underline underline-offset-2">
+                <Link href={`/guides/${guide.slug}`} className="text-[#0000EE] text-[13px] hover:underline underline-offset-2">
                   Read Guide →
                 </Link>
               </div>

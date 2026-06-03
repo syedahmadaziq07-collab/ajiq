@@ -115,7 +115,6 @@ export default function Home() {
                 style={{
                   position: 'relative',
                   overflow: 'hidden',
-                  cursor: 'pointer',
                   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   gridColumn: `span ${colSpan}`,
                   gridRow: `span ${rowSpan}`,

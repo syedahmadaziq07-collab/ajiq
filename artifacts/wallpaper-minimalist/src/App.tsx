@@ -8,6 +8,7 @@ import Home from "@/pages/home";
 import Wallpapers from "@/pages/wallpapers";
 import Templates from "@/pages/templates";
 import Guides from "@/pages/guides";
+import GuidePost from "@/pages/guide-post";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
 import Contact from "@/pages/contact";
@@ -30,6 +31,7 @@ function Router() {
           <Route path="/wallpapers" component={Wallpapers} />
           <Route path="/templates" component={Templates} />
           <Route path="/guides" component={Guides} />
+          <Route path="/guides/:slug" component={GuidePost} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:slug" component={BlogPost} />
           <Route path="/contact" component={Contact} />
