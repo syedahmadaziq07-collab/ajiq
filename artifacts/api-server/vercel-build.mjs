@@ -8,7 +8,7 @@ if (isApi) {
   execSync("node ./build.mjs", { stdio: "inherit", shell: true });
   // Create serverless function entry (JS, not TS — avoids TypeScript compilation errors)
   mkdirSync("api", { recursive: true });
-  writeFileSync("api/index.mjs", `export { default } from "../dist/api/vercel-entry.mjs";\n`);
+  writeFileSync("api/[...slug].mjs", `export { default } from "../dist/api/vercel-entry.mjs";\n`);
 } else {
   console.log("=== Building frontend (website) ===");
   rmSync("dist", { recursive: true, force: true });
