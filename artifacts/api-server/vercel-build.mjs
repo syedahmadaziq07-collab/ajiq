@@ -6,9 +6,10 @@ const isApi = process.env.API_PROJECT === "true";
 if (isApi) {
   console.log("=== Building API server ===");
   execSync("node ./build.mjs", { stdio: "inherit", shell: true });
-  // Create serverless function entry (JS, not TS — avoids TypeScript compilation errors)
+  // Copy the bundled Express app into the api/ directory so Vercel can access it
   mkdirSync("api", { recursive: true });
-  writeFileSync("api/[...slug].mjs", `export { default } from "../dist/api/vercel-entry.mjs";\n`);
+  execSync("cp dist/api/vercel-entry.mjs api/vercel-entry.mjs", { shell: true });
+  writeFileSync("api/[...slug].mjs", `export { default } from "./vercel-entry.mjs";\n`);
 } else {
   console.log("=== Building frontend (website) ===");
   rmSync("dist", { recursive: true, force: true });
