@@ -2,7 +2,7 @@
   "buildCommand": "node ./vercel-build.mjs",
   "framework": null,
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.mjs" }
+    { "src": "/api/(.*)", "dest": "/api/index.cjs" }
   ],
   "headers": [
     {
