@@ -131,12 +131,15 @@ export default function Admin() {
     e.preventDefault();
     try {
       const res = await fetch(`${API}/api/admin/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
-      if (!res.ok) throw new Error("Wrong password");
+      if (!res.ok) {
+        const text = await res.text().catch(() => "unknown");
+        throw new Error(`${res.status} ${text}`);
+      }
       const data = await res.json();
       localStorage.setItem(ADMIN_TOKEN_KEY, data.token);
       setToken(data.token);
       setLoginError("");
-    } catch { setLoginError("Wrong password"); }
+    } catch (e) { setLoginError(e instanceof Error ? e.message : "Wrong password"); }
   };
 
   const logout = () => { localStorage.removeItem(ADMIN_TOKEN_KEY); setToken(null); };
