@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm --filter @workspace/api-server run build && pnpm --filter @workspace/wallpaper-minimalist run build",
+  "buildCommand": "pnpm run build",
   "outputDirectory": "artifacts/wallpaper-minimalist/dist",
   "framework": "vite"
 }
