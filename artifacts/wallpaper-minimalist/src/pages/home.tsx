@@ -91,12 +91,41 @@ export default function Home() {
         <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[480px] mb-8 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]">
           Our designs refine workspaces and devices, proving that the simplest details can make the biggest difference in digital life.
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {FEATURED_IMGS.map((url, i) => (
-            <div key={i} className={`rounded-[10px] overflow-hidden group ${i === 0 || i === 1 ? 'col-span-2' : ''}`}>
-              <img src={url} alt="" className="w-full h-[200px] sm:h-[260px] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]" />
-            </div>
-          ))}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: '1fr', gap: '20px', padding: '8px' }}>
+          {FEATURED_IMGS.map((url, i) => {
+            const colSpan = i === 0 ? 2 : i === 7 ? 2 : 1;
+            const rowSpan = i === 0 ? 2 : 1;
+            return (
+              <div
+                key={i}
+                style={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                  gridColumn: `span ${colSpan}`,
+                  gridRow: `span ${rowSpan}`,
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '18px',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.072), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                }}
+                className="group"
+              >
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}>
+                    <img
+                      src={url}
+                      alt=""
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
