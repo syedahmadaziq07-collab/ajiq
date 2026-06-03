@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as esbuild } from "esbuild";
 import esbuildPluginPino from "esbuild-plugin-pino";
+import { mkdirSync } from "node:fs";
 import { rm } from "node:fs/promises";
 
 // Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
@@ -121,6 +122,7 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
   });
 
   // Vercel serverless entry – output directly to api/ so the function is self-contained
+  mkdirSync(path.resolve(artifactDir, "api"), { recursive: true });
   await esbuild({
     entryPoints: [path.resolve(artifactDir, "src/vercel-entry.ts")],
     platform: "node",
