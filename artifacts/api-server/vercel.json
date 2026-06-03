@@ -1,5 +1,5 @@
 {
-  "buildCommand": "rm -rf api dist && pnpm --filter @workspace/wallpaper-minimalist run build && cp -r ../wallpaper-minimalist/dist/. ./dist/",
+  "buildCommand": "node ./vercel-build.mjs",
   "outputDirectory": "dist",
   "framework": null
 }
