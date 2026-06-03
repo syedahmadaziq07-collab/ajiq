@@ -7,7 +7,7 @@ if (isApi) {
   console.log("=== Building API server ===");
   execSync("node ./build.mjs", { stdio: "inherit", shell: true });
   // Create catch-all wrapper that imports from api/vercel-entry.mjs (same directory)
-  writeFileSync("api/[...slug].mjs", `export { default } from "./vercel-entry.mjs";\n`);
+  writeFileSync("api/index.mjs", `export { default } from "./vercel-entry.mjs";\n`);
 } else {
   console.log("=== Building frontend (website) ===");
   rmSync("dist", { recursive: true, force: true });

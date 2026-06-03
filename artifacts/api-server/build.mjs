@@ -121,7 +121,7 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     },
   });
 
-  // Vercel serverless entry – output to api/ directory (must use outdir because esbuild-plugin-pino adds additional entry points)
+  // Vercel serverless entry – output to api/ (must use outdir because esbuild-plugin-pino adds worker entry points)
   mkdirSync(path.resolve(artifactDir, "api"), { recursive: true });
   await esbuild({
     entryPoints: [path.resolve(artifactDir, "src/vercel-entry.ts")],
