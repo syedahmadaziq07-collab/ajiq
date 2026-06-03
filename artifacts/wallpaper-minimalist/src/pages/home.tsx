@@ -31,7 +31,9 @@ export default function Home() {
   };
 
   function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return "—";
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   }
 
   return (
@@ -141,45 +143,59 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden">
-        <h2 className="text-[28px] sm:text-[36px] md:text-[42px] font-[500] tracking-[-1px] leading-[1.05] text-[#000] mb-2 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
-          Insights from our blog.
-        </h2>
-        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] mb-8 max-w-[560px] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]">
-          Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <section className="px-6 sm:px-10 pt-[100px] pb-0 max-w-[1200px] mx-auto overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[35px] sm:gap-10 mb-[50px] sm:mb-[70px]">
+          <h2 className="text-[44px] sm:text-[31px] lg:text-[54px] font-[600] tracking-[-0.03em] leading-[1.6] text-[#000] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
+            Insights from our blog.
+          </h2>
+          <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[620px] shrink-0 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]">
+            Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
           {first && (
-            <Link href={`/blog/${first.slug}`} className="group block">
-              <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-                <img src={first.imageUrl} alt="" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
+            <Link href={`/blog/${first.slug}`} className="group block rounded-[18px] overflow-hidden">
+              <div className="h-[250px] w-full p-[9px]">
+                <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
+                  <img src={first.imageUrl} alt="" className="w-full h-full object-cover" />
+                </div>
               </div>
-              <p className="text-[#747474] text-[13px]">
-                On <span className="font-[500] text-[#000]">{formatDate(first.publishedAt)}</span>
-              </p>
-              <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">{first.title}</h3>
+              <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
+                <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
+                  On <span className="text-[#000]">{formatDate(first.publishedAt)}</span>
+                </p>
+                <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{first.title}</h3>
+              </div>
             </Link>
           )}
           {second && (
-            <Link href={`/blog/${second.slug}`} className="group block">
-              <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-                <img src={second.imageUrl} alt="" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
+            <Link href={`/blog/${second.slug}`} className="group block rounded-[18px] overflow-hidden">
+              <div className="h-[250px] w-full p-[9px]">
+                <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
+                  <img src={second.imageUrl} alt="" className="w-full h-full object-cover" />
+                </div>
               </div>
-              <p className="text-[#747474] text-[13px]">
-                On <span className="font-[500] text-[#000]">{formatDate(second.publishedAt)}</span>
-              </p>
-              <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">{second.title}</h3>
+              <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
+                <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
+                  On <span className="text-[#000]">{formatDate(second.publishedAt)}</span>
+                </p>
+                <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{second.title}</h3>
+              </div>
             </Link>
           )}
           {third && (
-            <Link href={`/blog/${third.slug}`} className="group block">
-              <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-                <img src={third.imageUrl} alt="" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
+            <Link href={`/blog/${third.slug}`} className="group block rounded-[18px] overflow-hidden">
+              <div className="h-[250px] w-full p-[9px]">
+                <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
+                  <img src={third.imageUrl} alt="" className="w-full h-full object-cover" />
+                </div>
               </div>
-              <p className="text-[#747474] text-[13px]">
-                On <span className="font-[500] text-[#000]">{formatDate(third.publishedAt)}</span>
-              </p>
-              <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">{third.title}</h3>
+              <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
+                <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
+                  On <span className="text-[#000]">{formatDate(third.publishedAt)}</span>
+                </p>
+                <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{third.title}</h3>
+              </div>
             </Link>
           )}
         </div>
