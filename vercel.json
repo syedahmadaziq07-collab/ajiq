@@ -1,0 +1,8 @@
+{
+  "buildCommand": "pnpm --filter @workspace/wallpaper-minimalist run build",
+  "outputDirectory": "artifacts/wallpaper-minimalist/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" }
+  ]
+}
