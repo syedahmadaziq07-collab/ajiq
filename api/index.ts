@@ -1,2 +1,4 @@
-import app from "../artifacts/api-server/src/app";
+// Import from the pre-built Vercel serverless bundle
+// (built by `pnpm --filter @workspace/api-server run build`)
+import app from "../artifacts/api-server/dist/api/index.mjs";
 export default app;
