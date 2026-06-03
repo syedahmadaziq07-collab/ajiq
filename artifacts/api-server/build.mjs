@@ -121,14 +121,15 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     },
   });
 
-  // Vercel serverless entry – output directly to api/ so the function is self-contained
+  // Vercel serverless entry – output to api/ directory (must use outdir because esbuild-plugin-pino adds additional entry points)
   mkdirSync(path.resolve(artifactDir, "api"), { recursive: true });
   await esbuild({
     entryPoints: [path.resolve(artifactDir, "src/vercel-entry.ts")],
     platform: "node",
     bundle: true,
     format: "esm",
-    outfile: path.resolve(artifactDir, "api/[...slug].mjs"),
+    outdir: path.resolve(artifactDir, "api"),
+    outExtension: { ".js": ".mjs" },
     logLevel: "info",
     external: [
       "*.node",
