@@ -15,6 +15,7 @@ import Contact from "@/pages/contact";
 import Admin from "@/pages/admin";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "";
 if (API_URL) setBaseUrl(API_URL);
@@ -23,7 +24,7 @@ const queryClient = new QueryClient();
 
 function Router() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <ErrorBoundary>
       <Navbar />
       <main className="flex-1">
         <Switch>
@@ -40,7 +41,7 @@ function Router() {
         </Switch>
       </main>
       <Footer />
-    </div>
+    </ErrorBoundary>
   );
 }
 
