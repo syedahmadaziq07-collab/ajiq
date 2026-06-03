@@ -100,3 +100,13 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+@keyframes slide-up-hero {
+  from { transform: translateY(1500px); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes slide-up-sm {
+  from { transform: translateY(100px); }
+  to   { transform: translateY(0); }
+}

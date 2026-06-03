@@ -36,82 +36,82 @@ export default function Home() {
 
   return (
     <div className="w-full min-h-screen">
-      <section className="pt-14 pb-6 px-6 sm:px-10 max-w-[1200px] mx-auto">
-        <h1 className="text-[56px] sm:text-[80px] md:text-[100px] font-[500] tracking-[-3px] sm:tracking-[-5px] leading-[0.85] text-[#000]">
+      <section className="pt-14 pb-6 px-6 sm:px-10 max-w-[1200px] mx-auto overflow-hidden">
+        <h1 className="text-[56px] sm:text-[80px] md:text-[100px] font-[500] tracking-[-3px] sm:tracking-[-5px] leading-[0.85] text-[#000] animate-[slide-up-hero_1.2s_cubic-bezier(0.16,1,0.3,1)_both]">
           askalm
         </h1>
-        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[460px] mt-5">
+        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[460px] mt-5 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.75s_both]">
           At askalm, we craft simple essentials that make every workspace inspiring and every device more productive.
         </p>
       </section>
 
-      <section className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Link href="/wallpapers" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white hover:scale-[1.01] transition-transform duration-200">
+      <section className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 overflow-hidden">
+        <Link href="/wallpapers" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white transition-all duration-500 ease-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:scale-[1.02] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_both]">
           <div className="aspect-[4/3] overflow-hidden">
-            <img src={WALLPAPERS_IMG} alt="Wallpapers" className="w-full h-full object-cover" />
+            <img src={WALLPAPERS_IMG} alt="Wallpapers" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]" />
           </div>
           <div className="p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-[#000] text-[15px] font-[500]">Wallpapers</h3>
-              <span className="text-[#000] text-[18px] group-hover:translate-x-1 transition-transform duration-200">↗</span>
+              <span className="text-[#000] text-[18px] transition-transform duration-300 group-hover:translate-x-1">↗</span>
             </div>
             <p className="text-[#747474] text-[13px] mt-1">Browse all Wallpapers</p>
           </div>
         </Link>
-        <Link href="/guides" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white hover:scale-[1.01] transition-transform duration-200">
+        <Link href="/guides" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white transition-all duration-500 ease-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:scale-[1.02] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_0.1s_both]">
           <div className="aspect-[4/3] overflow-hidden">
-            <img src={GUIDES_IMG} alt="Guides" className="w-full h-full object-cover" />
+            <img src={GUIDES_IMG} alt="Guides" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]" />
           </div>
           <div className="p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-[#000] text-[15px] font-[500]">Guides</h3>
-              <span className="text-[#000] text-[18px] group-hover:translate-x-1 transition-transform duration-200">↗</span>
+              <span className="text-[#000] text-[18px] transition-transform duration-300 group-hover:translate-x-1">↗</span>
             </div>
             <p className="text-[#747474] text-[13px] mt-1">Browse all Guides</p>
           </div>
         </Link>
-        <Link href="/templates" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white hover:scale-[1.01] transition-transform duration-200">
+        <Link href="/templates" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white transition-all duration-500 ease-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:scale-[1.02] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">
           <div className="aspect-[4/3] overflow-hidden">
-            <img src={TEMPLATES_IMG} alt="Templates" className="w-full h-full object-cover" />
+            <img src={TEMPLATES_IMG} alt="Templates" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]" />
           </div>
           <div className="p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-[#000] text-[15px] font-[500]">Templates</h3>
-              <span className="text-[#000] text-[18px] group-hover:translate-x-1 transition-transform duration-200">↗</span>
+              <span className="text-[#000] text-[18px] transition-transform duration-300 group-hover:translate-x-1">↗</span>
             </div>
             <p className="text-[#747474] text-[13px] mt-1">Browse all Templates</p>
           </div>
         </Link>
       </section>
 
-      <section className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE]">
-        <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-[500] tracking-[-1.5px] leading-[1.05] text-[#000] mb-4">
+      <section className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden">
+        <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-[500] tracking-[-1.5px] leading-[1.05] text-[#000] mb-4 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
           Refining digital life.
         </h2>
-        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[480px] mb-8">
+        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[480px] mb-8 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]">
           Our designs refine workspaces and devices, proving that the simplest details can make the biggest difference in digital life.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {FEATURED_IMGS.map((url, i) => (
-            <div key={i} className={`rounded-[10px] overflow-hidden ${i === 0 || i === 1 ? 'col-span-2' : ''}`}>
-              <img src={url} alt="" className="w-full h-[200px] sm:h-[260px] object-cover" />
+            <div key={i} className={`rounded-[10px] overflow-hidden group ${i === 0 || i === 1 ? 'col-span-2' : ''}`}>
+              <img src={url} alt="" className="w-full h-[200px] sm:h-[260px] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]" />
             </div>
           ))}
         </div>
       </section>
 
-      <section className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE]">
-        <h2 className="text-[28px] sm:text-[36px] md:text-[42px] font-[500] tracking-[-1px] leading-[1.05] text-[#000] mb-2">
+      <section className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden">
+        <h2 className="text-[28px] sm:text-[36px] md:text-[42px] font-[500] tracking-[-1px] leading-[1.05] text-[#000] mb-2 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
           Insights from our blog.
         </h2>
-        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] mb-8 max-w-[560px]">
+        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] mb-8 max-w-[560px] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]">
           Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {first && (
             <Link href={`/blog/${first.slug}`} className="group block">
               <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-                <img src={first.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                <img src={first.imageUrl} alt="" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
               </div>
               <p className="text-[#747474] text-[13px]">
                 On <span className="font-[500] text-[#000]">{formatDate(first.publishedAt)}</span>
@@ -122,7 +122,7 @@ export default function Home() {
           {second && (
             <Link href={`/blog/${second.slug}`} className="group block">
               <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-                <img src={second.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                <img src={second.imageUrl} alt="" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
               </div>
               <p className="text-[#747474] text-[13px]">
                 On <span className="font-[500] text-[#000]">{formatDate(second.publishedAt)}</span>
@@ -133,7 +133,7 @@ export default function Home() {
           {third && (
             <Link href={`/blog/${third.slug}`} className="group block">
               <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-                <img src={third.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                <img src={third.imageUrl} alt="" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]" />
               </div>
               <p className="text-[#747474] text-[13px]">
                 On <span className="font-[500] text-[#000]">{formatDate(third.publishedAt)}</span>
@@ -144,11 +144,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 sm:px-10 pt-10 pb-20 max-w-[1200px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <p className="text-[#747474] text-[14px] sm:text-[15px] leading-[1.7] max-w-[420px]">
+      <section className="px-6 sm:px-10 pt-10 pb-20 max-w-[1200px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden">
+        <p className="text-[#747474] text-[14px] sm:text-[15px] leading-[1.7] max-w-[420px] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
           Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups.
         </p>
-        <form className="flex flex-row items-center gap-2 shrink-0" onSubmit={handleSubscribe}>
+        <form className="flex flex-row items-center gap-2 shrink-0 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]" onSubmit={handleSubscribe}>
           <input
             type="email"
             placeholder="name@askalm.com"
