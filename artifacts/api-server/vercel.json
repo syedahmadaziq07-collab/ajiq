@@ -1,6 +1,5 @@
 {
   "buildCommand": "node ./vercel-build.mjs",
-  "outputDirectory": "dist",
   "framework": null,
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/index.mjs" }

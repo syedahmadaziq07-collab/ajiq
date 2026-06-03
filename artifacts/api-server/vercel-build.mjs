@@ -6,9 +6,6 @@ const isApi = process.env.API_PROJECT === "true";
 
 async function main() {
   if (isApi) {
-    console.log("=== Building API server ===");
-    execSync("node ./build.mjs", { stdio: "inherit", shell: true });
-
     console.log("=== Building Vercel serverless function ===");
     await esbuild({
       entryPoints: ["src/vercel-entry.ts"],
