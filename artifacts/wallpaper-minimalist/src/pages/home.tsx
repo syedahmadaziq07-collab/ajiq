@@ -36,50 +36,62 @@ export default function Home() {
 
   return (
     <div className="w-full min-h-screen">
-      <section className="pt-14 pb-6 px-6 sm:px-10 max-w-[1200px] mx-auto overflow-hidden">
-        <h1 className="text-[56px] sm:text-[80px] md:text-[100px] font-[500] tracking-[-3px] sm:tracking-[-5px] leading-[0.85] text-[#000] animate-[slide-up-hero_1.2s_cubic-bezier(0.16,1,0.3,1)_both]">
+      <section className="pt-[79px] pb-[13px] px-6 sm:px-10 md:pt-[128px] md:pb-[51px] max-w-[1200px] mx-auto overflow-hidden">
+        <h1 className="text-[93px] sm:text-[195px] md:text-[335px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000] animate-[slide-up-hero_1.2s_cubic-bezier(0.16,1,0.3,1)_both]">
           askalm
         </h1>
-        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[460px] mt-5 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.75s_both]">
+        <p className="text-[#747474] text-[15px] sm:text-[21px] md:text-[24px] font-[500] leading-[1.2] max-w-[600px] mt-6 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.75s_both]">
           At askalm, we craft simple essentials that make every workspace inspiring and every device more productive.
         </p>
       </section>
 
-      <section className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 overflow-hidden">
-        <Link href="/wallpapers" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white transition-all duration-500 ease-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:scale-[1.02] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_both]">
-          <div className="aspect-[4/3] overflow-hidden">
-            <img src={WALLPAPERS_IMG} alt="Wallpapers" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]" />
-          </div>
-          <div className="p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[#000] text-[15px] font-[500]">Wallpapers</h3>
-              <span className="text-[#000] text-[18px] transition-transform duration-300 group-hover:translate-x-1">↗</span>
+      <section className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden">
+        <Link href="/wallpapers" className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_both]">
+          <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
+            <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
+              <img src={WALLPAPERS_IMG} alt="Wallpapers" className="w-[308px] h-[247px] object-contain" />
             </div>
-            <p className="text-[#747474] text-[13px] mt-1">Browse all Wallpapers</p>
+            <div>
+              <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">Wallpapers</h3>
+              <p className="text-[#747474] text-[9px] font-[500] mt-0.5">Browse all Wallpapers</p>
+            </div>
+          </div>
+          <div className="absolute top-[18px] right-[18px] bg-white rounded-[15px] p-[11px] shadow-[0_4px_22.7px_0_rgba(0,0,0,0.07)] flex items-center justify-center" style={{ width: '32px', height: '32px' }}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transform: 'rotate(-90deg)' }}>
+              <path d="M5 0L5 8M5 8L1 4M5 8L9 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
         </Link>
-        <Link href="/guides" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white transition-all duration-500 ease-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:scale-[1.02] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_0.1s_both]">
-          <div className="aspect-[4/3] overflow-hidden">
-            <img src={GUIDES_IMG} alt="Guides" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]" />
-          </div>
-          <div className="p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[#000] text-[15px] font-[500]">Guides</h3>
-              <span className="text-[#000] text-[18px] transition-transform duration-300 group-hover:translate-x-1">↗</span>
+        <Link href="/guides" className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_0.1s_both]">
+          <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
+            <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
+              <img src={GUIDES_IMG} alt="Guides" className="w-[308px] h-[247px] object-contain" />
             </div>
-            <p className="text-[#747474] text-[13px] mt-1">Browse all Guides</p>
+            <div>
+              <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">Guides</h3>
+              <p className="text-[#747474] text-[9px] font-[500] mt-0.5">Browse all Guides</p>
+            </div>
+          </div>
+          <div className="absolute top-[18px] right-[18px] bg-white rounded-[15px] p-[11px] shadow-[0_4px_22.7px_0_rgba(0,0,0,0.07)] flex items-center justify-center" style={{ width: '32px', height: '32px' }}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transform: 'rotate(-90deg)' }}>
+              <path d="M5 0L5 8M5 8L1 4M5 8L9 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
         </Link>
-        <Link href="/templates" className="group block border border-[#EEEEEE] rounded-[12px] overflow-hidden bg-white transition-all duration-500 ease-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:scale-[1.02] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">
-          <div className="aspect-[4/3] overflow-hidden">
-            <img src={TEMPLATES_IMG} alt="Templates" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.08]" />
-          </div>
-          <div className="p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[#000] text-[15px] font-[500]">Templates</h3>
-              <span className="text-[#000] text-[18px] transition-transform duration-300 group-hover:translate-x-1">↗</span>
+        <Link href="/templates" className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">
+          <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
+            <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
+              <img src={TEMPLATES_IMG} alt="Templates" className="w-[308px] h-[247px] object-contain" />
             </div>
-            <p className="text-[#747474] text-[13px] mt-1">Browse all Templates</p>
+            <div>
+              <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">Templates</h3>
+              <p className="text-[#747474] text-[9px] font-[500] mt-0.5">Browse all Templates</p>
+            </div>
+          </div>
+          <div className="absolute top-[18px] right-[18px] bg-white rounded-[15px] p-[11px] shadow-[0_4px_22.7px_0_rgba(0,0,0,0.07)] flex items-center justify-center" style={{ width: '32px', height: '32px' }}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transform: 'rotate(-90deg)' }}>
+              <path d="M5 0L5 8M5 8L1 4M5 8L9 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
         </Link>
       </section>
