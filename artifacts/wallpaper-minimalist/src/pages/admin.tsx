@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const ADMIN_TOKEN_KEY = "askalm_admin_token";
 const API = import.meta.env.VITE_API_URL ?? "";
+console.log("Admin API URL:", API || "(empty - using relative)");
 
 function authHeaders() {
   const token = localStorage.getItem(ADMIN_TOKEN_KEY);
@@ -133,7 +134,7 @@ export default function Admin() {
       const res = await fetch(`${API}/api/admin/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
       if (!res.ok) {
         const text = await res.text().catch(() => "unknown");
-        throw new Error(`${res.status} ${text}`);
+        throw new Error(`${res.status} ${text} [${API}/api/admin/login]`);
       }
       const data = await res.json();
       localStorage.setItem(ADMIN_TOKEN_KEY, data.token);
