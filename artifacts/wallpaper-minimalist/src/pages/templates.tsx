@@ -34,7 +34,8 @@ function PriceBadge({ price }: { price: number | null | undefined }) {
 }
 
 export default function Templates() {
-  const { data: templates = [] } = useListTemplates();
+  const { data } = useListTemplates();
+  const templates = Array.isArray(data) ? data : [];
   const [activeFilter, setActiveFilter] = useState("All");
   const { buy, loading } = useCreateCheckoutSession();
 

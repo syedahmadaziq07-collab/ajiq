@@ -34,7 +34,8 @@ function PriceBadge({ price }: { price: number | null | undefined }) {
 }
 
 export default function Wallpapers() {
-  const { data: wallpapers = [] } = useListWallpapers();
+  const { data } = useListWallpapers();
+  const wallpapers = Array.isArray(data) ? data : [];
   const [activeFilter, setActiveFilter] = useState("All");
   const { buy, loading } = useCreateCheckoutSession();
 

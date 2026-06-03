@@ -3,7 +3,8 @@ import { useListGuides } from "@workspace/api-client-react";
 import type { Guide } from "@workspace/api-client-react";
 
 export default function Guides() {
-  const { data: guides = [] } = useListGuides();
+  const { data } = useListGuides();
+  const guides = Array.isArray(data) ? data : [];
 
   return (
     <div className="w-full min-h-screen pb-10">
