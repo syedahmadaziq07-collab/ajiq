@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node ./build.mjs",
+  "buildCommand": "rm -rf api dist && pnpm --filter @workspace/wallpaper-minimalist run build && cp -r ../wallpaper-minimalist/dist/. ./dist/",
   "outputDirectory": "dist",
   "framework": null
 }
