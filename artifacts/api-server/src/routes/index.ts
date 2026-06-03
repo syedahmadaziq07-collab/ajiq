@@ -13,9 +13,6 @@ import statsRouter from "./stats";
 
 const router: IRouter = Router();
 
-router.use("/admin/login", (req, res) => {
-  res.json({ method: req.method, path: req.path, url: req.url, baseUrl: req.baseUrl, originalUrl: req.originalUrl });
-});
 router.use(healthRouter);
 router.use(blogPostsRouter);
 router.use(newsletterRouter);
