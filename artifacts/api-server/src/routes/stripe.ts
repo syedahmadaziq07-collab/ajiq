@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, ordersTable, wallpapersTable, templatesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import Stripe from "stripe";
 
 const router: IRouter = Router();
 
@@ -36,8 +37,7 @@ router.post("/create-checkout-session", async (req, res) => {
       return;
     }
 
-    const stripe = await import("stripe");
-    const s = new stripe.default(STRIPE_SECRET_KEY);
+    const s = new Stripe(STRIPE_SECRET_KEY);
 
     const session = await s.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -71,8 +71,7 @@ router.post("/stripe-webhook", async (req, res) => {
   }
 
   try {
-    const stripe = await import("stripe");
-    const s = new stripe.default(STRIPE_SECRET_KEY);
+    const s = new Stripe(STRIPE_SECRET_KEY);
     const event = s.webhooks.constructEvent(req.body, sig, webhookSecret);
 
     if (event.type === "checkout.session.completed") {
