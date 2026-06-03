@@ -1,14 +1,10 @@
 import { Link } from "wouter";
+import { useState } from "react";
+import { useListBlogPosts, useSubscribeNewsletter } from "@workspace/api-client-react";
 
 const WALLPAPERS_IMG = "https://framerusercontent.com/images/edkUWDLREszDiq4vgt975wDDFM.jpg";
 const GUIDES_IMG = "https://framerusercontent.com/images/DTNpaBh0Djuey5Ql5HpaJWi3lWg.jpg";
 const TEMPLATES_IMG = "https://framerusercontent.com/images/KkKh1T6zK6twdxDPmlYsFJTj6lg.jpg";
-
-const BLOG_IMGS = [
-  "https://framerusercontent.com/images/dVyW0kMnnDotk1u5hwmW8b7Rqo.png",
-  "https://framerusercontent.com/images/CjRZ7Bi4Hwr2Tgg9Vyp3aaQQGA.png",
-  "https://framerusercontent.com/images/hcUrluPToM9nbVrcIY7yVNNFDk.png",
-];
 
 const FEATURED_IMGS = [
   "https://framerusercontent.com/images/76MGm4VfTnCkUrk3ct1yk3Rpw.jpg",
@@ -22,6 +18,22 @@ const FEATURED_IMGS = [
 ];
 
 export default function Home() {
+  const { data: blogPosts } = useListBlogPosts();
+  const newsletter = useSubscribeNewsletter();
+  const [email, setEmail] = useState("");
+
+  const posts = blogPosts?.slice(0, 3) ?? [];
+  const [first, second, third] = posts.length === 3 ? posts : [];
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    newsletter.mutate({ data: { email } }, { onSuccess: () => setEmail("") });
+  };
+
+  function formatDate(dateStr: string) {
+    return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }
+
   return (
     <div className="w-full min-h-screen">
       <section className="pt-14 pb-6 px-6 sm:px-10 max-w-[1200px] mx-auto">
@@ -96,39 +108,39 @@ export default function Home() {
           Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          <Link href="/blog" className="group block">
-            <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-              <img src={BLOG_IMGS[0]} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-            </div>
-            <p className="text-[#747474] text-[13px]">
-              On <span className="font-[500] text-[#000]">Feb 2, 2026</span>
-            </p>
-            <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">
-              Ergonomic Essentials: Comfort Meets Productivity
-            </h3>
-          </Link>
-          <Link href="/blog" className="group block">
-            <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-              <img src={BLOG_IMGS[1]} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-            </div>
-            <p className="text-[#747474] text-[13px]">
-              On <span className="font-[500] text-[#000]">Jan 12, 2026</span>
-            </p>
-            <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">
-              5 Color Palettes for Your Workspace
-            </h3>
-          </Link>
-          <Link href="/blog" className="group block">
-            <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
-              <img src={BLOG_IMGS[2]} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-            </div>
-            <p className="text-[#747474] text-[13px]">
-              On <span className="font-[500] text-[#000]">Jan 5, 2026</span>
-            </p>
-            <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">
-              Optimizing Wall Space Around Your Desk
-            </h3>
-          </Link>
+          {first && (
+            <Link href={`/blog/${first.slug}`} className="group block">
+              <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
+                <img src={first.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+              </div>
+              <p className="text-[#747474] text-[13px]">
+                On <span className="font-[500] text-[#000]">{formatDate(first.publishedAt)}</span>
+              </p>
+              <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">{first.title}</h3>
+            </Link>
+          )}
+          {second && (
+            <Link href={`/blog/${second.slug}`} className="group block">
+              <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
+                <img src={second.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+              </div>
+              <p className="text-[#747474] text-[13px]">
+                On <span className="font-[500] text-[#000]">{formatDate(second.publishedAt)}</span>
+              </p>
+              <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">{second.title}</h3>
+            </Link>
+          )}
+          {third && (
+            <Link href={`/blog/${third.slug}`} className="group block">
+              <div className="aspect-[16/10] rounded-[10px] overflow-hidden mb-3">
+                <img src={third.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+              </div>
+              <p className="text-[#747474] text-[13px]">
+                On <span className="font-[500] text-[#000]">{formatDate(third.publishedAt)}</span>
+              </p>
+              <h3 className="text-[#000] text-[15px] font-[500] mt-0.5 group-hover:underline underline-offset-2">{third.title}</h3>
+            </Link>
+          )}
         </div>
       </section>
 
@@ -136,21 +148,21 @@ export default function Home() {
         <p className="text-[#747474] text-[14px] sm:text-[15px] leading-[1.7] max-w-[420px]">
           Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups.
         </p>
-        <form
-          className="flex flex-row items-center gap-2 shrink-0"
-          onSubmit={(e) => { e.preventDefault(); alert("Subscribed!"); }}
-        >
+        <form className="flex flex-row items-center gap-2 shrink-0" onSubmit={handleSubscribe}>
           <input
             type="email"
             placeholder="name@askalm.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="border border-[#EEEEEE] rounded-[8px] h-[44px] px-4 text-[13px] focus:outline-none focus:border-[#000] w-full sm:w-[220px] bg-transparent text-[#000]"
             required
           />
           <button
             type="submit"
-            className="bg-[#000] text-white rounded-[8px] h-[44px] px-5 text-[13px] font-[500] hover:bg-[#222] transition-colors whitespace-nowrap"
+            disabled={newsletter.isPending}
+            className="bg-[#000] text-white rounded-[8px] h-[44px] px-5 text-[13px] font-[500] hover:bg-[#222] transition-colors whitespace-nowrap disabled:opacity-50"
           >
-            Subscribe
+            {newsletter.isPending ? "Sending..." : newsletter.isSuccess ? "Subscribed!" : "Subscribe"}
           </button>
         </form>
       </section>
