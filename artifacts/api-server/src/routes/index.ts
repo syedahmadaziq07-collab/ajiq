@@ -11,6 +11,7 @@ import adminRouter from "./admin.js";
 import stripeRouter from "./stripe.js";
 import downloadsRouter from "./downloads.js";
 import statsRouter from "./stats.js";
+import uploadRouter from "./upload.js";
 
 const router: IRouter = Router();
 
@@ -26,5 +27,6 @@ router.use(adminRouter);
 router.use(stripeRouter);
 router.use(downloadsRouter);
 router.use(statsRouter);
+router.use(uploadRouter);
 
 export default router;
