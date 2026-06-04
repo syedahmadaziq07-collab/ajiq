@@ -2,12 +2,6 @@
   "nodeVersion": "22.x",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "buildCommand": "node artifacts/api-server/vercel-build.mjs",
-  "framework": null,
-  "builds": [
-    { "src": "artifacts/api-server/api/handler.mjs", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/handler" }
-  ]
+  "framework": null
 }
 
