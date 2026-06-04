@@ -53,3 +53,5 @@ summary_current.md
 .vercel
 .env.production
 .env.vercel
+.env.prod
+scripts/
