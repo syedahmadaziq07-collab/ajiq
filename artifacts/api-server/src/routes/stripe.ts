@@ -39,6 +39,7 @@ router.post("/create-checkout-session", async (req, res) => {
 
     const s = new Stripe(STRIPE_SECRET_KEY);
 
+    const origin = req.headers.origin || `https://${req.headers.host}`;
     const session = await s.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -51,8 +52,8 @@ router.post("/create-checkout-session", async (req, res) => {
         quantity: 1,
       }],
       metadata: { itemType, itemId: String(itemId) },
-      success_url: `${req.headers.origin}/api/download/${itemType}/${itemId}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin}/${itemType === "wallpaper" ? "wallpapers" : "templates"}`,
+      success_url: `${origin}/api/download/${itemType}/${itemId}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/${itemType === "wallpaper" ? "wallpapers" : "templates"}`,
     });
 
     res.json({ url: session.url });
