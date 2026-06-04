@@ -6,3 +6,4 @@ export * from "./templates";
 export * from "./guides";
 export * from "./orders";
 export * from "./downloads";
+export * from "./site-settings";

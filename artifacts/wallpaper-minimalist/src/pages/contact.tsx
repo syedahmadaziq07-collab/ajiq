@@ -73,7 +73,7 @@ export default function Contact() {
 
         <div className="mt-8 text-center text-[15px]">
           <span className="text-[#747474]">Or email us directly at </span>
-          <span className="font-bold text-[#000]">support@askalm.com</span>
+          <span className="font-bold text-[#000]">support@wallp.com</span>
         </div>
       </section>
     </div>

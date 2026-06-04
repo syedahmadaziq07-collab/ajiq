@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db, downloadsTable, ordersTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 const router: IRouter = Router();
 
@@ -36,7 +36,7 @@ router.get("/download/:itemType/:itemId", async (req, res) => {
     }
 
     // Track download
-    const existing = await db.select().from(downloadsTable).where(eq(downloadsTable.itemType, itemType)).where(eq(downloadsTable.itemId, id)).limit(1);
+    const existing = await db.select().from(downloadsTable).where(and(eq(downloadsTable.itemType, itemType), eq(downloadsTable.itemId, id))).limit(1);
     if (existing.length > 0) {
       await db.update(downloadsTable).set({ count: existing[0].count + 1 }).where(eq(downloadsTable.id, existing[0].id));
     } else {

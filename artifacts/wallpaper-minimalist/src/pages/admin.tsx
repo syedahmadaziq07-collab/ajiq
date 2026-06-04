@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const ADMIN_TOKEN_KEY = "askalm_admin_token";
+const ADMIN_TOKEN_KEY = "blanc_admin_token";
 const API = import.meta.env.VITE_API_URL ?? "";
 console.log("Admin API URL:", API || "(empty - using relative)");
 
@@ -35,7 +35,7 @@ async function apiDelete(path: string) {
 }
 
 // ---- Types ----
-type Tab = "dashboard" | "posts" | "wallpapers" | "templates" | "guides" | "contacts" | "newsletter";
+type Tab = "dashboard" | "homepage" | "posts" | "wallpapers" | "templates" | "guides" | "contacts" | "newsletter";
 
 interface PostForm {
   title: string; slug: string; excerpt: string; content: string; imageUrl: string; author: string; publishedAt: string;
@@ -49,7 +49,7 @@ interface GuideForm {
   title: string; slug: string; description: string; imageUrl: string; content: string;
 }
 
-const emptyPost = (): PostForm => ({ title: "", slug: "", excerpt: "", content: "", imageUrl: "", author: "Askalm", publishedAt: new Date().toISOString().split("T")[0] });
+const emptyPost = (): PostForm => ({ title: "", slug: "", excerpt: "", content: "", imageUrl: "", author: "Wallp.", publishedAt: new Date().toISOString().split("T")[0] });
 const emptyMedia = (): MediaForm => ({ title: "", slug: "", category: "", imageUrl: "", downloadUrl: "" });
 const emptyGuide = (): GuideForm => ({ title: "", slug: "", description: "", imageUrl: "", content: "" });
 
@@ -162,7 +162,7 @@ export default function Admin() {
     <div className="w-full min-h-screen bg-white">
       <div className="flex items-center justify-between px-6 py-3 border-b border-[#eee]">
         <div className="flex items-center gap-1">
-          <span className="text-[16px] font-[600] text-[#000]">askalm</span>
+          <span className="text-[16px] font-[600] text-[#000]">Wallp.</span>
           <span className="text-[#747474] text-[12px] ml-2">Admin</span>
         </div>
         <button onClick={logout} className="text-[#747474] text-[12px] underline underline-offset-2 hover:text-[#000]">Logout</button>
@@ -172,6 +172,7 @@ export default function Admin() {
         <Sidebar tab={tab} onTab={setTab} />
         <div className="flex-1 p-6">
           {tab === "dashboard" && <Dashboard />}
+          {tab === "homepage" && <HomepageSettings />}
           {tab === "posts" && <PostsTable onEdit={(p) => { setEditPost(p); setEditing(true); }} onClose={() => setEditing(false)} />}
           {tab === "wallpapers" && <MediaTable prefix="wallpapers" onEdit={(m) => { setEditMedia(m); setEditing(true); }} onClose={() => setEditing(false)} />}
           {tab === "templates" && <MediaTable prefix="templates" onEdit={(m) => { setEditMedia(m); setEditing(true); }} onClose={() => setEditing(false)} />}
@@ -187,6 +188,7 @@ export default function Admin() {
 function Sidebar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   const tabs: { key: Tab; label: string }[] = [
     { key: "dashboard", label: "Dashboard" },
+    { key: "homepage", label: "Homepage" },
     { key: "posts", label: "Blog Posts" },
     { key: "wallpapers", label: "Wallpapers" },
     { key: "templates", label: "Templates" },
@@ -201,6 +203,63 @@ function Sidebar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
           {t.label}
         </button>
       ))}
+    </div>
+  );
+}
+
+// ---- Homepage Settings ----
+const SETTINGS_FIELDS: { key: string; label: string; description: string }[] = [
+  { key: "wallpapers_image", label: "Wallpapers Category Image", description: "Image shown in the Wallpapers category card on homepage" },
+  { key: "guides_image", label: "Guides Category Image", description: "Image shown in the Guides category card on homepage" },
+  { key: "templates_image", label: "Templates Category Image", description: "Image shown in the Templates category card on homepage" },
+  { key: "featured_images", label: "Featured Images (JSON array of 8 URLs)", description: "Array of 8 image URLs for the featured wallpapers grid" },
+];
+
+function HomepageSettings() {
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin", "settings"],
+    queryFn: () => apiGet("/settings"),
+  });
+  const [form, setForm] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (data) setForm(data);
+  }, [data]);
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      await apiPut("/settings", form);
+      queryClient.invalidateQueries({ queryKey: ["admin", "settings"] });
+    } catch (e) {
+      alert("Failed to save settings");
+    }
+    setSaving(false);
+  };
+
+  if (isLoading) return <div className="text-[#747474] text-[13px]">Loading...</div>;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-[18px] font-[600] text-[#000]">Homepage Settings</h2>
+        <button onClick={save} disabled={saving} className="bg-[#000] text-white rounded-[8px] h-[36px] px-4 text-[12px] font-[500] disabled:opacity-50">{saving ? "Saving..." : "Save All"}</button>
+      </div>
+      <div className="flex flex-col gap-4 max-w-[600px]">
+        {SETTINGS_FIELDS.map((field) => (
+          <div key={field.key} className="flex flex-col gap-1">
+            <label className="text-[12px] text-[#747474] font-[500] uppercase tracking-wider">{field.label}</label>
+            <input
+              value={form[field.key] || ""}
+              onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+              className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]"
+            />
+            <p className="text-[#999] text-[11px]">{field.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

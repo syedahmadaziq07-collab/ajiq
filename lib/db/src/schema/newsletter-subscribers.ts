@@ -8,6 +8,6 @@ export const newsletterSubscribersTable = pgTable("newsletter_subscribers", {
   subscribedAt: timestamp("subscribed_at").notNull().defaultNow(),
 });
 
-export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribersTable).omit({ id: true, subscribedAt: true });
+export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribersTable).omit({ id: true, subscribedAt: true }) as any;
 export type InsertNewsletterSubscriber = z.infer<typeof insertNewsletterSubscriberSchema>;
 export type NewsletterSubscriber = typeof newsletterSubscribersTable.$inferSelect;

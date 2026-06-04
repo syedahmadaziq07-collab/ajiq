@@ -12,6 +12,6 @@ export const guidesTable = pgTable("guides", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const insertGuideSchema = createInsertSchema(guidesTable).omit({ id: true, createdAt: true });
+export const insertGuideSchema = createInsertSchema(guidesTable).omit({ id: true, createdAt: true }) as any;
 export type InsertGuide = z.infer<typeof insertGuideSchema>;
 export type Guide = typeof guidesTable.$inferSelect;

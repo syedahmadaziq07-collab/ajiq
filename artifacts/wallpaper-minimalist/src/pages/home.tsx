@@ -1,12 +1,14 @@
 import { Link } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useListBlogPosts, useSubscribeNewsletter } from "@workspace/api-client-react";
+import { useScrollReveal } from "../lib/use-scroll-reveal";
 
-const WALLPAPERS_IMG = "https://framerusercontent.com/images/edkUWDLREszDiq4vgt975wDDFM.jpg";
-const GUIDES_IMG = "https://framerusercontent.com/images/DTNpaBh0Djuey5Ql5HpaJWi3lWg.jpg";
-const TEMPLATES_IMG = "https://framerusercontent.com/images/KkKh1T6zK6twdxDPmlYsFJTj6lg.jpg";
+const API = import.meta.env.VITE_API_URL ?? "";
 
-const FEATURED_IMGS = [
+const DEFAULT_WALLPAPERS_IMG = "https://framerusercontent.com/images/edkUWDLREszDiq4vgt975wDDFM.jpg";
+const DEFAULT_GUIDES_IMG = "https://framerusercontent.com/images/DTNpaBh0Djuey5Ql5HpaJWi3lWg.jpg";
+const DEFAULT_TEMPLATES_IMG = "https://framerusercontent.com/images/KkKh1T6zK6twdxDPmlYsFJTj6lg.jpg";
+const DEFAULT_FEATURED_IMGS = [
   "https://framerusercontent.com/images/76MGm4VfTnCkUrk3ct1yk3Rpw.jpg",
   "https://framerusercontent.com/images/dH9sQMFjHqSouYrD2G1zd5Gl5c.jpg",
   "https://framerusercontent.com/images/r9EnSsRgp8Z5QUmBOV9sui25trU.png",
@@ -17,18 +19,63 @@ const FEATURED_IMGS = [
   "https://framerusercontent.com/images/DXWQczEsbDwS0U9pVPEzF4rvM.jpg",
 ];
 
+const FALLBACK_POSTS = [
+  {
+    title: "Ergonomic Essentials: Comfort Meets Productivity",
+    slug: "ergonomic-essentials-comfort-meets-productivity",
+    imageUrl: "https://framerusercontent.com/images/dVyW0kMnnDotk1u5hwmW8b7Rqo.png?width=3000&height=1890",
+    publishedAt: "2026-02-02T00:00:00.000Z",
+  },
+  {
+    title: "5 Color Palettes for Your Workspace",
+    slug: "color-palettes-for-your-workspace",
+    imageUrl: "https://framerusercontent.com/images/CjRZ7Bi4Hwr2Tgg9Vyp3aaQQGA.png?width=3000&height=1890",
+    publishedAt: "2026-01-12T00:00:00.000Z",
+  },
+  {
+    title: "Optimizing Wall Space Around Your Desk",
+    slug: "optimizing-wall-space-around-your-desk",
+    imageUrl: "https://framerusercontent.com/images/hcUrluPToM9nbVrcIY7yVNNFDk.png?width=3000&height=1890",
+    publishedAt: "2026-01-05T00:00:00.000Z",
+  },
+];
+
+function parseFeatured(raw: string | undefined): string[] {
+  if (!raw) return DEFAULT_FEATURED_IMGS;
+  try { const arr = JSON.parse(raw); return Array.isArray(arr) && arr.length === 8 ? arr : DEFAULT_FEATURED_IMGS; } catch { return DEFAULT_FEATURED_IMGS; }
+}
+
 export default function Home() {
   const { data: blogPosts } = useListBlogPosts();
   const newsletter = useSubscribeNewsletter();
   const [email, setEmail] = useState("");
-
-  const posts = blogPosts?.slice(0, 3) ?? [];
-  const [first, second, third] = posts.length === 3 ? posts : [];
+  const [settings, setSettings] = useState<Record<string, string>>({});
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     newsletter.mutate({ data: { email } }, { onSuccess: () => setEmail("") });
   };
+
+  useEffect(() => {
+    fetch(`${API}/api/settings`)
+      .then((r) => { if (r.ok) return r.json(); throw new Error("failed"); })
+      .then(setSettings)
+      .catch(() => {});
+  }, []);
+
+  const WALLPAPERS_IMG = settings.wallpapers_image || DEFAULT_WALLPAPERS_IMG;
+  const GUIDES_IMG = settings.guides_image || DEFAULT_GUIDES_IMG;
+  const TEMPLATES_IMG = settings.templates_image || DEFAULT_TEMPLATES_IMG;
+  const FEATURED_IMGS = parseFeatured(settings.featured_images);
+
+  const heroReveal = useScrollReveal();
+  const catsReveal = useScrollReveal();
+  const featuredReveal = useScrollReveal();
+  const blogReveal = useScrollReveal();
+  const newsletterReveal = useScrollReveal();
+
+  const posts = (Array.isArray(blogPosts) && blogPosts.length ? blogPosts : FALLBACK_POSTS).slice(0, 3);
+  const [first, second, third] = posts.length === 3 ? posts : [];
 
   function formatDate(dateStr: string) {
     const d = new Date(dateStr);
@@ -40,14 +87,14 @@ export default function Home() {
     <div className="w-full min-h-screen">
       <section className="pt-[79px] pb-[13px] px-6 sm:px-10 md:pt-[128px] md:pb-[51px] max-w-[1200px] mx-auto overflow-hidden">
         <h1 className="text-[93px] sm:text-[195px] md:text-[335px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000] animate-[slide-up-hero_1.2s_cubic-bezier(0.16,1,0.3,1)_both]">
-          askalm
+          Wallp.
         </h1>
         <p className="text-[#747474] text-[15px] sm:text-[21px] md:text-[24px] font-[500] leading-[1.2] max-w-[600px] mt-6 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.75s_both]">
-          At askalm, we craft simple essentials that make every workspace inspiring and every device more productive.
+          At Wallp., we craft simple essentials that make every workspace inspiring and every device more productive.
         </p>
       </section>
 
-      <section className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden">
+      <section ref={catsReveal.ref} className={`px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden scroll-reveal ${catsReveal.visible ? "visible" : ""}`}>
         <Link href="/wallpapers" className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_both]">
           <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
             <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
@@ -98,7 +145,7 @@ export default function Home() {
         </Link>
       </section>
 
-      <section className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden">
+      <section ref={featuredReveal.ref} className={`px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden scroll-reveal ${featuredReveal.visible ? "visible" : ""}`}>
         <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-[500] tracking-[-1.5px] leading-[1.05] text-[#000] mb-4 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
           Refining digital life.
         </h2>
@@ -142,7 +189,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 sm:px-10 pt-[100px] pb-0 max-w-[1200px] mx-auto overflow-hidden">
+      <section ref={blogReveal.ref} className={`px-6 sm:px-10 pt-[100px] pb-0 max-w-[1240px] mx-auto overflow-hidden scroll-reveal ${blogReveal.visible ? "visible" : ""}`}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[35px] sm:gap-10 mb-[50px] sm:mb-[70px]">
           <h2 className="text-[44px] sm:text-[31px] lg:text-[54px] font-[600] tracking-[-0.03em] leading-[1.6] text-[#000] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
             Insights from our blog.
@@ -154,9 +201,13 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
           {first && (
             <Link href={`/blog/${first.slug}`} className="group block rounded-[18px] overflow-hidden">
-              <div className="h-[250px] w-full p-[9px]">
+                <div className="h-[250px] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
-                  <img src={first.imageUrl} alt="" className="w-full h-full object-cover" />
+                  {first.imageUrl ? (
+                    <img src={first.imageUrl} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
+                  )}
                 </div>
               </div>
               <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
@@ -169,9 +220,13 @@ export default function Home() {
           )}
           {second && (
             <Link href={`/blog/${second.slug}`} className="group block rounded-[18px] overflow-hidden">
-              <div className="h-[250px] w-full p-[9px]">
+                <div className="h-[250px] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
-                  <img src={second.imageUrl} alt="" className="w-full h-full object-cover" />
+                  {second.imageUrl ? (
+                    <img src={second.imageUrl} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
+                  )}
                 </div>
               </div>
               <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
@@ -184,9 +239,13 @@ export default function Home() {
           )}
           {third && (
             <Link href={`/blog/${third.slug}`} className="group block rounded-[18px] overflow-hidden">
-              <div className="h-[250px] w-full p-[9px]">
+                <div className="h-[250px] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
-                  <img src={third.imageUrl} alt="" className="w-full h-full object-cover" />
+                  {third.imageUrl ? (
+                    <img src={third.imageUrl} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
+                  )}
                 </div>
               </div>
               <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
@@ -200,14 +259,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 sm:px-10 pt-10 pb-20 max-w-[1200px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden">
-        <p className="text-[#747474] text-[14px] sm:text-[15px] leading-[1.7] max-w-[420px] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
+      <section ref={newsletterReveal.ref} className={`px-6 sm:px-10 pt-10 pb-20 max-w-[1240px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden scroll-reveal ${newsletterReveal.visible ? "visible" : ""}`}>
+        <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[420px] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
           Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups.
         </p>
         <form className="flex flex-row items-center gap-2 shrink-0 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]" onSubmit={handleSubscribe}>
           <input
             type="email"
-            placeholder="name@askalm.com"
+            placeholder="name@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="border border-[#EEEEEE] rounded-[8px] h-[44px] px-4 text-[13px] focus:outline-none focus:border-[#000] w-full sm:w-[220px] bg-transparent text-[#000]"

@@ -1,5 +1,5 @@
 import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
-import { db, blogPostsTable, newsletterSubscribersTable, contactMessagesTable, wallpapersTable, templatesTable, guidesTable } from "@workspace/db";
+import { db, blogPostsTable, newsletterSubscribersTable, contactMessagesTable, wallpapersTable, templatesTable, guidesTable, siteSettingsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
 
 const router: IRouter = Router();
@@ -140,6 +140,29 @@ router.delete("/admin/newsletter/:id", async (req, res) => {
   const id = Number(req.params.id);
   await db.delete(newsletterSubscribersTable).where(eq(newsletterSubscribersTable.id, id));
   res.json({ message: "Deleted" });
+});
+
+// ---- Site Settings ----
+router.get("/admin/settings", async (_req, res) => {
+  const rows = await db.select().from(siteSettingsTable);
+  const settings: Record<string, string> = {};
+  for (const row of rows) {
+    settings[row.key] = row.value;
+  }
+  res.json(settings);
+});
+
+router.put("/admin/settings", async (req, res) => {
+  const entries = req.body as Record<string, string>;
+  for (const [key, value] of Object.entries(entries)) {
+    await db.insert(siteSettingsTable).values({ key, value }).onConflictDoUpdate({ target: siteSettingsTable.key, set: { value } });
+  }
+  const rows = await db.select().from(siteSettingsTable);
+  const settings: Record<string, string> = {};
+  for (const row of rows) {
+    settings[row.key] = row.value;
+  }
+  res.json(settings);
 });
 
 export default router;

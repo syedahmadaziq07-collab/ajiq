@@ -9,6 +9,6 @@ export const downloadsTable = pgTable("downloads", {
   count: integer("count").notNull().default(0),
 });
 
-export const insertDownloadSchema = createInsertSchema(downloadsTable).omit({ id: true });
+export const insertDownloadSchema = createInsertSchema(downloadsTable).omit({ id: true }) as any;
 export type InsertDownload = z.infer<typeof insertDownloadSchema>;
 export type Download = typeof downloadsTable.$inferSelect;

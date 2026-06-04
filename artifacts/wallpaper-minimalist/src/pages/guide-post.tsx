@@ -45,7 +45,7 @@ export default function GuidePost() {
 
       {guide.imageUrl && (
         <section className="px-4 sm:px-8 pb-8 max-w-[900px] mx-auto">
-          <div className="w-full aspect-[16/9] rounded-[12px] overflow-hidden">
+          <div className="w-full aspect-[16/9] rounded-[12px] overflow-hidden bg-gradient-to-b from-[#e0e0e0] to-[#b0b0b0]">
             <img src={guide.imageUrl as string} alt={guide.title as string} className="w-full h-full object-cover" />
           </div>
         </section>
@@ -53,7 +53,7 @@ export default function GuidePost() {
 
       <section className="px-4 sm:px-8 max-w-[720px] mx-auto">
         <div className="text-[16px] leading-[1.8] text-[#000] space-y-4">
-          {(guide.content as string).split("\n").map((p, i) => (
+          {((guide.content as string) || "").split("\n").map((p, i) => (
             <p key={i}>{p}</p>
           ))}
         </div>

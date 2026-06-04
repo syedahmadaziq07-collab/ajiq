@@ -1,7 +1,7 @@
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import pinoHttp from "pino-http";
-import router from "./routes";
-import { logger } from "./lib/logger";
+import router from "./routes/index.js";
+import { logger } from "./lib/logger.js";
 
 const app: Express = express();
 
@@ -17,9 +17,8 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-// @ts-expect-error - pino-http v10 types mismatch
 app.use(
-  pinoHttp({
+  (pinoHttp as any)({
     logger,
     serializers: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

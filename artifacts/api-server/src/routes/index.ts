@@ -1,15 +1,16 @@
 import { Router, type IRouter } from "express";
-import healthRouter from "./health";
-import blogPostsRouter from "./blog-posts";
-import newsletterRouter from "./newsletter";
-import contactRouter from "./contact";
-import wallpapersRouter from "./wallpapers";
-import templatesRouter from "./templates";
-import guidesRouter from "./guides";
-import adminRouter from "./admin";
-import stripeRouter from "./stripe";
-import downloadsRouter from "./downloads";
-import statsRouter from "./stats";
+import healthRouter from "./health.js";
+import blogPostsRouter from "./blog-posts.js";
+import newsletterRouter from "./newsletter.js";
+import contactRouter from "./contact.js";
+import wallpapersRouter from "./wallpapers.js";
+import templatesRouter from "./templates.js";
+import guidesRouter from "./guides.js";
+import settingsRouter from "./settings.js";
+import adminRouter from "./admin.js";
+import stripeRouter from "./stripe.js";
+import downloadsRouter from "./downloads.js";
+import statsRouter from "./stats.js";
 
 const router: IRouter = Router();
 
@@ -20,6 +21,7 @@ router.use(contactRouter);
 router.use(wallpapersRouter);
 router.use(templatesRouter);
 router.use(guidesRouter);
+router.use(settingsRouter);
 router.use(adminRouter);
 router.use(stripeRouter);
 router.use(downloadsRouter);
