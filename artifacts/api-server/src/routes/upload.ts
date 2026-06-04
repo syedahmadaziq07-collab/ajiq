@@ -3,9 +3,10 @@ import pg from "pg";
 
 const router: IRouter = Router();
 
-const SUPABASE_URL = "https://dwovtevztmolttpohvym.supabase.co";
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://dwovtevztmolttpohvym.supabase.co";
 const ANON_KEY = process.env.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3b3Z0ZXZ6dG1vbHR0cG9odnltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MTg1NzgsImV4cCI6MjA5NTk5NDU3OH0.NCQBn9eMEP37tX8jSLObchJ85HT28tZaZ8HvRPI9ZKk";
 const BUCKET = "wallpapers";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 let pool: pg.Pool | null = null;
 function getPool() {
@@ -21,30 +22,25 @@ function getPool() {
 }
 
 let bucketReady = false;
-let bucketPromise: Promise<void> | null = null;
 async function ensureBucket() {
   if (bucketReady) return;
-  if (bucketPromise) return bucketPromise;
-  bucketPromise = (async () => {
-    try {
-      const p = getPool();
-      await p.query("INSERT INTO storage.buckets (id, name, public) VALUES ($1, $2, true) ON CONFLICT (id) DO NOTHING", [BUCKET, BUCKET]);
-      await p.query(`DROP POLICY IF EXISTS "Public Upload" ON storage.objects`);
-      await p.query(`CREATE POLICY "Public Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = $1)`, [BUCKET]);
-      await p.query(`DROP POLICY IF EXISTS "Public Read" ON storage.objects`);
-      await p.query(`CREATE POLICY "Public Read" ON storage.objects FOR SELECT USING (bucket_id = $1)`, [BUCKET]);
-      bucketReady = true;
-    } catch (e: unknown) {
-      console.error("bucket setup failed:", e instanceof Error ? e.message : e);
-    }
-  })();
-  return bucketPromise;
+  try {
+    const p = getPool();
+    await p.query(`INSERT INTO storage.buckets (id, name, public) VALUES ($1, $2, true) ON CONFLICT (id) DO NOTHING`, [BUCKET, BUCKET]);
+    await p.query(`DROP POLICY IF EXISTS "Public Upload" ON storage.objects`);
+    await p.query(`CREATE POLICY "Public Upload" ON storage.objects FOR INSERT TO public WITH CHECK (bucket_id = $1)`, [BUCKET]);
+    await p.query(`DROP POLICY IF EXISTS "Public Read" ON storage.objects`);
+    await p.query(`CREATE POLICY "Public Read" ON storage.objects FOR SELECT TO public USING (bucket_id = $1)`, [BUCKET]);
+    bucketReady = true;
+    console.log("storage bucket ready");
+  } catch (e: unknown) {
+    console.error("bucket setup failed, will retry:", e instanceof Error ? e.message : e);
+  }
 }
 
 router.post("/admin/upload", async (req: Request, res: Response) => {
   const auth = req.headers.authorization;
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword || !auth || auth !== `Bearer ${adminPassword}`) {
+  if (!ADMIN_PASSWORD || !auth || auth !== `Bearer ${ADMIN_PASSWORD}`) {
     res.status(401).json({ error: "Unauthorized" });
     return;
   }
@@ -73,6 +69,9 @@ router.post("/admin/upload", async (req: Request, res: Response) => {
     });
     if (!uploadRes.ok) {
       const err = await uploadRes.text();
+      if (uploadRes.status === 403 && !bucketReady) {
+        bucketReady = false;
+      }
       res.status(500).json({ error: `Upload failed: ${uploadRes.status} ${err}` });
       return;
     }
