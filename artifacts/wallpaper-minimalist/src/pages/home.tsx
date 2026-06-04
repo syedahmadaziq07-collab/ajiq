@@ -120,7 +120,7 @@ export default function Home() {
             <Link href={cat.href} className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa]">
               <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
                 <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
-                  <img src={cat.img} alt={cat.label} className="w-[308px] h-[247px] object-contain" />
+                  <img src={cat.img} alt={cat.label} loading="lazy" decoding="async" className="w-[308px] h-[247px] object-contain" />
                 </div>
                 <div>
                   <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">{cat.label}</h3>
@@ -169,6 +169,8 @@ export default function Home() {
                     <img
                       src={url}
                       alt=""
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
                     />
                   </div>
@@ -194,7 +196,7 @@ export default function Home() {
                 <div className="h-[250px] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {first.imageUrl ? (
-                    <img src={first.imageUrl} alt="" className="w-full h-full object-cover" />
+                    <img src={first.imageUrl} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -213,7 +215,7 @@ export default function Home() {
                 <div className="h-[250px] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {second.imageUrl ? (
-                    <img src={second.imageUrl} alt="" className="w-full h-full object-cover" />
+                    <img src={second.imageUrl} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -232,7 +234,7 @@ export default function Home() {
                 <div className="h-[250px] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {third.imageUrl ? (
-                    <img src={third.imageUrl} alt="" className="w-full h-full object-cover" />
+                    <img src={third.imageUrl} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
