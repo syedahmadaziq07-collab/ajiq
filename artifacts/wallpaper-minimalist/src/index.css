@@ -101,16 +101,6 @@
   }
 }
 
-@keyframes slide-up-hero {
-  from { transform: translateY(1500px); }
-  to   { transform: translateY(0); }
-}
-
-@keyframes slide-up-sm {
-  from { transform: translateY(100px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -120,6 +110,7 @@
   opacity: 0;
   transform: translateY(60px);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
 }
 
 .scroll-reveal.visible {

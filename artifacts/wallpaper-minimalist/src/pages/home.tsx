@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useListBlogPosts, useSubscribeNewsletter } from "@workspace/api-client-react";
 import { useScrollReveal } from "../lib/use-scroll-reveal";
 
@@ -86,70 +87,61 @@ export default function Home() {
   return (
     <div className="w-full min-h-screen">
       <section className="pt-[79px] pb-[13px] px-6 sm:px-10 md:pt-[128px] md:pb-[51px] max-w-[1200px] mx-auto overflow-hidden">
-        <h1 className="text-[93px] sm:text-[195px] md:text-[335px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000] animate-[slide-up-hero_1.2s_cubic-bezier(0.16,1,0.3,1)_both]">
+        <motion.h1
+          className="text-[93px] sm:text-[195px] md:text-[335px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000]"
+          initial={{ y: 1500 }}
+          animate={{ y: 0 }}
+          transition={{ type: "spring", damping: 80, stiffness: 400 }}
+        >
           Wallp.
-        </h1>
-        <p className="text-[#747474] text-[15px] sm:text-[21px] md:text-[24px] font-[500] leading-[1.2] max-w-[600px] mt-6 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.75s_both]">
+        </motion.h1>
+        <motion.p
+          className="text-[#747474] text-[15px] sm:text-[21px] md:text-[24px] font-[500] leading-[1.2] max-w-[600px] mt-6"
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", damping: 60, stiffness: 400, delay: 0.75 }}
+        >
           At Wallp., we craft simple essentials that make every workspace inspiring and every device more productive.
-        </p>
+        </motion.p>
       </section>
 
       <section ref={catsReveal.ref} className={`px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden scroll-reveal ${catsReveal.visible ? "visible" : ""}`}>
-        <Link href="/wallpapers" className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_both]">
-          <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
-            <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
-              <img src={WALLPAPERS_IMG} alt="Wallpapers" className="w-[308px] h-[247px] object-contain" />
-            </div>
-            <div>
-              <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">Wallpapers</h3>
-              <p className="text-[#747474] text-[9px] font-[500] mt-0.5">Browse all Wallpapers</p>
-            </div>
-          </div>
-          <div className="absolute top-[18px] right-[18px] bg-white rounded-[15px] p-[11px] shadow-[0_4px_22.7px_0_rgba(0,0,0,0.07)] flex items-center justify-center" style={{ width: '32px', height: '32px' }}>
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transform: 'rotate(-90deg)' }}>
-              <path d="M5 0L5 8M5 8L1 4M5 8L9 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-        </Link>
-        <Link href="/guides" className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_0.1s_both]">
-          <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
-            <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
-              <img src={GUIDES_IMG} alt="Guides" className="w-[308px] h-[247px] object-contain" />
-            </div>
-            <div>
-              <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">Guides</h3>
-              <p className="text-[#747474] text-[9px] font-[500] mt-0.5">Browse all Guides</p>
-            </div>
-          </div>
-          <div className="absolute top-[18px] right-[18px] bg-white rounded-[15px] p-[11px] shadow-[0_4px_22.7px_0_rgba(0,0,0,0.07)] flex items-center justify-center" style={{ width: '32px', height: '32px' }}>
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transform: 'rotate(-90deg)' }}>
-              <path d="M5 0L5 8M5 8L1 4M5 8L9 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-        </Link>
-        <Link href="/templates" className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa] animate-[slide-up-hero_1s_cubic-bezier(0.16,1,0.3,1)_0.2s_both]">
-          <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
-            <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
-              <img src={TEMPLATES_IMG} alt="Templates" className="w-[308px] h-[247px] object-contain" />
-            </div>
-            <div>
-              <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">Templates</h3>
-              <p className="text-[#747474] text-[9px] font-[500] mt-0.5">Browse all Templates</p>
-            </div>
-          </div>
-          <div className="absolute top-[18px] right-[18px] bg-white rounded-[15px] p-[11px] shadow-[0_4px_22.7px_0_rgba(0,0,0,0.07)] flex items-center justify-center" style={{ width: '32px', height: '32px' }}>
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transform: 'rotate(-90deg)' }}>
-              <path d="M5 0L5 8M5 8L1 4M5 8L9 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-        </Link>
+        {[
+          { href: "/wallpapers", label: "Wallpapers", desc: "Browse all Wallpapers", img: WALLPAPERS_IMG, delay: 0 },
+          { href: "/guides", label: "Guides", desc: "Browse all Guides", img: GUIDES_IMG, delay: 0.1 },
+          { href: "/templates", label: "Templates", desc: "Browse all Templates", img: TEMPLATES_IMG, delay: 0.2 },
+        ].map((cat) => (
+          <motion.div
+            key={cat.href}
+            initial={{ y: 200, opacity: 0 }}
+            animate={catsReveal.visible ? { y: 0, opacity: 1 } : {}}
+            transition={{ type: "spring", damping: 60, stiffness: 400, delay: cat.delay }}
+          >
+            <Link href={cat.href} className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa]">
+              <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
+                <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
+                  <img src={cat.img} alt={cat.label} className="w-[308px] h-[247px] object-contain" />
+                </div>
+                <div>
+                  <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">{cat.label}</h3>
+                  <p className="text-[#747474] text-[9px] font-[500] mt-0.5">{cat.desc}</p>
+                </div>
+              </div>
+              <div className="absolute top-[18px] right-[18px] bg-white rounded-[15px] p-[11px] shadow-[0_4px_22.7px_0_rgba(0,0,0,0.07)] flex items-center justify-center" style={{ width: '32px', height: '32px' }}>
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transform: 'rotate(-90deg)' }}>
+                  <path d="M5 0L5 8M5 8L1 4M5 8L9 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+            </Link>
+          </motion.div>
+        ))}
       </section>
 
       <section ref={featuredReveal.ref} className={`px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden scroll-reveal ${featuredReveal.visible ? "visible" : ""}`}>
-        <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-[500] tracking-[-1.5px] leading-[1.05] text-[#000] mb-4 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
+        <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-[500] tracking-[-1.5px] leading-[1.05] text-[#000] mb-4">
           Refining digital life.
         </h2>
-        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[480px] mb-8 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]">
+        <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[480px] mb-8">
           Our designs refine workspaces and devices, proving that the simplest details can make the biggest difference in digital life.
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: '1fr', gap: '20px', padding: '8px' }}>
@@ -165,12 +157,10 @@ export default function Home() {
                   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   gridColumn: `span ${colSpan}`,
                   gridRow: `span ${rowSpan}`,
-                  backdropFilter: 'blur(20px) saturate(180%)',
-                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  border: '1px solid rgba(0, 0, 0, 0.04)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
                   borderRadius: '18px',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.072), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)',
                 }}
                 className="group"
               >
@@ -191,10 +181,10 @@ export default function Home() {
 
       <section ref={blogReveal.ref} className={`px-6 sm:px-10 pt-[100px] pb-0 max-w-[1240px] mx-auto overflow-hidden scroll-reveal ${blogReveal.visible ? "visible" : ""}`}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[35px] sm:gap-10 mb-[50px] sm:mb-[70px]">
-          <h2 className="text-[44px] sm:text-[31px] lg:text-[54px] font-[600] tracking-[-0.03em] leading-[1.6] text-[#000] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
+          <h2 className="text-[44px] sm:text-[31px] lg:text-[54px] font-[600] tracking-[-0.03em] leading-[1.6] text-[#000]">
             Insights from our blog.
           </h2>
-          <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[620px] shrink-0 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]">
+          <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[620px] shrink-0">
             Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.
           </p>
         </div>
@@ -260,10 +250,10 @@ export default function Home() {
       </section>
 
       <section ref={newsletterReveal.ref} className={`px-6 sm:px-10 pt-10 pb-20 max-w-[1240px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden scroll-reveal ${newsletterReveal.visible ? "visible" : ""}`}>
-        <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[420px] animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_both]">
+        <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[420px]">
           Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups.
         </p>
-        <form className="flex flex-row items-center gap-2 shrink-0 animate-[slide-up-sm_0.8s_cubic-bezier(0.16,1,0.3,1)_0.15s_both]" onSubmit={handleSubscribe}>
+        <form className="flex flex-row items-center gap-2 shrink-0" onSubmit={handleSubscribe}>
           <input
             type="email"
             placeholder="name@email.com"
