@@ -13,25 +13,18 @@ function UploadButton({ onUpload }: { onUpload: (url: string) => void }) {
     if (!file) return;
     setLoading(true);
     try {
-      const toBase64 = (f: File) => new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const result = reader.result as string;
-          resolve(result.split(",")[1]);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(f);
-      });
-      const base64 = await toBase64(file);
-      const token = localStorage.getItem(ADMIN_TOKEN_KEY);
-      const res = await fetch(`${API}/api/admin/upload`, {
+      const ext = file.name.split(".").pop() || "png";
+      const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const supabaseUrl = "https://dwovtevztmolttpohvym.supabase.co";
+      const anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3b3Z0ZXZ6dG1vbHR0cG9odnltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MTg1NzgsImV4cCI6MjA5NTk5NDU3OH0.NCQBn9eMEP37tX8jSLObchJ85HT28tZaZ8HvRPI9ZKk";
+      const res = await fetch(`${supabaseUrl}/storage/v1/object/wallpapers/${uniqueName}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ filename: file.name, contentType: file.type, base64 }),
+        headers: { apikey: anonKey, Authorization: `Bearer ${anonKey}`, "Content-Type": file.type },
+        body: file,
       });
       if (!res.ok) { const t = await res.text(); alert("Upload failed: " + t); return; }
-      const data = await res.json();
-      onUpload(data.url);
+      const url = `${supabaseUrl}/storage/v1/object/public/wallpapers/${uniqueName}`;
+      onUpload(url);
     } catch (e: unknown) { alert("Upload error: " + (e instanceof Error ? e.message : "Unknown")); }
     setLoading(false);
     if (inputRef.current) inputRef.current.value = "";

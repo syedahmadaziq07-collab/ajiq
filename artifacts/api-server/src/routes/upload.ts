@@ -31,7 +31,7 @@ router.post("/admin/upload", async (req: Request, res: Response) => {
         Authorization: `Bearer ${ANON_KEY}`,
         "Content-Type": contentType,
       },
-      body: new Uint8Array(buffer),
+      body: buffer,
     });
     if (!uploadRes.ok) {
       const err = await uploadRes.text();
