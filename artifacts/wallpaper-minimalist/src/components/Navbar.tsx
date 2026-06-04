@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -21,6 +22,8 @@ const productLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
 
   return (
     <nav className="w-full flex items-center justify-center px-6 sm:px-10 border-b border-border" style={{ height: "64px" }}>
@@ -62,7 +65,93 @@ export function Navbar() {
             </Link>
           ))}
         </div>
+
+        <button
+          className="sm:hidden flex items-center justify-center w-10 h-10 text-[#444] hover:text-foreground transition-colors"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
       </div>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/20 z-40 sm:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.div
+              className="fixed top-0 right-0 bottom-0 w-[280px] bg-white z-50 sm:hidden flex flex-col border-l border-border"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            >
+              <div className="flex items-center justify-between px-6 border-b border-border" style={{ height: "64px" }}>
+                <span className="text-[18px] font-[600] text-foreground">Menu</span>
+                <button
+                  className="flex items-center justify-center w-10 h-10 text-[#444] hover:text-foreground transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto py-4 px-6 flex flex-col gap-1">
+                <button
+                  className="flex items-center justify-between w-full px-3 py-3 text-[15px] font-[500] text-[#444] hover:text-foreground rounded-lg transition-colors"
+                  onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
+                >
+                  Products
+                  <ChevronDown
+                    className="w-4 h-4 text-[#aaa] transition-transform duration-200"
+                    style={{ transform: mobileProductsOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                  />
+                </button>
+                <AnimatePresence>
+                  {mobileProductsOpen && (
+                    <motion.div
+                      className="flex flex-col pl-4 overflow-hidden"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {productLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="px-3 py-2.5 text-[14px] font-[500] text-[#444] hover:text-foreground rounded-lg transition-colors no-underline"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="px-3 py-3 text-[15px] font-[500] text-[#444] hover:text-foreground rounded-lg transition-colors no-underline"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
