@@ -1,20 +1,17 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
 import * as schema from "./schema";
 
-const { Pool } = pg;
-
-let _pool: pg.Pool | null = null;
+let _pool: Pool | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;
 
-function getPool(): pg.Pool {
+function getPool(): Pool {
   if (!_pool) {
     if (!process.env.DATABASE_URL) {
       throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
     }
     _pool = new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
     });
   }
   return _pool;
