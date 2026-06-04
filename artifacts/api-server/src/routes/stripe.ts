@@ -80,10 +80,11 @@ router.post("/stripe-webhook", async (req, res) => {
       const session = event.data.object;
       const { itemType, itemId } = session.metadata || {};
       if (itemType && itemId) {
-        const email = session.customer_details?.email || "unknown";
+        const email = session.customer_details?.email;
         const name = session.customer_details?.name || undefined;
+
         await db.insert(ordersTable).values({
-          customerEmail: email,
+          customerEmail: email || "unknown",
           customerName: name,
           amount: session.amount_total || 0,
           currency: session.currency || "usd",
@@ -98,6 +99,7 @@ router.post("/stripe-webhook", async (req, res) => {
 
     res.json({ received: true });
   } catch (err) {
+    console.error("Stripe webhook error:", err);
     res.status(400).json({ error: "Webhook error" });
   }
 });
