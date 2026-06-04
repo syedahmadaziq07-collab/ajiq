@@ -1,17 +1,13 @@
 {
-  "buildCommand": "node ./vercel-build.mjs",
+  "nodeVersion": "22.x",
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "buildCommand": "node artifacts/api-server/vercel-build.mjs",
   "framework": null,
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api" }
+  "builds": [
+    { "src": "artifacts/api-server/api/handler.mjs", "use": "@vercel/node" }
   ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, PATCH, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
-      ]
-    }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/handler" }
   ]
 }
+

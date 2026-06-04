@@ -7,19 +7,18 @@ const isApi = process.env.API_PROJECT === "true";
 async function main() {
   if (isApi) {
     console.log("=== Building Vercel serverless function ===");
-    rmSync("api", { recursive: true, force: true });
+    rmSync("artifacts/api-server/api", { recursive: true, force: true });
     await esbuild({
-      entryPoints: ["src/vercel-entry.ts"],
+      entryPoints: ["artifacts/api-server/src/vercel-entry.ts"],
       platform: "node",
       bundle: true,
       format: "esm",
-      outfile: "api/index.mjs",
+      outfile: "artifacts/api-server/api/handler.mjs",
       logLevel: "info",
     });
-    // Vercel requires an output directory when no framework is detected
-    // Even though we only deploy a function, create public/ to satisfy the check
-    mkdirSync("public", { recursive: true });
-    writeFileSync("public/.gitkeep", "");
+    console.log("=== api/handler.mjs created ===");
+    mkdirSync("artifacts/api-server/public", { recursive: true });
+    writeFileSync("artifacts/api-server/public/index.html", "<html><body>API server</body></html>");
   } else {
     console.log("=== Building frontend (website) ===");
     rmSync("dist", { recursive: true, force: true });
