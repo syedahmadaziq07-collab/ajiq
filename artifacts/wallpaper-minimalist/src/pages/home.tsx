@@ -6,37 +6,40 @@ import { useScrollReveal } from "../lib/use-scroll-reveal";
 
 const API = import.meta.env.VITE_API_URL ?? "";
 
-const DEFAULT_WALLPAPERS_IMG = "https://framerusercontent.com/images/edkUWDLREszDiq4vgt975wDDFM.jpg";
-const DEFAULT_GUIDES_IMG = "https://framerusercontent.com/images/DTNpaBh0Djuey5Ql5HpaJWi3lWg.jpg";
-const DEFAULT_TEMPLATES_IMG = "https://framerusercontent.com/images/KkKh1T6zK6twdxDPmlYsFJTj6lg.jpg";
-const DEFAULT_FEATURED_IMGS = [
-  "https://framerusercontent.com/images/76MGm4VfTnCkUrk3ct1yk3Rpw.jpg",
-  "https://framerusercontent.com/images/dH9sQMFjHqSouYrD2G1zd5Gl5c.jpg",
-  "https://framerusercontent.com/images/r9EnSsRgp8Z5QUmBOV9sui25trU.png",
-  "https://framerusercontent.com/images/iIFMUvpWvCpMv2Saql4IU2p2K0g.png",
-  "https://framerusercontent.com/images/gBGzj4YUttKCw6dDXphjpyvtSDM.png",
-  "https://framerusercontent.com/images/rwOwbd7jG8w83cROgI7MvdeihA.png",
-  "https://framerusercontent.com/images/6MFK0ePJsGglxyIwBOsKeAVWU.jpg",
-  "https://framerusercontent.com/images/DXWQczEsbDwS0U9pVPEzF4rvM.jpg",
-];
+function resize(url: string, w: number): string {
+  return url.includes("?") ? url.replace(/(width=)\d+/, `$1${w}`) : `${url}?width=${w}`;
+}
 
+const DEFAULT_WALLPAPERS_IMG = "https://framerusercontent.com/images/edkUWDLREszDiq4vgt975wDDFM.jpg?width=400";
+const DEFAULT_GUIDES_IMG = "https://framerusercontent.com/images/DTNpaBh0Djuey5Ql5HpaJWi3lWg.jpg?width=400";
+const DEFAULT_TEMPLATES_IMG = "https://framerusercontent.com/images/KkKh1T6zK6twdxDPmlYsFJTj6lg.jpg?width=400";
+const DEFAULT_FEATURED_IMGS = [
+  "https://framerusercontent.com/images/76MGm4VfTnCkUrk3ct1yk3Rpw.jpg?width=400",
+  "https://framerusercontent.com/images/dH9sQMFjHqSouYrD2G1zd5Gl5c.jpg?width=400",
+  "https://framerusercontent.com/images/r9EnSsRgp8Z5QUmBOV9sui25trU.png?width=400",
+  "https://framerusercontent.com/images/iIFMUvpWvCpMv2Saql4IU2p2K0g.png?width=400",
+  "https://framerusercontent.com/images/gBGzj4YUttKCw6dDXphjpyvtSDM.png?width=400",
+  "https://framerusercontent.com/images/rwOwbd7jG8w83cROgI7MvdeihA.png?width=400",
+  "https://framerusercontent.com/images/6MFK0ePJsGglxyIwBOsKeAVWU.jpg?width=400",
+  "https://framerusercontent.com/images/DXWQczEsbDwS0U9pVPEzF4rvM.jpg?width=400",
+];
 const FALLBACK_POSTS = [
   {
     title: "Ergonomic Essentials: Comfort Meets Productivity",
     slug: "ergonomic-essentials-comfort-meets-productivity",
-    imageUrl: "https://framerusercontent.com/images/dVyW0kMnnDotk1u5hwmW8b7Rqo.png?width=3000&height=1890",
+    imageUrl: "https://framerusercontent.com/images/dVyW0kMnnDotk1u5hwmW8b7Rqo.png?width=800&height=504",
     publishedAt: "2026-02-02T00:00:00.000Z",
   },
   {
     title: "5 Color Palettes for Your Workspace",
     slug: "color-palettes-for-your-workspace",
-    imageUrl: "https://framerusercontent.com/images/CjRZ7Bi4Hwr2Tgg9Vyp3aaQQGA.png?width=3000&height=1890",
+    imageUrl: "https://framerusercontent.com/images/CjRZ7Bi4Hwr2Tgg9Vyp3aaQQGA.png?width=800&height=504",
     publishedAt: "2026-01-12T00:00:00.000Z",
   },
   {
     title: "Optimizing Wall Space Around Your Desk",
     slug: "optimizing-wall-space-around-your-desk",
-    imageUrl: "https://framerusercontent.com/images/hcUrluPToM9nbVrcIY7yVNNFDk.png?width=3000&height=1890",
+    imageUrl: "https://framerusercontent.com/images/hcUrluPToM9nbVrcIY7yVNNFDk.png?width=800&height=504",
     publishedAt: "2026-01-05T00:00:00.000Z",
   },
 ];
@@ -64,10 +67,10 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  const WALLPAPERS_IMG = settings.wallpapers_image || DEFAULT_WALLPAPERS_IMG;
-  const GUIDES_IMG = settings.guides_image || DEFAULT_GUIDES_IMG;
-  const TEMPLATES_IMG = settings.templates_image || DEFAULT_TEMPLATES_IMG;
-  const FEATURED_IMGS = parseFeatured(settings.featured_images);
+  const WALLPAPERS_IMG = resize(settings.wallpapers_image || DEFAULT_WALLPAPERS_IMG, 400);
+  const GUIDES_IMG = resize(settings.guides_image || DEFAULT_GUIDES_IMG, 400);
+  const TEMPLATES_IMG = resize(settings.templates_image || DEFAULT_TEMPLATES_IMG, 400);
+  const FEATURED_IMGS = parseFeatured(settings.featured_images).map((u) => resize(u, 400));
 
   const heroReveal = useScrollReveal();
   const catsReveal = useScrollReveal();
@@ -107,7 +110,7 @@ export default function Home() {
 
       <section ref={catsReveal.ref} className={`px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden scroll-reveal ${catsReveal.visible ? "visible" : ""}`}>
         {[
-          { href: "/wallpapers", label: "Wallpapers", desc: "Browse all Wallpapers", img: WALLPAPERS_IMG, delay: 0 },
+          { href: "/wallpapers", label: "Wallpapers", desc: "Browse all Wallpapers", img: WALLPAPERS_IMG, delay: 0, priority: "high" },
           { href: "/guides", label: "Guides", desc: "Browse all Guides", img: GUIDES_IMG, delay: 0.1 },
           { href: "/templates", label: "Templates", desc: "Browse all Templates", img: TEMPLATES_IMG, delay: 0.2 },
         ].map((cat) => (
@@ -120,7 +123,7 @@ export default function Home() {
             <Link href={cat.href} className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa]">
               <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
                 <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
-                  <img src={cat.img} alt={cat.label} width="308" height="247" loading="lazy" decoding="async" className="w-[308px] h-[247px] object-contain" />
+                  <img src={cat.img} alt={cat.label} width="308" height="247" loading={cat.priority ? "eager" : "lazy"} decoding="async" fetchpriority={cat.priority} className="w-[308px] h-[247px] object-contain bg-[#f5f5f5]" />
                 </div>
                 <div>
                   <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">{cat.label}</h3>
@@ -171,7 +174,7 @@ export default function Home() {
                       loading="lazy"
                       decoding="async"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05] will-change-transform"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05] will-change-transform bg-[#f5f5f5]"
                     />
                   </div>
                 </div>
@@ -196,7 +199,7 @@ export default function Home() {
               <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {first.imageUrl ? (
-                    <img src={first.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                    <img src={first.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -215,7 +218,7 @@ export default function Home() {
               <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {second.imageUrl ? (
-                    <img src={second.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                    <img src={second.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -234,7 +237,7 @@ export default function Home() {
               <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {third.imageUrl ? (
-                    <img src={third.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                    <img src={third.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
