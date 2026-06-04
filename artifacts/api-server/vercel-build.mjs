@@ -17,8 +17,8 @@ async function main() {
       logLevel: "info",
     });
     console.log("=== api/handler.mjs created ===");
-    mkdirSync("artifacts/api-server/public", { recursive: true });
-    writeFileSync("artifacts/api-server/public/index.html", "<html><body>API server</body></html>");
+    mkdirSync("public", { recursive: true });
+    writeFileSync("public/index.html", "<html><body>API server</body></html>");
   } else {
     console.log("=== Building frontend (website) ===");
     rmSync("dist", { recursive: true, force: true });
