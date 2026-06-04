@@ -7,16 +7,16 @@ const isApi = process.env.API_PROJECT === "true";
 async function main() {
   if (isApi) {
     console.log("=== Building Vercel serverless function ===");
-    try { rmSync("api/index.mjs", { force: true }) } catch {}
+    try { rmSync("api/index.js", { force: true }) } catch {}
     await esbuild({
       entryPoints: ["artifacts/api-server/src/vercel-entry.ts"],
       platform: "node",
       bundle: true,
-      format: "esm",
-      outfile: "api/index.mjs",
+      format: "cjs",
+      outfile: "api/index.js",
       logLevel: "info",
     });
-    console.log("=== api/handler.mjs created ===");
+    console.log("=== api/index.js created ===");
     mkdirSync("public", { recursive: true });
     writeFileSync("public/index.html", "<html><body>API server</body></html>");
   } else {
