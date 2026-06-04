@@ -1,11 +1,5 @@
 {
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "buildCommand": "node artifacts/api-server/vercel-build.mjs",
-  "outputDirectory": "public",
-  "builds": [
-    { "src": "api/index.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api" }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" }
   ]
 }
