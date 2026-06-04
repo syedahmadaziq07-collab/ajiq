@@ -1,6 +1,7 @@
 import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 import { db, blogPostsTable, newsletterSubscribersTable, contactMessagesTable, wallpapersTable, templatesTable, guidesTable, siteSettingsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
+import { notifyAllSubscribers } from "../email.js";
 
 const router: IRouter = Router();
 
@@ -57,6 +58,7 @@ router.get("/admin/wallpapers", async (_req, res) => {
 
 router.post("/admin/wallpapers", async (req, res) => {
   const item = await db.insert(wallpapersTable).values(req.body).returning();
+  notifyAllSubscribers("wallpaper", item[0].title, item[0].slug);
   res.status(201).json(item[0]);
 });
 
@@ -80,6 +82,7 @@ router.get("/admin/templates", async (_req, res) => {
 
 router.post("/admin/templates", async (req, res) => {
   const item = await db.insert(templatesTable).values(req.body).returning();
+  notifyAllSubscribers("template", item[0].title, item[0].slug);
   res.status(201).json(item[0]);
 });
 
@@ -103,6 +106,7 @@ router.get("/admin/guides", async (_req, res) => {
 
 router.post("/admin/guides", async (req, res) => {
   const item = await db.insert(guidesTable).values(req.body).returning();
+  notifyAllSubscribers("guide", item[0].title, item[0].slug);
   res.status(201).json(item[0]);
 });
 
