@@ -1,5 +1,4 @@
 {
-  "nodeVersion": "22.x",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "buildCommand": "node artifacts/api-server/vercel-build.mjs",
   "outputDirectory": "public",
