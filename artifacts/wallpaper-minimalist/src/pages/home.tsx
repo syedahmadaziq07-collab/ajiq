@@ -89,8 +89,8 @@ export default function Home() {
       <section className="pt-[79px] pb-[13px] px-6 sm:px-10 md:pt-[128px] md:pb-[51px] max-w-[1200px] mx-auto overflow-hidden">
         <motion.h1
           className="text-[93px] sm:text-[195px] md:text-[335px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000]"
-          initial={{ y: 1500 }}
-          animate={{ y: 0 }}
+          initial={{ y: 200, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", damping: 80, stiffness: 400 }}
         >
           Wallp.
@@ -120,7 +120,7 @@ export default function Home() {
             <Link href={cat.href} className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa]">
               <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
                 <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
-                  <img src={cat.img} alt={cat.label} loading="lazy" decoding="async" className="w-[308px] h-[247px] object-contain" />
+                  <img src={cat.img} alt={cat.label} width="308" height="247" loading="lazy" decoding="async" className="w-[308px] h-[247px] object-contain" />
                 </div>
                 <div>
                   <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">{cat.label}</h3>
@@ -154,13 +154,12 @@ export default function Home() {
                 style={{
                   position: 'relative',
                   overflow: 'hidden',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                   gridColumn: `span ${colSpan}`,
                   gridRow: `span ${rowSpan}`,
-                  border: '1px solid rgba(0, 0, 0, 0.04)',
                   backgroundColor: 'rgba(255, 255, 255, 0.95)',
                   borderRadius: '18px',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                  contentVisibility: 'auto',
                 }}
                 className="group"
               >
@@ -171,7 +170,8 @@ export default function Home() {
                       alt=""
                       loading="lazy"
                       decoding="async"
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05] will-change-transform"
                     />
                   </div>
                 </div>
@@ -193,10 +193,10 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
           {first && (
             <Link href={`/blog/${first.slug}`} className="group block rounded-[18px] overflow-hidden">
-                <div className="h-[250px] w-full p-[9px]">
+              <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {first.imageUrl ? (
-                    <img src={first.imageUrl} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                    <img src={first.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -212,10 +212,10 @@ export default function Home() {
           )}
           {second && (
             <Link href={`/blog/${second.slug}`} className="group block rounded-[18px] overflow-hidden">
-                <div className="h-[250px] w-full p-[9px]">
+              <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {second.imageUrl ? (
-                    <img src={second.imageUrl} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                    <img src={second.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -231,10 +231,10 @@ export default function Home() {
           )}
           {third && (
             <Link href={`/blog/${third.slug}`} className="group block rounded-[18px] overflow-hidden">
-                <div className="h-[250px] w-full p-[9px]">
+              <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {third.imageUrl ? (
-                    <img src={third.imageUrl} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                    <img src={third.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
