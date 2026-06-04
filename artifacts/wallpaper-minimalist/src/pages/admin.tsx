@@ -242,11 +242,26 @@ function Sidebar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 }
 
 // ---- Homepage Settings ----
-const SETTINGS_FIELDS: { key: string; label: string; description: string }[] = [
-  { key: "wallpapers_image", label: "Wallpapers Category Image", description: "Image shown in the Wallpapers category card on homepage" },
-  { key: "guides_image", label: "Guides Category Image", description: "Image shown in the Guides category card on homepage" },
-  { key: "templates_image", label: "Templates Category Image", description: "Image shown in the Templates category card on homepage" },
-  { key: "featured_images", label: "Featured Images (JSON array of 8 URLs)", description: "Array of 8 image URLs for the featured wallpapers grid" },
+type SettingsField = { key: string; label: string; description: string; type?: "text" | "textarea" | "image" };
+const SETTINGS_FIELDS: SettingsField[] = [
+  { key: "hero_heading", label: "Hero Heading", description: "Large heading text at the top of the homepage" },
+  { key: "hero_subtext", label: "Hero Subtext", description: "Subtitle paragraph below the hero heading", type: "textarea" },
+  { key: "featured_heading", label: "Featured Heading", description: "Heading for the featured wallpapers grid section" },
+  { key: "featured_description", label: "Featured Description", description: "Paragraph below the featured heading", type: "textarea" },
+  { key: "blog_heading", label: "Blog Section Heading", description: "Heading for the blog section" },
+  { key: "blog_description", label: "Blog Section Description", description: "Paragraph next to the blog heading", type: "textarea" },
+  { key: "newsletter_text", label: "Newsletter Text", description: "Text shown above the email subscribe form", type: "textarea" },
+  { key: "wallpapers_image", label: "Wallpapers Category Image", description: "Image shown in the Wallpapers category card", type: "image" },
+  { key: "guides_image", label: "Guides Category Image", description: "Image shown in the Guides category card", type: "image" },
+  { key: "templates_image", label: "Templates Category Image", description: "Image shown in the Templates category card", type: "image" },
+  { key: "featured_image_1", label: "Featured Image 1", description: "Large image (spans 2 cols, 2 rows)", type: "image" },
+  { key: "featured_image_2", label: "Featured Image 2", description: "Featured grid image", type: "image" },
+  { key: "featured_image_3", label: "Featured Image 3", description: "Featured grid image", type: "image" },
+  { key: "featured_image_4", label: "Featured Image 4", description: "Featured grid image", type: "image" },
+  { key: "featured_image_5", label: "Featured Image 5", description: "Featured grid image", type: "image" },
+  { key: "featured_image_6", label: "Featured Image 6", description: "Featured grid image", type: "image" },
+  { key: "featured_image_7", label: "Featured Image 7", description: "Featured grid image", type: "image" },
+  { key: "featured_image_8", label: "Featured Image 8", description: "Spans 2 columns", type: "image" },
 ];
 
 function HomepageSettings() {
@@ -285,11 +300,29 @@ function HomepageSettings() {
         {SETTINGS_FIELDS.map((field) => (
           <div key={field.key} className="flex flex-col gap-1">
             <label className="text-[12px] text-[#747474] font-[500] uppercase tracking-wider">{field.label}</label>
-            <input
-              value={form[field.key] || ""}
-              onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-              className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]"
-            />
+            {field.type === "textarea" ? (
+              <textarea
+                value={form[field.key] || ""}
+                onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                rows={3}
+                className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none"
+              />
+            ) : field.type === "image" ? (
+              <div className="flex gap-2 items-center">
+                <input
+                  value={form[field.key] || ""}
+                  onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                  className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]"
+                />
+                <UploadButton onUpload={(url) => setForm({ ...form, [field.key]: url })} />
+              </div>
+            ) : (
+              <input
+                value={form[field.key] || ""}
+                onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]"
+              />
+            )}
             <p className="text-[#999] text-[11px]">{field.description}</p>
           </div>
         ))}

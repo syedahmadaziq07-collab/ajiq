@@ -10,9 +10,6 @@ function resize(url: string, w: number): string {
   return url.includes("?") ? url.replace(/(width=)\d+/, `$1${w}`) : `${url}?width=${w}`;
 }
 
-const DEFAULT_WALLPAPERS_IMG = "https://framerusercontent.com/images/edkUWDLREszDiq4vgt975wDDFM.jpg?width=400";
-const DEFAULT_GUIDES_IMG = "https://framerusercontent.com/images/DTNpaBh0Djuey5Ql5HpaJWi3lWg.jpg?width=400";
-const DEFAULT_TEMPLATES_IMG = "https://framerusercontent.com/images/KkKh1T6zK6twdxDPmlYsFJTj6lg.jpg?width=400";
 const DEFAULT_FEATURED_IMGS = [
   "https://framerusercontent.com/images/76MGm4VfTnCkUrk3ct1yk3Rpw.jpg?width=400",
   "https://framerusercontent.com/images/dH9sQMFjHqSouYrD2G1zd5Gl5c.jpg?width=400",
@@ -44,9 +41,13 @@ const FALLBACK_POSTS = [
   },
 ];
 
-function parseFeatured(raw: string | undefined): string[] {
-  if (!raw) return DEFAULT_FEATURED_IMGS;
-  try { const arr = JSON.parse(raw); return Array.isArray(arr) && arr.length === 8 ? arr : DEFAULT_FEATURED_IMGS; } catch { return DEFAULT_FEATURED_IMGS; }
+function featuredImgs(settings: Record<string, string>): string[] {
+  const imgs: string[] = [];
+  for (let i = 1; i <= 8; i++) {
+    const key = `featured_image_${i}`;
+    imgs.push(settings[key] || DEFAULT_FEATURED_IMGS[i - 1]);
+  }
+  return imgs;
 }
 
 export default function Home() {
@@ -67,10 +68,20 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
+  const DEFAULT_WALLPAPERS_IMG = "https://framerusercontent.com/images/edkUWDLREszDiq4vgt975wDDFM.jpg?width=400";
+  const DEFAULT_GUIDES_IMG = "https://framerusercontent.com/images/DTNpaBh0Djuey5Ql5HpaJWi3lWg.jpg?width=400";
+  const DEFAULT_TEMPLATES_IMG = "https://framerusercontent.com/images/KkKh1T6zK6twdxDPmlYsFJTj6lg.jpg?width=400";
   const WALLPAPERS_IMG = resize(settings.wallpapers_image || DEFAULT_WALLPAPERS_IMG, 400);
   const GUIDES_IMG = resize(settings.guides_image || DEFAULT_GUIDES_IMG, 400);
   const TEMPLATES_IMG = resize(settings.templates_image || DEFAULT_TEMPLATES_IMG, 400);
-  const FEATURED_IMGS = parseFeatured(settings.featured_images).map((u) => resize(u, 400));
+  const FEATURED_IMGS = featuredImgs(settings).map((u) => resize(u, 400));
+  const HERO_HEADING = settings.hero_heading || "Wallp.";
+  const HERO_SUBTEXT = settings.hero_subtext || "At Wallp., we craft simple essentials that make every workspace inspiring and every device more productive.";
+  const FEATURED_HEADING = settings.featured_heading || "Refining digital life.";
+  const FEATURED_DESC = settings.featured_description || "Our designs refine workspaces and devices, proving that the simplest details can make the biggest difference in digital life.";
+  const BLOG_HEADING = settings.blog_heading || "Insights from our blog.";
+  const BLOG_DESC = settings.blog_description || "Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.";
+  const NEWSLETTER_TEXT = settings.newsletter_text || "Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups.";
 
   const heroReveal = useScrollReveal();
   const catsReveal = useScrollReveal();
@@ -96,7 +107,7 @@ export default function Home() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", damping: 80, stiffness: 400 }}
         >
-          Wallp.
+          {HERO_HEADING}
         </motion.h1>
         <motion.p
           className="text-[#747474] text-[15px] sm:text-[21px] md:text-[24px] font-[500] leading-[1.2] max-w-[600px] mt-6"
@@ -104,7 +115,7 @@ export default function Home() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", damping: 60, stiffness: 400, delay: 0.75 }}
         >
-          At Wallp., we craft simple essentials that make every workspace inspiring and every device more productive.
+          {HERO_SUBTEXT}
         </motion.p>
       </section>
 
@@ -142,10 +153,10 @@ export default function Home() {
 
       <section ref={featuredReveal.ref} className={`px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden scroll-reveal ${featuredReveal.visible ? "visible" : ""}`}>
         <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-[500] tracking-[-1.5px] leading-[1.05] text-[#000] mb-4">
-          Refining digital life.
+          {FEATURED_HEADING}
         </h2>
         <p className="text-[#747474] text-[15px] sm:text-[16px] leading-[1.7] max-w-[480px] mb-8">
-          Our designs refine workspaces and devices, proving that the simplest details can make the biggest difference in digital life.
+          {FEATURED_DESC}
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: '1fr', gap: '20px', padding: '8px' }}>
           {FEATURED_IMGS.map((url, i) => {
@@ -187,10 +198,10 @@ export default function Home() {
       <section ref={blogReveal.ref} className={`px-6 sm:px-10 pt-[100px] pb-0 max-w-[1240px] mx-auto overflow-hidden scroll-reveal ${blogReveal.visible ? "visible" : ""}`}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[35px] sm:gap-10 mb-[50px] sm:mb-[70px]">
           <h2 className="text-[44px] sm:text-[31px] lg:text-[54px] font-[600] tracking-[-0.03em] leading-[1.6] text-[#000]">
-            Insights from our blog.
+            {BLOG_HEADING}
           </h2>
           <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[620px] shrink-0">
-            Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.
+            {BLOG_DESC}
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
@@ -256,7 +267,7 @@ export default function Home() {
 
       <section ref={newsletterReveal.ref} className={`px-6 sm:px-10 pt-10 pb-20 max-w-[1240px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden scroll-reveal ${newsletterReveal.visible ? "visible" : ""}`}>
         <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[420px]">
-          Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups.
+          {NEWSLETTER_TEXT}
         </p>
         <form className="flex flex-row items-center gap-2 shrink-0" onSubmit={handleSubscribe}>
           <input
