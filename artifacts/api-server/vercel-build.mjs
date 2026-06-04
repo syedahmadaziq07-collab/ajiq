@@ -7,7 +7,7 @@ const isApi = process.env.API_PROJECT === "true";
 async function main() {
   if (isApi) {
     console.log("=== Building Vercel serverless function ===");
-    rmSync("api", { recursive: true, force: true });
+    try { rmSync("api/index.mjs", { force: true }) } catch {}
     await esbuild({
       entryPoints: ["artifacts/api-server/src/vercel-entry.ts"],
       platform: "node",
