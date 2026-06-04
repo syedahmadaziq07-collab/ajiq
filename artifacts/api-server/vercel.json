@@ -3,6 +3,9 @@
   "installCommand": "pnpm install --no-frozen-lockfile",
   "buildCommand": "node artifacts/api-server/vercel-build.mjs",
   "framework": null,
-  "public": true
+  "public": true,
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api" }
+  ]
 }
 
