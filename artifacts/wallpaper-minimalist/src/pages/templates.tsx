@@ -97,7 +97,7 @@ export default function Templates() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((t: Template, i: number) => (
-              <div key={t.id} data-idx={i}>
+              <div key={t.id} data-idx={i} style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}>
                 <Link href={`/templates/${t.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow no-underline">
                   <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
                     <img src={optimizeImage(t.imageUrl, 400)} alt={t.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />

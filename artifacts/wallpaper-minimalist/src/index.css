@@ -102,8 +102,6 @@
 }
 
 img {
-  content-visibility: auto;
-  contain-intrinsic-size: 300px;
   image-rendering: auto;
 }
 

@@ -83,7 +83,7 @@ export default function Guides() {
             {guides.map((g: Guide, i: number) => {
               const price = (g as any).price as number | null | undefined;
               return (
-                <div key={g.id} data-idx={i}>
+                <div key={g.id} data-idx={i} style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}>
                   <Link href={`/guides/${g.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow no-underline">
                     <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
                       <img src={optimizeImage(g.imageUrl, 400)} alt={g.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />

@@ -170,6 +170,7 @@ export default function Home() {
                   borderRadius: '18px',
                   boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
                   contentVisibility: 'auto',
+                  containIntrinsicSize: '300px',
                 }}
                 className="group"
               >
