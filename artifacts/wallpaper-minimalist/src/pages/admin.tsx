@@ -272,60 +272,137 @@ function HomepageSettings() {
   });
   const [form, setForm] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
 
   useEffect(() => {
     if (data) setForm(data);
   }, [data]);
 
-  const save = async () => {
+  const publish = async () => {
     setSaving(true);
     try {
       await apiPut("/settings", form);
       queryClient.invalidateQueries({ queryKey: ["admin", "settings"] });
     } catch (e) {
-      alert("Failed to save settings");
+      alert("Failed to publish");
     }
     setSaving(false);
   };
 
+  const reset = () => {
+    if (data) setForm({ ...data });
+  };
+
   if (isLoading) return <div className="text-[#747474] text-[13px]">Loading...</div>;
 
+  const resize = (url: string, w: number) =>
+    url.includes("?") ? url.replace(/(width=)\d+/, `$1${w}`) : `${url}?width=${w}`;
+  const defaultFeatured = [
+    "https://framerusercontent.com/images/76MGm4VfTnCkUrk3ct1yk3Rpw.jpg?width=400",
+    "https://framerusercontent.com/images/dH9sQMFjHqSouYrD2G1zd5Gl5c.jpg?width=400",
+    "https://framerusercontent.com/images/r9EnSsRgp8Z5QUmBOV9sui25trU.png?width=400",
+    "https://framerusercontent.com/images/iIFMUvpWvCpMv2Saql4IU2p2K0g.png?width=400",
+    "https://framerusercontent.com/images/gBGzj4YUttKCw6dDXphjpyvtSDM.png?width=400",
+    "https://framerusercontent.com/images/rwOwbd7jG8w83cROgI7MvdeihA.png?width=400",
+    "https://framerusercontent.com/images/6MFK0ePJsGglxyIwBOsKeAVWU.jpg?width=400",
+    "https://framerusercontent.com/images/DXWQczEsbDwS0U9pVPEzF4rvM.jpg?width=400",
+  ];
+
+  const dataRef = data as Record<string, string> | undefined;
+
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-[18px] font-[600] text-[#000]">Homepage Settings</h2>
-        <button onClick={save} disabled={saving} className="bg-[#000] text-white rounded-[8px] h-[36px] px-4 text-[12px] font-[500] disabled:opacity-50">{saving ? "Saving..." : "Save All"}</button>
+        <div className="flex items-center gap-2">
+          <button onClick={reset} className="border border-[#ddd] rounded-[8px] h-[36px] px-4 text-[12px] font-[500] text-[#747474] hover:text-[#000] hover:border-[#000] transition-colors">Reset</button>
+          <button onClick={() => setShowPreview(!showPreview)} className="border border-[#ddd] rounded-[8px] h-[36px] px-4 text-[12px] font-[500] text-[#747474] hover:text-[#000] hover:border-[#000] transition-colors">{showPreview ? "Hide Preview" : "Show Preview"}</button>
+          <button onClick={publish} disabled={saving} className="bg-[#000] text-white rounded-[8px] h-[36px] px-5 text-[12px] font-[500] disabled:opacity-50">{saving ? "Publishing..." : "Publish"}</button>
+        </div>
       </div>
-      <div className="flex flex-col gap-4 max-w-[600px]">
-        {SETTINGS_FIELDS.map((field) => (
-          <div key={field.key} className="flex flex-col gap-1">
-            <label className="text-[12px] text-[#747474] font-[500] uppercase tracking-wider">{field.label}</label>
-            {field.type === "textarea" ? (
-              <textarea
-                value={form[field.key] || ""}
-                onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                rows={3}
-                className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none"
-              />
-            ) : field.type === "image" ? (
-              <div className="flex gap-2 items-center">
+
+      <div className="flex gap-6 flex-1 min-h-0">
+        <div className="flex flex-col gap-3 w-[420px] shrink-0 overflow-y-auto pr-2">
+          {SETTINGS_FIELDS.map((field) => (
+            <div key={field.key} className="flex flex-col gap-0.5">
+              <label className="text-[11px] text-[#747474] font-[500] uppercase tracking-wider">{field.label}</label>
+              {field.type === "textarea" ? (
+                <textarea
+                  value={form[field.key] || ""}
+                  onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                  rows={2}
+                  className="w-full border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000] resize-none"
+                />
+              ) : field.type === "image" ? (
+                <div className="flex gap-1.5 items-center">
+                  <input
+                    value={form[field.key] || ""}
+                    onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                    className="flex-1 border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000]"
+                  />
+                  <UploadButton onUpload={(url) => setForm({ ...form, [field.key]: url })} />
+                </div>
+              ) : (
                 <input
                   value={form[field.key] || ""}
                   onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                  className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]"
+                  className="w-full border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000]"
                 />
-                <UploadButton onUpload={(url) => setForm({ ...form, [field.key]: url })} />
+              )}
+              <p className="text-[#999] text-[10px]">{field.description}</p>
+            </div>
+          ))}
+        </div>
+
+        {showPreview && (
+          <div className="flex-1 border border-[#eee] rounded-[12px] overflow-y-auto bg-white p-4">
+            <div className="max-w-[600px] mx-auto">
+              <p className="text-[10px] text-[#999] uppercase tracking-wider mb-3 font-[500]">Live Preview</p>
+
+              <div className="mb-6">
+                <p className="text-[48px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000]">{form.hero_heading || "Wallp."}</p>
+                <p className="text-[#747474] text-[13px] font-[500] leading-[1.2] max-w-[400px] mt-2">{form.hero_subtext || "At Wallp., we craft simple essentials..."}</p>
               </div>
-            ) : (
-              <input
-                value={form[field.key] || ""}
-                onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]"
-              />
-            )}
-            <p className="text-[#999] text-[11px]">{field.description}</p>
+
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                {[
+                  { label: "Wallpapers", img: resize(form.wallpapers_image || defaultFeatured[0], 200) },
+                  { label: "Guides", img: resize(form.guides_image || defaultFeatured[1], 200) },
+                  { label: "Templates", img: resize(form.templates_image || defaultFeatured[2], 200) },
+                ].map((cat, i) => (
+                  <div key={i} className="rounded-[10px] overflow-hidden bg-[#fafafa] p-3">
+                    <img src={cat.img} alt="" className="w-full h-[80px] object-contain mb-2 bg-[#f5f5f5]" />
+                    <p className="text-[11px] font-[600] text-[#000]">{cat.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mb-4">
+                <p className="text-[20px] font-[500] tracking-[-1.5px] text-[#000] mb-1">{form.featured_heading || "Refining digital life."}</p>
+                <p className="text-[#747474] text-[11px] leading-[1.5] max-w-[360px]">{form.featured_description || "Our designs refine workspaces and devices..."}</p>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 mb-4">
+                {[1,2,3,4,5,6,7,8].map((i) => {
+                  const key = `featured_image_${i}` as const;
+                  const src = resize(form[key] || defaultFeatured[i-1], 150);
+                  const span = i === 1 ? "col-span-2 row-span-2" : i === 8 ? "col-span-2" : "";
+                  return (
+                    <div key={i} className={`rounded-[8px] overflow-hidden bg-[#f5f5f5] ${span}`}>
+                      <img src={src} alt="" className="w-full h-full object-cover" style={{ aspectRatio: i === 1 ? "1" : "1" }} />
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="border-t border-[#eee] pt-4">
+                <p className="text-[18px] font-[600] tracking-[-0.03em] text-[#000] mb-1">{form.blog_heading || "Insights from our blog."}</p>
+                <p className="text-[#747474] text-[11px] font-[600] max-w-[360px]">{form.blog_desc || "Insights and practical tips..."}</p>
+                <div className="mt-3 text-[#747474] text-[11px]">{form.newsletter_text || "Join for thoughtful insights..."}</div>
+              </div>
+            </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
