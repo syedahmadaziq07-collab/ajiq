@@ -82,6 +82,12 @@ export default function Home() {
   const BLOG_HEADING = settings.blog_heading || "Insights from our blog.";
   const BLOG_DESC = settings.blog_description || "Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.";
   const NEWSLETTER_TEXT = settings.newsletter_text || "Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups.";
+  const WALLPAPERS_LABEL = settings.wallpapers_label || "Wallpapers";
+  const WALLPAPERS_DESC = settings.wallpapers_desc || "Browse all Wallpapers";
+  const GUIDES_LABEL = settings.guides_label || "Guides";
+  const GUIDES_DESC = settings.guides_desc || "Browse all Guides";
+  const TEMPLATES_LABEL = settings.templates_label || "Templates";
+  const TEMPLATES_DESC = settings.templates_desc || "Browse all Templates";
 
 
   const posts = (Array.isArray(blogPosts) && blogPosts.length ? blogPosts : FALLBACK_POSTS).slice(0, 3);
@@ -116,9 +122,9 @@ export default function Home() {
 
       <section className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden">
         {[
-          { href: "/wallpapers", label: "Wallpapers", desc: "Browse all Wallpapers", img: WALLPAPERS_IMG },
-          { href: "/guides", label: "Guides", desc: "Browse all Guides", img: GUIDES_IMG },
-          { href: "/templates", label: "Templates", desc: "Browse all Templates", img: TEMPLATES_IMG },
+          { href: "/wallpapers", label: WALLPAPERS_LABEL, desc: WALLPAPERS_DESC, img: WALLPAPERS_IMG },
+          { href: "/guides", label: GUIDES_LABEL, desc: GUIDES_DESC, img: GUIDES_IMG },
+          { href: "/templates", label: TEMPLATES_LABEL, desc: TEMPLATES_DESC, img: TEMPLATES_IMG },
         ].map((cat) => (
           <div key={cat.href}>
             <Link href={cat.href} className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa]">

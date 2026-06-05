@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pkg from "pg";
 const { Pool } = pkg;
-import { wallpapers, templates } from "./schema";
+import { wallpapersTable, templatesTable } from "./schema";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const db = drizzle(pool);
@@ -25,13 +25,13 @@ const templateSeeds = [
 async function main() {
   console.log("Seeding wallpapers...");
   for (const s of wallpaperSeeds) {
-    await db.update(wallpapers).set({ description: s.description, content: s.content }).where(eq(wallpapers.id, s.id));
+    await db.update(wallpapersTable).set({ description: s.description, content: s.content }).where(eq(wallpapersTable.id, s.id));
     console.log(`  wallpaper id=${s.id}`);
   }
 
   console.log("Seeding templates...");
   for (const s of templateSeeds) {
-    await db.update(templates).set({ description: s.description, content: s.content }).where(eq(templates.id, s.id));
+    await db.update(templatesTable).set({ description: s.description, content: s.content }).where(eq(templatesTable.id, s.id));
     console.log(`  template id=${s.id}`);
   }
 

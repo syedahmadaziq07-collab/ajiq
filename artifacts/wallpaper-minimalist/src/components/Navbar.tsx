@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const navLinks = [
+  { label: "Guides", href: "/guides" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
@@ -26,8 +27,8 @@ export function Navbar() {
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
 
   return (
-    <nav className="w-full flex items-center justify-center px-6 sm:px-10 border-b border-border" style={{ height: "64px" }}>
-      <div className="flex items-center justify-between w-full max-w-[1200px]">
+    <div className="fixed top-[22px] left-1/2 -translate-x-1/2 z-50 w-full max-w-[1200px] px-6 sm:px-10">
+      <nav className="flex items-center justify-between w-full h-16 backdrop-blur-[5px] bg-white/43 border border-[#dedede] rounded-[10px] px-6">
         <Link href="/" className="text-[18px] font-[600] text-foreground no-underline">
           Wallp.
         </Link>
@@ -73,7 +74,7 @@ export function Navbar() {
         >
           <Menu className="w-5 h-5" />
         </button>
-      </div>
+      </nav>
 
       <AnimatePresence>
         {mobileOpen && (
@@ -152,6 +153,6 @@ export function Navbar() {
           </>
         )}
       </AnimatePresence>
-    </nav>
+    </div>
   );
 }

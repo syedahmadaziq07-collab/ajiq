@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -8,6 +8,10 @@ export const guidesTable = pgTable("guides", {
   slug: text("slug").notNull().unique(),
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
+  images: text("images").array().notNull().default([]),
+  features: text("features").array().notNull().default([]),
+  whatsIncluded: text("whats_included").array().notNull().default([]),
+  price: integer("price"),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

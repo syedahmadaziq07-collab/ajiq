@@ -80,16 +80,16 @@ interface PostForm {
 }
 
 interface MediaForm {
-  title: string; slug: string; category: string; imageUrl: string; downloadUrl: string; description: string; content: string;
+  title: string; slug: string; category: string; imageUrl: string; images: string; features: string; whatsIncluded: string; price: string; downloadUrl: string; description: string; content: string;
 }
 
 interface GuideForm {
-  title: string; slug: string; description: string; imageUrl: string; content: string;
+  title: string; slug: string; description: string; price: string; imageUrl: string; images: string; features: string; whatsIncluded: string; content: string;
 }
 
 const emptyPost = (): PostForm => ({ title: "", slug: "", excerpt: "", content: "", imageUrl: "", author: "Wallp.", publishedAt: new Date().toISOString().split("T")[0] });
-const emptyMedia = (): MediaForm => ({ title: "", slug: "", category: "", imageUrl: "", downloadUrl: "", description: "", content: "" });
-const emptyGuide = (): GuideForm => ({ title: "", slug: "", description: "", imageUrl: "", content: "" });
+const emptyMedia = (): MediaForm => ({ title: "", slug: "", category: "", imageUrl: "", images: "", features: "", whatsIncluded: "", price: "", downloadUrl: "", description: "", content: "" });
+const emptyGuide = (): GuideForm => ({ title: "", slug: "", description: "", price: "", imageUrl: "", images: "", features: "", whatsIncluded: "", content: "" });
 
 // ---- Components ----
 function SlugInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
@@ -306,6 +306,10 @@ function HomepageSettings() {
     queryKey: ["admin", "settings"],
     queryFn: () => apiGet("/settings"),
   });
+  const { data: blogPosts } = useQuery({
+    queryKey: ["admin", "blog-posts-for-homepage"],
+    queryFn: () => apiGet("/blog-posts"),
+  });
   const [form, setForm] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
@@ -374,14 +378,23 @@ function HomepageSettings() {
           {/* Category cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {[
-              { field: "wallpapers_image", label: "Wallpapers", fallback: defCat1 },
-              { field: "guides_image", label: "Guides", fallback: defCat2 },
-              { field: "templates_image", label: "Templates", fallback: defCat3 },
+              { imgField: "wallpapers_image", labelField: "wallpapers_label", descField: "wallpapers_desc", fallback: defCat1 },
+              { imgField: "guides_image", labelField: "guides_label", descField: "guides_desc", fallback: defCat2 },
+              { imgField: "templates_image", labelField: "templates_label", descField: "templates_desc", fallback: defCat3 },
             ].map((cat) => (
-              <div key={cat.field} className="rounded-[14px] overflow-hidden bg-[#fafafa] p-4 relative">
-                <InlineImage field={cat.field} form={form} setForm={setForm} fallback={cat.fallback} frameSize="308×247"
+              <div key={cat.imgField} className="rounded-[14px] overflow-hidden bg-[#fafafa] p-4 relative">
+                <InlineImage field={cat.imgField} form={form} setForm={setForm} fallback={cat.fallback} frameSize="308×247"
                   className="w-full h-[140px] mb-3" />
-                <p className="text-[13px] font-[600] text-[#000]">{cat.label}</p>
+                <div className="relative">
+                  <InlineText field={cat.labelField} form={form} setForm={setForm}
+                    placeholder={cat.labelField.replace("_label","").replace(/^./,c=>c.toUpperCase())} rows={1}
+                    className="text-[13px] font-[600] text-[#000] block" />
+                </div>
+                <div className="relative mt-0.5">
+                  <InlineText field={cat.descField} form={form} setForm={setForm}
+                    placeholder="Browse all..." rows={1}
+                    className="text-[10px] font-[500] text-[#747474] block" />
+                </div>
               </div>
             ))}
           </div>
@@ -423,11 +436,30 @@ function HomepageSettings() {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[1,2,3].map((i) => (
-                <div key={i} className="rounded-[14px] overflow-hidden bg-[#fafafa] aspect-[4/3] flex items-center justify-center text-[#ccc] text-[12px]">
-                  Blog Post {i}
-                </div>
-              ))}
+              {(Array.isArray(blogPosts) ? blogPosts.slice(0, 3) : []).length > 0
+                ? (Array.isArray(blogPosts) ? blogPosts.slice(0, 3) : []).map((post: any) => (
+                    <div key={post.id} className="rounded-[14px] overflow-hidden bg-[#fafafa]">
+                      <div className="aspect-[4/3] w-full bg-[#f5f5f5] flex items-center justify-center overflow-hidden">
+                        {post.imageUrl ? (
+                          <img src={post.imageUrl} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[#ccc] text-[11px]">No image</span>
+                        )}
+                      </div>
+                      <div className="p-3">
+                        <p className="text-[11px] text-[#747474] font-[500]">
+                          {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}
+                        </p>
+                        <p className="text-[12px] font-[600] text-[#000] mt-1 line-clamp-2">{post.title}</p>
+                      </div>
+                    </div>
+                  ))
+                : [1,2,3].map((i) => (
+                    <div key={i} className="rounded-[14px] overflow-hidden bg-[#fafafa] aspect-[4/3] flex items-center justify-center text-[#ccc] text-[12px]">
+                      Blog Post {i}
+                    </div>
+                  ))
+              }
             </div>
           </div>
 
@@ -438,7 +470,10 @@ function HomepageSettings() {
                 placeholder="Join for thoughtful insights..." tag="p" rows={3}
                 className="text-[#747474] text-[14px] font-[600] leading-[1.5] block" />
             </div>
-            <div className="text-[#ccc] text-[12px]">[Subscribe form preview]</div>
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="border border-[#eee] rounded-[8px] h-[36px] px-3 text-[11px] text-[#ccc] flex items-center">name@email.com</div>
+              <div className="bg-[#000] text-white rounded-[8px] h-[36px] px-4 text-[11px] font-[500] flex items-center">Subscribe</div>
+            </div>
           </div>
         </div>
       </div>
@@ -598,8 +633,22 @@ function MediaTable({ prefix, onEdit: _onEdit, onClose: _onClose }: { prefix: st
   const [form, setForm] = useState<MediaForm>(emptyMedia());
   const [editId, setEditId] = useState<number | null>(null);
 
+  const toBody = (f: MediaForm) => ({
+    title: f.title,
+    slug: f.slug,
+    category: f.category,
+    imageUrl: f.imageUrl,
+    images: f.images.split("\n").map(s => s.trim()).filter(Boolean),
+    features: f.features.split("\n").map(s => s.trim()).filter(Boolean),
+    whatsIncluded: f.whatsIncluded.split("\n").map(s => s.trim()).filter(Boolean),
+    price: f.price ? Number(f.price) : null,
+    downloadUrl: f.downloadUrl,
+    description: f.description,
+    content: f.content,
+  });
+
   const saveMut = useMutation({
-    mutationFn: () => editId ? apiPut(`/${prefix}/${editId}`, form) : apiPost(`/${prefix}`, form),
+    mutationFn: () => editId ? apiPut(`/${prefix}/${editId}`, toBody(form)) : apiPost(`/${prefix}`, toBody(form)),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin", prefix] }); setModal(false); setForm(emptyMedia()); setEditId(null); },
   });
 
@@ -611,7 +660,19 @@ function MediaTable({ prefix, onEdit: _onEdit, onClose: _onClose }: { prefix: st
   const openNew = () => { setForm(emptyMedia()); setEditId(null); setModal(true); };
 
   const openEdit = (item: Record<string, unknown>) => {
-    setForm({ title: item.title as string, slug: item.slug as string, category: item.category as string, imageUrl: item.imageUrl as string, downloadUrl: item.downloadUrl as string, description: (item.description as string) || "", content: (item.content as string) || "" });
+    setForm({
+      title: item.title as string,
+      slug: item.slug as string,
+      category: item.category as string,
+      imageUrl: item.imageUrl as string,
+      images: (Array.isArray(item.images) ? (item.images as string[]).join("\n") : ""),
+      features: (Array.isArray(item.features) ? (item.features as string[]).join("\n") : ""),
+      whatsIncluded: (Array.isArray(item.whatsIncluded) ? (item.whatsIncluded as string[]).join("\n") : ""),
+      price: item.price ? String(item.price) : "",
+      downloadUrl: item.downloadUrl as string,
+      description: (item.description as string) || "",
+      content: (item.content as string) || "",
+    });
     setEditId(item.id as number);
     setModal(true);
   };
@@ -630,12 +691,25 @@ function MediaTable({ prefix, onEdit: _onEdit, onClose: _onClose }: { prefix: st
           <FormField label="Title"><input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
           <FormField label="Slug"><SlugInput value={form.slug} onChange={(s) => setForm({ ...form, slug: s })} /></FormField>
           <FormField label="Category"><input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
-          <FormField label="Image URL">
+          <FormField label="Cover Image URL">
             <div className="flex gap-2 items-center">
               <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required />
               <UploadButton onUpload={(url) => setForm({ ...form, imageUrl: url })} />
               <FrameSize size="card 4:3 ~300px" />
             </div>
+          </FormField>
+          <FormField label="Additional Images (one URL per line)">
+            <div className="flex gap-2 items-start">
+              <textarea value={form.images} onChange={(e) => setForm({ ...form, images: e.target.value })} rows={3} className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none font-mono" placeholder="https://...&#10;https://..." />
+              <UploadButton onUpload={(url) => setForm({ ...form, images: form.images ? form.images + "\n" + url : url })} />
+            </div>
+          </FormField>
+          <FormField label="Price ($)"><input type="number" min="0" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" placeholder="9.99" /></FormField>
+          <FormField label="Features / Checklist (one per line)">
+            <textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" placeholder="High-resolution 4K&#10;Minimalist design&#10;Multiple color variants" />
+          </FormField>
+          <FormField label="What's Included (one per line)">
+            <textarea value={form.whatsIncluded} onChange={(e) => setForm({ ...form, whatsIncluded: e.target.value })} rows={4} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" placeholder="JPG file (3840x2160)&#10;PNG file (3840x2160)&#10;Mobile version (1080x1920)" />
           </FormField>
           <FormField label="Description (short)"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" /></FormField>
           <FormField label="Content (details, one item per line)"><textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={4} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" /></FormField>
@@ -655,8 +729,20 @@ function GuidesTable() {
   const [form, setForm] = useState<GuideForm>(emptyGuide());
   const [editId, setEditId] = useState<number | null>(null);
 
+  const toBody = (f: GuideForm) => ({
+    title: f.title,
+    slug: f.slug,
+    description: f.description,
+    imageUrl: f.imageUrl,
+    images: f.images.split("\n").map(s => s.trim()).filter(Boolean),
+    features: f.features.split("\n").map(s => s.trim()).filter(Boolean),
+    whatsIncluded: f.whatsIncluded.split("\n").map(s => s.trim()).filter(Boolean),
+    price: f.price ? Number(f.price) : null,
+    content: f.content,
+  });
+
   const saveMut = useMutation({
-    mutationFn: () => editId ? apiPut(`/guides/${editId}`, form) : apiPost("/guides", form),
+    mutationFn: () => editId ? apiPut(`/guides/${editId}`, toBody(form)) : apiPost("/guides", toBody(form)),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["admin", "guides"] }); setModal(false); setForm(emptyGuide()); setEditId(null); },
   });
 
@@ -668,7 +754,17 @@ function GuidesTable() {
   const openNew = () => { setForm(emptyGuide()); setEditId(null); setModal(true); };
 
   const openEdit = (item: Record<string, unknown>) => {
-    setForm({ title: item.title as string, slug: item.slug as string, description: item.description as string, imageUrl: item.imageUrl as string, content: item.content as string });
+    setForm({
+      title: item.title as string,
+      slug: item.slug as string,
+      description: item.description as string,
+      price: item.price ? String(item.price) : "",
+      imageUrl: item.imageUrl as string,
+      images: (Array.isArray(item.images) ? (item.images as string[]).join("\n") : ""),
+      features: (Array.isArray(item.features) ? (item.features as string[]).join("\n") : ""),
+      whatsIncluded: (Array.isArray(item.whatsIncluded) ? (item.whatsIncluded as string[]).join("\n") : ""),
+      content: item.content as string,
+    });
     setEditId(item.id as number);
     setModal(true);
   };
@@ -685,12 +781,25 @@ function GuidesTable() {
           <FormField label="Title"><input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
           <FormField label="Slug"><SlugInput value={form.slug} onChange={(s) => setForm({ ...form, slug: s })} /></FormField>
           <FormField label="Description"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" required /></FormField>
-          <FormField label="Image URL">
+          <FormField label="Cover Image URL">
             <div className="flex gap-2 items-center">
               <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required />
               <UploadButton onUpload={(url) => setForm({ ...form, imageUrl: url })} />
               <FrameSize size="card 4:3 ~300px" />
             </div>
+          </FormField>
+          <FormField label="Additional Images (one URL per line)">
+            <div className="flex gap-2 items-start">
+              <textarea value={form.images} onChange={(e) => setForm({ ...form, images: e.target.value })} rows={3} className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none font-mono" placeholder="https://...&#10;https://..." />
+              <UploadButton onUpload={(url) => setForm({ ...form, images: form.images ? form.images + "\n" + url : url })} />
+            </div>
+          </FormField>
+          <FormField label="Price ($)"><input type="number" min="0" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" placeholder="9.99" /></FormField>
+          <FormField label="Features / Checklist (one per line)">
+            <textarea value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} rows={4} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" placeholder="Step-by-step instructions&#10;High-quality screenshots&#10;Expert tips &amp; tricks" />
+          </FormField>
+          <FormField label="What's Included (one per line)">
+            <textarea value={form.whatsIncluded} onChange={(e) => setForm({ ...form, whatsIncluded: e.target.value })} rows={4} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" placeholder="PDF guide (15 pages)&#10;Video walkthrough&#10;Resource files" />
           </FormField>
           <FormField label="Content"><textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={6} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none font-mono" required /></FormField>
           <button type="submit" disabled={saveMut.isPending} className="bg-[#000] text-white rounded-[8px] h-[40px] text-[13px] font-[500] mt-2 disabled:opacity-50">{saveMut.isPending ? "Saving..." : "Save"}</button>
