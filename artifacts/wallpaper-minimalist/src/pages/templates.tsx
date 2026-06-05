@@ -9,26 +9,28 @@ export default function Templates() {
   const templates = Array.isArray(data) ? data : [];
   const [activeFilter, setActiveFilter] = useState("All");
 
+  const categories = ["All", ...new Set(templates.map((t: Template) => t.category))];
+  const filtered = activeFilter === "All" ? templates : templates.filter((t: Template) => t.category === activeFilter);
+
   useEffect(() => {
     if (filtered.length === 0) return;
     const urls = filtered.map((t: Template) => optimizeImage(t.imageUrl, 400));
-    let last = -1;
-    const preload = () => {
-      const cols = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1;
-      const visible = Math.ceil((window.scrollY + window.innerHeight) / 380) * cols;
-      const target = Math.min(visible + 4, urls.length);
-      for (let i = last + 1; i < target; i++) {
-        if (urls[i]) { const img = new Image(); img.src = urls[i]; }
-      }
-      last = target - 1;
-    };
-    preload();
-    window.addEventListener("scroll", preload, { passive: true });
-    return () => window.removeEventListener("scroll", preload);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const idx = Number(entry.target.getAttribute("data-idx"));
+          for (let i = 1; i <= 4; i++) {
+            const next = idx + i;
+            if (next < urls.length) { const img = new Image(); img.src = urls[next]; }
+          }
+        });
+      },
+      { rootMargin: "400px" }
+    );
+    document.querySelectorAll("[data-idx]").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, [filtered.length]);
-
-  const categories = ["All", ...new Set(templates.map((t: Template) => t.category))];
-  const filtered = activeFilter === "All" ? templates : templates.filter((t: Template) => t.category === activeFilter);
 
   if (isLoading) {
     return (
@@ -94,8 +96,8 @@ export default function Templates() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((t: Template) => (
-              <div key={t.id}>
+            {filtered.map((t: Template, i: number) => (
+              <div key={t.id} data-idx={i}>
                 <Link href={`/templates/${t.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow no-underline">
                   <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
                     <img src={optimizeImage(t.imageUrl, 400)} alt={t.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />

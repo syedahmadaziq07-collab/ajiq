@@ -11,19 +11,21 @@ export default function Guides() {
   useEffect(() => {
     if (guides.length === 0) return;
     const urls = guides.map((g: Guide) => optimizeImage(g.imageUrl, 400));
-    let last = -1;
-    const preload = () => {
-      const cols = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1;
-      const visible = Math.ceil((window.scrollY + window.innerHeight) / 380) * cols;
-      const target = Math.min(visible + 4, urls.length);
-      for (let i = last + 1; i < target; i++) {
-        if (urls[i]) { const img = new Image(); img.src = urls[i]; }
-      }
-      last = target - 1;
-    };
-    preload();
-    window.addEventListener("scroll", preload, { passive: true });
-    return () => window.removeEventListener("scroll", preload);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const idx = Number(entry.target.getAttribute("data-idx"));
+          for (let i = 1; i <= 4; i++) {
+            const next = idx + i;
+            if (next < urls.length) { const img = new Image(); img.src = urls[next]; }
+          }
+        });
+      },
+      { rootMargin: "400px" }
+    );
+    document.querySelectorAll("[data-idx]").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, [guides.length]);
 
   if (isLoading) {
@@ -78,10 +80,10 @@ export default function Guides() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {guides.map((g: Guide) => {
+            {guides.map((g: Guide, i: number) => {
               const price = (g as any).price as number | null | undefined;
               return (
-                <div key={g.id}>
+                <div key={g.id} data-idx={i}>
                   <Link href={`/guides/${g.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow no-underline">
                     <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
                       <img src={optimizeImage(g.imageUrl, 400)} alt={g.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
