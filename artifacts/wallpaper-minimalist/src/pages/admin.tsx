@@ -441,7 +441,7 @@ function HomepageSettings() {
                     <div key={post.id} className="rounded-[14px] overflow-hidden bg-[#fafafa]">
                       <div className="aspect-[4/3] w-full bg-[#f5f5f5] flex items-center justify-center overflow-hidden">
                         {post.imageUrl ? (
-                          <img src={post.imageUrl} alt="" className="w-full h-full object-cover" />
+                          <img src={post.imageUrl} alt="" width="400" height="300" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-[#ccc] text-[11px]">No image</span>
                         )}

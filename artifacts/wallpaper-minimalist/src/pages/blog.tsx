@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { useListBlogPosts } from "@workspace/api-client-react";
+import { optimizeImage } from "../lib/image";
 
 const FALLBACK_POSTS = [
   {
@@ -57,8 +58,12 @@ export default function Blog() {
           <Link href={`/blog/${top.slug}`} className="block group" data-testid="featured-post">
             <div className="w-full h-[240px] rounded-[10px] overflow-hidden bg-gradient-to-b from-[#e0e0e0] to-[#b0b0b0]">
               <img
-                src={top.imageUrl}
+                src={optimizeImage(top.imageUrl, 800)}
                 alt={top.title}
+                width="800"
+                height="267"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500"
               />
             </div>

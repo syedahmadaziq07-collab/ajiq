@@ -14,7 +14,7 @@ export function ProductCard({ category, image, href }: ProductCardProps) {
           ↗
         </div>
         <div className="h-[120px] rounded-[8px] overflow-hidden mb-4">
-          <img src={image} alt={category} className="w-full h-full object-cover" />
+          <img src={image} alt={category} width="400" height="300" loading="lazy" decoding="async" className="w-full h-full object-cover" />
         </div>
         <div>
           <h3 className="font-bold text-[14px] text-[#000]">{category}</h3>

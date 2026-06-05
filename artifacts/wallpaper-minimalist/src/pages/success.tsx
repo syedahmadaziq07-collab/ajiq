@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { CheckCircle } from "lucide-react";
 
+import { CheckCircle } from "lucide-react";
+import { optimizeImage } from "../lib/image";
 const API = import.meta.env.VITE_API_URL ?? "";
 
 export default function Success() {
@@ -43,7 +44,7 @@ export default function Success() {
 
         {item && (
           <div className="mt-6 flex items-center gap-3 border border-[#eee] rounded-[10px] p-3 text-left">
-            <img src={item.imageUrl} alt={item.title} className="w-12 h-12 rounded-[6px] object-cover flex-shrink-0" />
+            <img src={optimizeImage(item.imageUrl, 96)} alt={item.title} width="48" height="48" loading="lazy" decoding="async" className="w-12 h-12 rounded-[6px] object-cover flex-shrink-0" />
             <div>
               <p className="text-[13px] font-[600] text-[#000]">{item.title}</p>
               <p className="text-[12px] text-[#747474] capitalize">{itemType}</p>

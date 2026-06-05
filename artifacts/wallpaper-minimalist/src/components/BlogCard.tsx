@@ -11,7 +11,7 @@ export function BlogCard({ date, title, image }: BlogCardProps) {
     <Link href="/blog" className="block group" data-testid={`blog-card-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <div className="flex flex-col gap-2 hover:scale-[1.01] transition-transform duration-200">
         <div className="h-[90px] rounded-[8px] bg-[#F5F5F5] overflow-hidden">
-          <img src={image} alt={title} className="w-full h-full object-cover" />
+          <img src={image} alt={title} width="400" height="300" loading="lazy" decoding="async" className="w-full h-full object-cover" />
         </div>
         <div className="mt-[2px]">
           <p className="text-[11px]">

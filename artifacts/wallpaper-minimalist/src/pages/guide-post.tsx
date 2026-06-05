@@ -66,8 +66,10 @@ export default function GuidePost() {
             <div className="relative bg-[#f9f9f9] rounded-[16px] overflow-hidden shadow-sm">
               <div className="aspect-[4/3] relative flex items-center justify-center p-4">
                 <img
-                  src={images[imgIndex] || guide.imageUrl}
-                  alt={guide.title}
+                  src={images[imgIndex] || item.imageUrl}
+                  alt={item.title}
+                  width="4"
+                  height="3"
                   className="w-full h-full object-contain rounded-[8px]"
                   loading="lazy"
                   decoding="async"

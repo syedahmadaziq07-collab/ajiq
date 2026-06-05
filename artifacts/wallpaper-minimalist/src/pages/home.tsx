@@ -180,6 +180,8 @@ export default function Home() {
                       srcSet={srcset(url)}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       alt=""
+                      width="400"
+                      height="400"
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05] bg-[#f5f5f5]"

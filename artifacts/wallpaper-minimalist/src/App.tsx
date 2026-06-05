@@ -23,7 +23,14 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 const API_URL = import.meta.env.VITE_API_URL ?? "";
 if (API_URL) setBaseUrl(API_URL);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      gcTime: 1000 * 60 * 60,
+    },
+  },
+});
 
 function Router() {
   return (

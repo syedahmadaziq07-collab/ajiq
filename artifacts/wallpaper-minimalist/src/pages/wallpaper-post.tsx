@@ -67,6 +67,8 @@ export default function WallpaperPost() {
                 <img
                   src={images[imgIndex] || item.imageUrl}
                   alt={item.title}
+                  width="4"
+                  height="3"
                   className="w-full h-full object-contain rounded-[8px]"
                   loading="lazy"
                   decoding="async"

@@ -1,6 +1,7 @@
 import { useParams, Link } from "wouter";
-import { useGetBlogPost } from "@workspace/api-client-react";
 
+import { useGetBlogPost } from "@workspace/api-client-react";
+import { optimizeImage } from "../lib/image";
 const FALLBACK: Record<string, { title: string; imageUrl: string; publishedAt: string; author: string; content: string }> = {
   "ergonomic-essentials-comfort-meets-productivity": {
     title: "Ergonomic Essentials: Comfort Meets Productivity",
@@ -64,7 +65,7 @@ export default function BlogPost() {
       {display.imageUrl && (
         <section className="px-4 sm:px-8 pb-8 max-w-[900px] mx-auto">
           <div className="w-full aspect-[16/9] rounded-[12px] overflow-hidden bg-gradient-to-b from-[#e0e0e0] to-[#b0b0b0]">
-            <img src={display.imageUrl} alt={display.title} className="w-full h-full object-cover" />
+            <img src={optimizeImage(display.imageUrl, 900)} alt={display.title} width="16" height="9" loading="lazy" decoding="async" className="w-full h-full object-cover" />
           </div>
         </section>
       )}
