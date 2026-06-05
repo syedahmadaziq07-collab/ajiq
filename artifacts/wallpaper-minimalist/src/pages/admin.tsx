@@ -242,27 +242,56 @@ function Sidebar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 }
 
 // ---- Homepage Settings ----
-type SettingsField = { key: string; label: string; description: string; type?: "text" | "textarea" | "image" };
-const SETTINGS_FIELDS: SettingsField[] = [
-  { key: "hero_heading", label: "Hero Heading", description: "Large heading text at the top of the homepage" },
-  { key: "hero_subtext", label: "Hero Subtext", description: "Subtitle paragraph below the hero heading", type: "textarea" },
-  { key: "featured_heading", label: "Featured Heading", description: "Heading for the featured wallpapers grid section" },
-  { key: "featured_description", label: "Featured Description", description: "Paragraph below the featured heading", type: "textarea" },
-  { key: "blog_heading", label: "Blog Section Heading", description: "Heading for the blog section" },
-  { key: "blog_description", label: "Blog Section Description", description: "Paragraph next to the blog heading", type: "textarea" },
-  { key: "newsletter_text", label: "Newsletter Text", description: "Text shown above the email subscribe form", type: "textarea" },
-  { key: "wallpapers_image", label: "Wallpapers Category Image", description: "Image shown in the Wallpapers category card", type: "image" },
-  { key: "guides_image", label: "Guides Category Image", description: "Image shown in the Guides category card", type: "image" },
-  { key: "templates_image", label: "Templates Category Image", description: "Image shown in the Templates category card", type: "image" },
-  { key: "featured_image_1", label: "Featured Image 1", description: "Large image (spans 2 cols, 2 rows)", type: "image" },
-  { key: "featured_image_2", label: "Featured Image 2", description: "Featured grid image", type: "image" },
-  { key: "featured_image_3", label: "Featured Image 3", description: "Featured grid image", type: "image" },
-  { key: "featured_image_4", label: "Featured Image 4", description: "Featured grid image", type: "image" },
-  { key: "featured_image_5", label: "Featured Image 5", description: "Featured grid image", type: "image" },
-  { key: "featured_image_6", label: "Featured Image 6", description: "Featured grid image", type: "image" },
-  { key: "featured_image_7", label: "Featured Image 7", description: "Featured grid image", type: "image" },
-  { key: "featured_image_8", label: "Featured Image 8", description: "Spans 2 columns", type: "image" },
-];
+function InlineText({ field, form, setForm, className, placeholder, rows = 1 }: { field: string; form: Record<string, string>; setForm: (f: Record<string, string>) => void; className?: string; placeholder?: string; rows?: number }) {
+  const [editing, setEditing] = useState(false);
+  const [val, setVal] = useState("");
+  const start = () => { setVal(form[field] || ""); setEditing(true); };
+  const save = () => { setForm({ ...form, [field]: val }); setEditing(false); };
+  if (editing) {
+    return (
+      <div className="absolute inset-0 z-10 flex items-start">
+        <div className="bg-white border-2 border-[#000] rounded-[8px] shadow-xl w-full" onClick={e => e.stopPropagation()}>
+          {rows > 1 ? (
+            <textarea autoFocus value={val} onChange={e => setVal(e.target.value)} onBlur={save} rows={rows}
+              className="w-full px-2.5 py-1.5 text-[13px] outline-none resize-none text-[#000] rounded-[8px]" />
+          ) : (
+            <input autoFocus value={val} onChange={e => setVal(e.target.value)} onBlur={save}
+              onKeyDown={e => { if (e.key === "Enter") save(); }}
+              className="w-full px-2.5 py-1.5 text-[13px] outline-none text-[#000] rounded-[8px]" />
+          )}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <span className={`cursor-pointer rounded hover:ring-2 hover:ring-[#000]/30 hover:ring-offset-1 inline-block ${className || ""}`} onClick={start}>
+      {form[field] || placeholder || ""}
+    </span>
+  );
+}
+
+function InlineImage({ field, form, setForm, className, fallback }: { field: string; form: Record<string, string>; setForm: (f: Record<string, string>) => void; className?: string; fallback?: string }) {
+  const [editing, setEditing] = useState(false);
+  const src = form[field] || fallback || "";
+  if (editing) {
+    return (
+      <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40" onClick={() => setEditing(false)}>
+        <div className="bg-white rounded-[12px] p-4 w-[300px] shadow-2xl" onClick={e => e.stopPropagation()}>
+          <p className="text-[12px] font-[500] text-[#000] mb-2">Image URL</p>
+          <input autoFocus value={form[field] || ""} onChange={e => setForm({ ...form, [field]: e.target.value })}
+            className="w-full border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000] mb-2" />
+          <UploadButton onUpload={(url) => { setForm({ ...form, [field]: url }); setEditing(false); }} />
+          <button onClick={() => setEditing(false)} className="ml-2 text-[11px] text-[#747474] underline">Done</button>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className={`relative cursor-pointer rounded overflow-hidden hover:ring-2 hover:ring-[#000]/30 hover:ring-offset-1 ${className || ""}`} onClick={() => setEditing(true)}>
+      <img src={src} alt="" className="w-full h-full object-cover bg-[#f5f5f5]" />
+    </div>
+  );
+}
 
 function HomepageSettings() {
   const queryClient = useQueryClient();
@@ -272,7 +301,6 @@ function HomepageSettings() {
   });
   const [form, setForm] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
-  const [showPreview, setShowPreview] = useState(true);
 
   useEffect(() => {
     if (data) setForm(data);
@@ -289,15 +317,11 @@ function HomepageSettings() {
     setSaving(false);
   };
 
-  const reset = () => {
-    if (data) setForm({ ...data });
-  };
+  const reset = () => { if (data) setForm({ ...data }); };
 
   if (isLoading) return <div className="text-[#747474] text-[13px]">Loading...</div>;
 
-  const resize = (url: string, w: number) =>
-    url.includes("?") ? url.replace(/(width=)\d+/, `$1${w}`) : `${url}?width=${w}`;
-  const defaultFeatured = [
+  const defFeat = [
     "https://framerusercontent.com/images/76MGm4VfTnCkUrk3ct1yk3Rpw.jpg?width=400",
     "https://framerusercontent.com/images/dH9sQMFjHqSouYrD2G1zd5Gl5c.jpg?width=400",
     "https://framerusercontent.com/images/r9EnSsRgp8Z5QUmBOV9sui25trU.png?width=400",
@@ -307,102 +331,109 @@ function HomepageSettings() {
     "https://framerusercontent.com/images/6MFK0ePJsGglxyIwBOsKeAVWU.jpg?width=400",
     "https://framerusercontent.com/images/DXWQczEsbDwS0U9pVPEzF4rvM.jpg?width=400",
   ];
-
-  const dataRef = data as Record<string, string> | undefined;
+  const defCat1 = "https://framerusercontent.com/images/edkUWDLREszDiq4vgt975wDDFM.jpg?width=400";
+  const defCat2 = "https://framerusercontent.com/images/DTNpaBh0Djuey5Ql5HpaJWi3lWg.jpg?width=400";
+  const defCat3 = "https://framerusercontent.com/images/KkKh1T6zK6twdxDPmlYsFJTj6lg.jpg?width=400";
+  const F = (i: number) => form[`featured_image_${i}`] || defFeat[i-1];
+  const r = (u: string) => u.includes("?") ? u.replace(/(width=)\d+/, "$1200") : `${u}?width=200`;
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[18px] font-[600] text-[#000]">Homepage Settings</h2>
+    <div className="flex flex-col min-h-0">
+      <div className="flex items-center justify-between mb-3 shrink-0">
         <div className="flex items-center gap-2">
-          <button onClick={reset} className="border border-[#ddd] rounded-[8px] h-[36px] px-4 text-[12px] font-[500] text-[#747474] hover:text-[#000] hover:border-[#000] transition-colors">Reset</button>
-          <button onClick={() => setShowPreview(!showPreview)} className="border border-[#ddd] rounded-[8px] h-[36px] px-4 text-[12px] font-[500] text-[#747474] hover:text-[#000] hover:border-[#000] transition-colors">{showPreview ? "Hide Preview" : "Show Preview"}</button>
-          <button onClick={publish} disabled={saving} className="bg-[#000] text-white rounded-[8px] h-[36px] px-5 text-[12px] font-[500] disabled:opacity-50">{saving ? "Publishing..." : "Publish"}</button>
+          <span className="text-[11px] text-[#999] font-[500]">Click any text or image to edit</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={reset} className="border border-[#ddd] rounded-[8px] h-[32px] px-3 text-[11px] font-[500] text-[#747474] hover:text-[#000] hover:border-[#000] transition-colors">Reset</button>
+          <button onClick={publish} disabled={saving} className="bg-[#000] text-white rounded-[8px] h-[32px] px-4 text-[11px] font-[500] disabled:opacity-50">{saving ? "Publishing..." : "Publish"}</button>
         </div>
       </div>
 
-      <div className="flex gap-6 flex-1 min-h-0">
-        <div className="flex flex-col gap-3 w-[420px] shrink-0 overflow-y-auto pr-2">
-          {SETTINGS_FIELDS.map((field) => (
-            <div key={field.key} className="flex flex-col gap-0.5">
-              <label className="text-[11px] text-[#747474] font-[500] uppercase tracking-wider">{field.label}</label>
-              {field.type === "textarea" ? (
-                <textarea
-                  value={form[field.key] || ""}
-                  onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                  rows={2}
-                  className="w-full border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000] resize-none"
-                />
-              ) : field.type === "image" ? (
-                <div className="flex gap-1.5 items-center">
-                  <input
-                    value={form[field.key] || ""}
-                    onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                    className="flex-1 border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000]"
-                  />
-                  <UploadButton onUpload={(url) => setForm({ ...form, [field.key]: url })} />
-                </div>
-              ) : (
-                <input
-                  value={form[field.key] || ""}
-                  onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                  className="w-full border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000]"
-                />
-              )}
-              <p className="text-[#999] text-[10px]">{field.description}</p>
+      <div className="flex-1 overflow-y-auto border border-[#eee] rounded-[12px] bg-white">
+        <div className="max-w-[900px] mx-auto py-6 px-4">
+          {/* Hero */}
+          <div className="mb-8 relative">
+            <div className="relative">
+              <InlineText field="hero_heading" form={form} setForm={setForm}
+                placeholder="Wallp." tag="h1" className="text-[60px] sm:text-[100px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000] block" />
             </div>
-          ))}
-        </div>
-
-        {showPreview && (
-          <div className="flex-1 border border-[#eee] rounded-[12px] overflow-y-auto bg-white p-4">
-            <div className="max-w-[600px] mx-auto">
-              <p className="text-[10px] text-[#999] uppercase tracking-wider mb-3 font-[500]">Live Preview</p>
-
-              <div className="mb-6">
-                <p className="text-[48px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000]">{form.hero_heading || "Wallp."}</p>
-                <p className="text-[#747474] text-[13px] font-[500] leading-[1.2] max-w-[400px] mt-2">{form.hero_subtext || "At Wallp., we craft simple essentials..."}</p>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                {[
-                  { label: "Wallpapers", img: resize(form.wallpapers_image || defaultFeatured[0], 200) },
-                  { label: "Guides", img: resize(form.guides_image || defaultFeatured[1], 200) },
-                  { label: "Templates", img: resize(form.templates_image || defaultFeatured[2], 200) },
-                ].map((cat, i) => (
-                  <div key={i} className="rounded-[10px] overflow-hidden bg-[#fafafa] p-3">
-                    <img src={cat.img} alt="" className="w-full h-[80px] object-contain mb-2 bg-[#f5f5f5]" />
-                    <p className="text-[11px] font-[600] text-[#000]">{cat.label}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mb-4">
-                <p className="text-[20px] font-[500] tracking-[-1.5px] text-[#000] mb-1">{form.featured_heading || "Refining digital life."}</p>
-                <p className="text-[#747474] text-[11px] leading-[1.5] max-w-[360px]">{form.featured_description || "Our designs refine workspaces and devices..."}</p>
-              </div>
-
-              <div className="grid grid-cols-4 gap-2 mb-4">
-                {[1,2,3,4,5,6,7,8].map((i) => {
-                  const key = `featured_image_${i}` as const;
-                  const src = resize(form[key] || defaultFeatured[i-1], 150);
-                  const span = i === 1 ? "col-span-2 row-span-2" : i === 8 ? "col-span-2" : "";
-                  return (
-                    <div key={i} className={`rounded-[8px] overflow-hidden bg-[#f5f5f5] ${span}`}>
-                      <img src={src} alt="" className="w-full h-full object-cover" style={{ aspectRatio: i === 1 ? "1" : "1" }} />
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="border-t border-[#eee] pt-4">
-                <p className="text-[18px] font-[600] tracking-[-0.03em] text-[#000] mb-1">{form.blog_heading || "Insights from our blog."}</p>
-                <p className="text-[#747474] text-[11px] font-[600] max-w-[360px]">{form.blog_desc || "Insights and practical tips..."}</p>
-                <div className="mt-3 text-[#747474] text-[11px]">{form.newsletter_text || "Join for thoughtful insights..."}</div>
-              </div>
+            <div className="relative max-w-[500px] mt-4">
+              <InlineText field="hero_subtext" form={form} setForm={setForm}
+                placeholder="At Wallp., we craft simple essentials..." tag="p" rows={3}
+                className="text-[#747474] text-[15px] sm:text-[18px] font-[500] leading-[1.3] block" />
             </div>
           </div>
-        )}
+
+          {/* Category cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {[
+              { field: "wallpapers_image", label: "Wallpapers", fallback: defCat1 },
+              { field: "guides_image", label: "Guides", fallback: defCat2 },
+              { field: "templates_image", label: "Templates", fallback: defCat3 },
+            ].map((cat) => (
+              <div key={cat.field} className="rounded-[14px] overflow-hidden bg-[#fafafa] p-4 relative">
+                <InlineImage field={cat.field} form={form} setForm={setForm} fallback={cat.fallback}
+                  className="w-full h-[140px] mb-3" />
+                <p className="text-[13px] font-[600] text-[#000]">{cat.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Featured */}
+          <div className="mb-8">
+            <div className="relative mb-2">
+              <InlineText field="featured_heading" form={form} setForm={setForm}
+                placeholder="Refining digital life." tag="h2" rows={1}
+                className="text-[28px] sm:text-[38px] font-[500] tracking-[-1.5px] text-[#000] block" />
+            </div>
+            <div className="relative max-w-[450px] mb-6">
+              <InlineText field="featured_description" form={form} setForm={setForm}
+                placeholder="Our designs refine workspaces and devices..." tag="p" rows={3}
+                className="text-[#747474] text-[15px] leading-[1.6] block" />
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+              {[1,2,3,4,5,6,7,8].map((i) => (
+                <div key={i} className={i === 1 ? "col-span-2 row-span-2" : i === 8 ? "col-span-2" : ""}>
+                  <InlineImage field={`featured_image_${i}`} form={form} setForm={setForm} fallback={defFeat[i-1]}
+                    className="w-full aspect-square" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Blog */}
+          <div className="border-t border-[#eee] pt-6 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div className="relative">
+                <InlineText field="blog_heading" form={form} setForm={setForm}
+                  placeholder="Insights from our blog." tag="h2" rows={1}
+                  className="text-[28px] sm:text-[38px] font-[600] tracking-[-0.03em] text-[#000] block" />
+              </div>
+              <div className="relative max-w-[380px]">
+                <InlineText field="blog_description" form={form} setForm={setForm}
+                  placeholder="Insights and practical tips..." tag="p" rows={3}
+                  className="text-[#747474] text-[13px] font-[600] leading-[1.5] block" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[1,2,3].map((i) => (
+                <div key={i} className="rounded-[14px] overflow-hidden bg-[#fafafa] aspect-[4/3] flex items-center justify-center text-[#ccc] text-[12px]">
+                  Blog Post {i}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Newsletter */}
+          <div className="border-t border-[#eee] pt-6 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="relative max-w-[360px]">
+              <InlineText field="newsletter_text" form={form} setForm={setForm}
+                placeholder="Join for thoughtful insights..." tag="p" rows={3}
+                className="text-[#747474] text-[14px] font-[600] leading-[1.5] block" />
+            </div>
+            <div className="text-[#ccc] text-[12px]">[Subscribe form preview]</div>
+          </div>
+        </div>
       </div>
     </div>
   );
