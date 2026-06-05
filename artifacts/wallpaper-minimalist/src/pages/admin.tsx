@@ -475,6 +475,32 @@ function HomepageSettings() {
               <div className="bg-[#000] text-white rounded-[8px] h-[36px] px-4 text-[11px] font-[500] flex items-center">Subscribe</div>
             </div>
           </div>
+
+          {/* Footer Links */}
+          <div className="border-t border-[#eee] pt-6 pb-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[14px] font-[600] text-[#000]">Footer Links</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+                { label: "Blog", labelKey: "footer_blog_label", urlKey: "footer_blog_url" },
+                { label: "Contact", labelKey: "footer_contact_label", urlKey: "footer_contact_url" },
+                { label: "Templates", labelKey: "footer_templates_label", urlKey: "footer_templates_url" },
+                { label: "Wallpapers", labelKey: "footer_wallpapers_label", urlKey: "footer_wallpapers_url" },
+                { label: "Guides", labelKey: "footer_guides_label", urlKey: "footer_guides_url" },
+                { label: "Instagram", labelKey: "footer_instagram_label", urlKey: "footer_instagram_url" },
+                { label: "TikTok", labelKey: "footer_tiktok_label", urlKey: "footer_tiktok_url" },
+                { label: "Threads", labelKey: "footer_threads_label", urlKey: "footer_threads_url" },
+                { label: "Pinterest", labelKey: "footer_pinterest_label", urlKey: "footer_pinterest_url" },
+              ].map((link) => (
+                <div key={link.labelKey} className="border border-[#eee] rounded-[8px] p-3">
+                  <p className="text-[11px] font-[500] text-[#747474] uppercase mb-2">{link.label}</p>
+                  <input value={form[link.labelKey] || ""} onChange={(e) => setForm({ ...form, [link.labelKey]: e.target.value })} placeholder="Label" className="w-full border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000] mb-1.5" />
+                  <input value={form[link.urlKey] || ""} onChange={(e) => setForm({ ...form, [link.urlKey]: e.target.value })} placeholder="URL" className="w-full border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000]" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
