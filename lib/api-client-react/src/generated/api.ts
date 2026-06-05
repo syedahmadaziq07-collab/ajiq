@@ -69,8 +69,47 @@ export function useHealthCheck<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
+export const getGetGuideUrl = (slug: string) => `/api/guides/${slug}`;
+
+export const getGuide = async (slug: string, options?: RequestInit): Promise<Guide> => {
+  return customFetch<Guide>(getGetGuideUrl(slug), { ...options, method: "GET" });
+};
+
+export const getGetGuideQueryKey = (slug: string) => [`/api/guides/${slug}`] as const;
+
+export const getGetGuideQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGuide>>,
+  TError = ErrorType<unknown>,
+>(slug: string, options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getGuide>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetGuideQueryKey(slug);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuide>>> = ({ signal }) =>
+    getGuide(slug, { signal, ...requestOptions });
+  return { queryKey, queryFn, enabled: !!slug, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGuide>>, TError, TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetGuideQueryResult = NonNullable<Awaited<ReturnType<typeof getGuide>>>;
+export type GetGuideQueryError = ErrorType<unknown>;
+
+export function useGetGuide<
+  TData = Awaited<ReturnType<typeof getGuide>>,
+  TError = ErrorType<unknown>,
+>(slug: string, options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getGuide>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetGuideQueryOptions(slug, options);
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
 // ---------------------------------------------------------------------------
-// Blog Posts
+// Blog
 // ---------------------------------------------------------------------------
 
 export const getListBlogPostsUrl = () => `/api/blog-posts`;
