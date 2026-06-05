@@ -29,8 +29,8 @@ export function Navbar() {
     <>
       <div className="fixed top-[22px] left-1/2 z-50 w-full max-w-[1200px] px-6 sm:px-10"
            style={{ transform: 'translateZ(0) translateX(-50%)' }}>
-        <nav className="flex items-center justify-between w-full h-16 backdrop-blur-[5px] bg-white/43 border border-[#dedede] rounded-[10px] px-6"
-             style={{ willChange: 'backdrop-filter' }}>
+        <nav className="flex items-center justify-between w-full h-16 border border-[#dedede] rounded-[10px] px-6"
+             style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.93), rgba(250,250,250,0.85))' }}>
           <Link href="/" className="text-[18px] font-[600] text-foreground no-underline">
             Wallp.
           </Link>
@@ -44,7 +44,8 @@ export function Navbar() {
                   style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
                 />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44 mt-2 p-1.5 rounded-xl border border-border bg-white/95 backdrop-blur-sm shadow-lg">
+              <DropdownMenuContent align="end" className="w-44 mt-2 p-1.5 rounded-xl border border-border shadow-lg"
+                 style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.98), rgba(252,252,252,0.95))' }}>
                 {productLinks.map((link) => (
                   <DropdownMenuItem key={link.href} asChild>
                     <Link
