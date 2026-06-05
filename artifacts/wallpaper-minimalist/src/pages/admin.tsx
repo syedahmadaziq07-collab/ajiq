@@ -5,6 +5,10 @@ const ADMIN_TOKEN_KEY = "blanc_admin_token";
 const API = import.meta.env.VITE_API_URL ?? "";
 console.log("Admin API URL:", API || "(empty - using relative)");
 
+function FrameSize({ size }: { size: string }) {
+  return <span className="text-[10px] text-[#999] ml-1">({size})</span>;
+}
+
 function UploadButton({ onUpload }: { onUpload: (url: string) => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
@@ -270,14 +274,17 @@ function InlineText({ field, form, setForm, className, placeholder, rows = 1 }: 
   );
 }
 
-function InlineImage({ field, form, setForm, className, fallback }: { field: string; form: Record<string, string>; setForm: (f: Record<string, string>) => void; className?: string; fallback?: string }) {
+function InlineImage({ field, form, setForm, className, fallback, frameSize }: { field: string; form: Record<string, string>; setForm: (f: Record<string, string>) => void; className?: string; fallback?: string; frameSize?: string }) {
   const [editing, setEditing] = useState(false);
   const src = form[field] || fallback || "";
   if (editing) {
     return (
       <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40" onClick={() => setEditing(false)}>
         <div className="bg-white rounded-[12px] p-4 w-[300px] shadow-2xl" onClick={e => e.stopPropagation()}>
-          <p className="text-[12px] font-[500] text-[#000] mb-2">Image URL</p>
+          <div className="flex items-center gap-2 mb-2">
+            <p className="text-[12px] font-[500] text-[#000]">Image URL</p>
+            {frameSize && <FrameSize size={frameSize} />}
+          </div>
           <input autoFocus value={form[field] || ""} onChange={e => setForm({ ...form, [field]: e.target.value })}
             className="w-full border border-[#ddd] rounded px-2.5 py-1.5 text-[12px] outline-none focus:border-[#000] text-[#000] mb-2" />
           <UploadButton onUpload={(url) => { setForm({ ...form, [field]: url }); setEditing(false); }} />
@@ -372,7 +379,7 @@ function HomepageSettings() {
               { field: "templates_image", label: "Templates", fallback: defCat3 },
             ].map((cat) => (
               <div key={cat.field} className="rounded-[14px] overflow-hidden bg-[#fafafa] p-4 relative">
-                <InlineImage field={cat.field} form={form} setForm={setForm} fallback={cat.fallback}
+                <InlineImage field={cat.field} form={form} setForm={setForm} fallback={cat.fallback} frameSize="308×247"
                   className="w-full h-[140px] mb-3" />
                 <p className="text-[13px] font-[600] text-[#000]">{cat.label}</p>
               </div>
@@ -394,7 +401,7 @@ function HomepageSettings() {
             <div className="grid grid-cols-4 gap-3">
               {[1,2,3,4,5,6,7,8].map((i) => (
                 <div key={i} className={i === 1 ? "col-span-2 row-span-2" : i === 8 ? "col-span-2" : ""}>
-                  <InlineImage field={`featured_image_${i}`} form={form} setForm={setForm} fallback={defFeat[i-1]}
+                  <InlineImage field={`featured_image_${i}`} form={form} setForm={setForm} fallback={defFeat[i-1]} frameSize={{ 1: "400×400", 2: "200×200", 3: "200×200", 4: "200×200", 5: "200×200", 6: "200×200", 7: "200×200", 8: "400×200" }[i]}
                     className="w-full aspect-square" />
                 </div>
               ))}
@@ -569,6 +576,7 @@ function PostsTable({ onEdit, onClose: _onClose }: { onEdit: (p: PostForm) => vo
             <div className="flex gap-2 items-center">
               <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required />
               <UploadButton onUpload={(url) => setForm({ ...form, imageUrl: url })} />
+              <FrameSize size="card 4:3 ~300px" />
             </div>
           </FormField>
           <div className="flex gap-3">
@@ -626,6 +634,7 @@ function MediaTable({ prefix, onEdit: _onEdit, onClose: _onClose }: { prefix: st
             <div className="flex gap-2 items-center">
               <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required />
               <UploadButton onUpload={(url) => setForm({ ...form, imageUrl: url })} />
+              <FrameSize size="card 4:3 ~300px" />
             </div>
           </FormField>
           <FormField label="Download URL"><input value={form.downloadUrl} onChange={(e) => setForm({ ...form, downloadUrl: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
@@ -678,6 +687,7 @@ function GuidesTable() {
             <div className="flex gap-2 items-center">
               <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required />
               <UploadButton onUpload={(url) => setForm({ ...form, imageUrl: url })} />
+              <FrameSize size="card 4:3 ~300px" />
             </div>
           </FormField>
           <FormField label="Content"><textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={6} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none font-mono" required /></FormField>
