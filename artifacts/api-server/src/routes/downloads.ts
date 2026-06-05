@@ -4,6 +4,25 @@ import { and, eq } from "drizzle-orm";
 
 const router: IRouter = Router();
 
+const SUPABASE_URL = "https://dwovtevztmolttpohvym.supabase.co";
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3b3Z0ZXZ6dG1vbHR0cG9odnltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MTg1NzgsImV4cCI6MjA5NTk5NDU3OH0.NCQBn9eMEP37tX8jSLObchJ85HT28tZaZ8HvRPI9ZKk";
+
+async function generateSignedUrl(publicUrl: string, expiresInSec = 3600): Promise<string | null> {
+  const prefix = `${SUPABASE_URL}/storage/v1/object/public/`;
+  if (!publicUrl.startsWith(prefix)) return null;
+  const objectPath = publicUrl.slice(prefix.length);
+  try {
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/${objectPath}`, {
+      method: "POST",
+      headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ expiresIn: `${expiresInSec}` }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json() as { signedURL: string };
+    return data.signedURL;
+  } catch { return null; }
+}
+
 router.get("/download/:itemType/:itemId", async (req, res) => {
   try {
     const { itemType, itemId } = req.params;
@@ -51,7 +70,13 @@ router.get("/download/:itemType/:itemId", async (req, res) => {
       await db.insert(downloadsTable).values({ itemType, itemId: id, count: 1 });
     }
 
-    res.redirect(item.downloadUrl);
+    // If Supabase URL, generate signed URL (expires in 1 hour) instead of redirecting directly
+    const signedUrl = await generateSignedUrl(item.downloadUrl);
+    if (signedUrl) {
+      res.redirect(signedUrl);
+    } else {
+      res.redirect(item.downloadUrl);
+    }
   } catch (error) {
     res.status(500).json({ error: "Download failed" });
   }

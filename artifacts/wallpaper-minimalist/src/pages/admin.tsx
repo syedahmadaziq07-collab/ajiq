@@ -713,7 +713,12 @@ function MediaTable({ prefix, onEdit: _onEdit, onClose: _onClose }: { prefix: st
           </FormField>
           <FormField label="Description (short)"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" /></FormField>
           <FormField label="Content (details, one item per line)"><textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={4} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" /></FormField>
-          <FormField label="Download URL"><input value={form.downloadUrl} onChange={(e) => setForm({ ...form, downloadUrl: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
+          <FormField label="Download URL">
+            <div className="flex gap-2 items-center">
+              <input value={form.downloadUrl} onChange={(e) => setForm({ ...form, downloadUrl: e.target.value })} className="flex-1 border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required />
+              <UploadButton onUpload={(url) => setForm({ ...form, downloadUrl: url })} />
+            </div>
+          </FormField>
           <button type="submit" disabled={saveMut.isPending} className="bg-[#000] text-white rounded-[8px] h-[40px] text-[13px] font-[500] mt-2 disabled:opacity-50">{saveMut.isPending ? "Saving..." : "Save"}</button>
         </form>
       </Modal>
