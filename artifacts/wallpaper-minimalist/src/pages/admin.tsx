@@ -80,7 +80,7 @@ interface PostForm {
 }
 
 interface MediaForm {
-  title: string; slug: string; category: string; imageUrl: string; downloadUrl: string;
+  title: string; slug: string; category: string; imageUrl: string; downloadUrl: string; description: string; content: string;
 }
 
 interface GuideForm {
@@ -88,7 +88,7 @@ interface GuideForm {
 }
 
 const emptyPost = (): PostForm => ({ title: "", slug: "", excerpt: "", content: "", imageUrl: "", author: "Wallp.", publishedAt: new Date().toISOString().split("T")[0] });
-const emptyMedia = (): MediaForm => ({ title: "", slug: "", category: "", imageUrl: "", downloadUrl: "" });
+const emptyMedia = (): MediaForm => ({ title: "", slug: "", category: "", imageUrl: "", downloadUrl: "", description: "", content: "" });
 const emptyGuide = (): GuideForm => ({ title: "", slug: "", description: "", imageUrl: "", content: "" });
 
 // ---- Components ----
@@ -611,7 +611,7 @@ function MediaTable({ prefix, onEdit: _onEdit, onClose: _onClose }: { prefix: st
   const openNew = () => { setForm(emptyMedia()); setEditId(null); setModal(true); };
 
   const openEdit = (item: Record<string, unknown>) => {
-    setForm({ title: item.title as string, slug: item.slug as string, category: item.category as string, imageUrl: item.imageUrl as string, downloadUrl: item.downloadUrl as string });
+    setForm({ title: item.title as string, slug: item.slug as string, category: item.category as string, imageUrl: item.imageUrl as string, downloadUrl: item.downloadUrl as string, description: (item.description as string) || "", content: (item.content as string) || "" });
     setEditId(item.id as number);
     setModal(true);
   };
@@ -637,6 +637,8 @@ function MediaTable({ prefix, onEdit: _onEdit, onClose: _onClose }: { prefix: st
               <FrameSize size="card 4:3 ~300px" />
             </div>
           </FormField>
+          <FormField label="Description (short)"><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" /></FormField>
+          <FormField label="Content (details, one item per line)"><textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={4} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000] resize-none" /></FormField>
           <FormField label="Download URL"><input value={form.downloadUrl} onChange={(e) => setForm({ ...form, downloadUrl: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
           <button type="submit" disabled={saveMut.isPending} className="bg-[#000] text-white rounded-[8px] h-[40px] text-[13px] font-[500] mt-2 disabled:opacity-50">{saveMut.isPending ? "Saving..." : "Save"}</button>
         </form>

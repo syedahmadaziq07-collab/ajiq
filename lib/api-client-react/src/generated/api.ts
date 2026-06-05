@@ -280,6 +280,45 @@ export function useListWallpapers<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
+export const getGetWallpaperUrl = (slug: string) => `/api/wallpapers/${slug}`;
+
+export const getWallpaper = async (slug: string, options?: RequestInit): Promise<Wallpaper> => {
+  return customFetch<Wallpaper>(getGetWallpaperUrl(slug), { ...options, method: "GET" });
+};
+
+export const getGetWallpaperQueryKey = (slug: string) => [`/api/wallpapers/${slug}`] as const;
+
+export const getGetWallpaperQueryOptions = <
+  TData = Awaited<ReturnType<typeof getWallpaper>>,
+  TError = ErrorType<unknown>,
+>(slug: string, options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getWallpaper>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetWallpaperQueryKey(slug);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getWallpaper>>> = ({ signal }) =>
+    getWallpaper(slug, { signal, ...requestOptions });
+  return { queryKey, queryFn, enabled: !!slug, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getWallpaper>>, TError, TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetWallpaperQueryResult = NonNullable<Awaited<ReturnType<typeof getWallpaper>>>;
+export type GetWallpaperQueryError = ErrorType<unknown>;
+
+export function useGetWallpaper<
+  TData = Awaited<ReturnType<typeof getWallpaper>>,
+  TError = ErrorType<unknown>,
+>(slug: string, options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getWallpaper>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetWallpaperQueryOptions(slug, options);
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
 // ---------------------------------------------------------------------------
 // Templates
 // ---------------------------------------------------------------------------
@@ -319,6 +358,45 @@ export function useListTemplates<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getListTemplatesQueryOptions(options);
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+export const getGetTemplateUrl = (slug: string) => `/api/templates/${slug}`;
+
+export const getTemplate = async (slug: string, options?: RequestInit): Promise<Template> => {
+  return customFetch<Template>(getGetTemplateUrl(slug), { ...options, method: "GET" });
+};
+
+export const getGetTemplateQueryKey = (slug: string) => [`/api/templates/${slug}`] as const;
+
+export const getGetTemplateQueryOptions = <
+  TData = Awaited<ReturnType<typeof getTemplate>>,
+  TError = ErrorType<unknown>,
+>(slug: string, options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getTemplate>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const queryKey = queryOptions?.queryKey ?? getGetTemplateQueryKey(slug);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getTemplate>>> = ({ signal }) =>
+    getTemplate(slug, { signal, ...requestOptions });
+  return { queryKey, queryFn, enabled: !!slug, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getTemplate>>, TError, TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetTemplateQueryResult = NonNullable<Awaited<ReturnType<typeof getTemplate>>>;
+export type GetTemplateQueryError = ErrorType<unknown>;
+
+export function useGetTemplate<
+  TData = Awaited<ReturnType<typeof getTemplate>>,
+  TError = ErrorType<unknown>,
+>(slug: string, options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getTemplate>>, TError, TData>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetTemplateQueryOptions(slug, options);
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
   return { ...query, queryKey: queryOptions.queryKey };
 }

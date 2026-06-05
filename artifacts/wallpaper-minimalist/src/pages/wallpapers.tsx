@@ -1,32 +1,9 @@
-import { memo, useRef, useState, useEffect, useCallback } from "react";
+import { memo, useRef, useState, useEffect } from "react";
+import { Link } from "wouter";
 import { useListWallpapers } from "@workspace/api-client-react";
 import type { Wallpaper } from "@workspace/api-client-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { optimizeImage, srcset } from "../lib/image";
-
-const API = import.meta.env.VITE_API_URL ?? "";
-
-function useCreateCheckoutSession() {
-  const [loading, setLoading] = useState(false);
-  const buy = useCallback(async (itemType: string, itemId: number) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`${API}/api/create-checkout-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ itemType, itemId }),
-      });
-      if (!res.ok) throw new Error("Checkout failed");
-      const { url } = await res.json();
-      window.location.href = url;
-    } catch {
-      alert("Checkout failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-  return { buy, loading };
-}
 
 function PriceBadge({ price }: { price: number | null | undefined }) {
   if (!price) {
@@ -37,15 +14,11 @@ function PriceBadge({ price }: { price: number | null | undefined }) {
 
 const WallpaperCard = memo(function WallpaperCard({
   wallpaper,
-  onBuy,
-  loading,
 }: {
   wallpaper: Wallpaper;
-  onBuy: (id: number) => void;
-  loading: boolean;
 }) {
   return (
-    <div className="border border-[#EEEEEE] rounded-[10px] overflow-hidden group hover:scale-[1.01] transition-transform duration-200 bg-white flex flex-col">
+    <Link href={`/wallpapers/${wallpaper.slug}`} className="block border border-[#EEEEEE] rounded-[10px] overflow-hidden group hover:scale-[1.01] transition-transform duration-200 bg-white flex flex-col">
       <div className="relative aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
         <img
           src={optimizeImage(wallpaper.imageUrl, 400)}
@@ -56,33 +29,17 @@ const WallpaperCard = memo(function WallpaperCard({
           decoding="async"
           className="w-full h-full object-cover"
         />
-        {!wallpaper.price && (
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-            <a
-              href={`${API}/api/download/wallpaper/${wallpaper.id}`}
-              className="bg-[#000] text-white rounded-[8px] px-4 py-2 text-[13px] font-[500] hover:bg-[#222]"
-            >
-              Download
-            </a>
-          </div>
-        )}
       </div>
       <div className="p-3 pb-1 flex flex-col justify-end">
         <h3 className="text-[13px] font-[600] text-[#000]">{wallpaper.title}</h3>
         <div className="mt-2 mb-3 flex items-center gap-2">
           <PriceBadge price={wallpaper.price} />
         </div>
-        {wallpaper.price && (
-          <button
-            onClick={() => onBuy(wallpaper.id)}
-            disabled={loading}
-            className="w-full bg-[#0066cc] text-white rounded-[8px] h-[36px] text-[13px] font-[500] hover:bg-[#0052a3] transition-colors disabled:opacity-50"
-          >
-            {loading ? "Redirecting..." : `Buy - $${(wallpaper.price / 100).toFixed(2)}`}
-          </button>
-        )}
+        <div className="w-full bg-[#000] text-white rounded-[8px] h-[36px] text-[13px] font-[500] flex items-center justify-center hover:bg-[#222] transition-colors">
+          View Details
+        </div>
       </div>
-    </div>
+    </Link>
   );
 });
 
@@ -109,7 +66,6 @@ export default function Wallpapers() {
   const { data } = useListWallpapers();
   const wallpapers = Array.isArray(data) ? data : [];
   const [activeFilter, setActiveFilter] = useState("All");
-  const { buy, loading } = useCreateCheckoutSession();
   const scrollRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const columns = useColumnCount(gridRef);
@@ -179,8 +135,6 @@ export default function Wallpapers() {
                     <WallpaperCard
                       key={wallpaper.id}
                       wallpaper={wallpaper}
-                      onBuy={buy}
-                      loading={loading}
                     />
                   ))}
                 </div>

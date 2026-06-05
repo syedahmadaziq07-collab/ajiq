@@ -1,32 +1,9 @@
-import { memo, useRef, useState, useEffect, useCallback } from "react";
+import { memo, useRef, useState, useEffect } from "react";
+import { Link } from "wouter";
 import { useListTemplates } from "@workspace/api-client-react";
 import type { Template } from "@workspace/api-client-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { optimizeImage, srcset } from "../lib/image";
-
-const API = import.meta.env.VITE_API_URL ?? "";
-
-function useCreateCheckoutSession() {
-  const [loading, setLoading] = useState(false);
-  const buy = useCallback(async (itemType: string, itemId: number) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`${API}/api/create-checkout-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ itemType, itemId }),
-      });
-      if (!res.ok) throw new Error("Checkout failed");
-      const { url } = await res.json();
-      window.location.href = url;
-    } catch {
-      alert("Checkout failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-  return { buy, loading };
-}
 
 function PriceBadge({ price }: { price: number | null | undefined }) {
   if (!price) {
@@ -37,15 +14,11 @@ function PriceBadge({ price }: { price: number | null | undefined }) {
 
 const TemplateCard = memo(function TemplateCard({
   template,
-  onBuy,
-  loading,
 }: {
   template: Template;
-  onBuy: (id: number) => void;
-  loading: boolean;
 }) {
   return (
-    <div className="border border-[#EEEEEE] rounded-[10px] overflow-hidden group hover:scale-[1.01] transition-transform duration-200 bg-white flex flex-col">
+    <Link href={`/templates/${template.slug}`} className="block border border-[#EEEEEE] rounded-[10px] overflow-hidden group hover:scale-[1.01] transition-transform duration-200 bg-white flex flex-col">
       <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
         <img
           src={optimizeImage(template.imageUrl, 400)}
@@ -64,24 +37,11 @@ const TemplateCard = memo(function TemplateCard({
             <PriceBadge price={template.price} />
           </div>
         </div>
-        {template.price ? (
-          <button
-            onClick={() => onBuy(template.id)}
-            disabled={loading}
-            className="w-full bg-[#0066cc] text-white rounded-[8px] h-[40px] text-[13px] font-[500] hover:bg-[#0052a3] transition-colors disabled:opacity-50"
-          >
-            {loading ? "Redirecting..." : `Buy - $${(template.price / 100).toFixed(2)}`}
-          </button>
-        ) : (
-          <a
-            href={`${API}/api/download/template/${template.id}`}
-            className="w-full bg-[#000] text-white rounded-[8px] h-[40px] text-[13px] font-[500] hover:bg-[#222] transition-colors flex items-center justify-center"
-          >
-            Get Template
-          </a>
-        )}
+        <div className="w-full bg-[#000] text-white rounded-[8px] h-[40px] text-[13px] font-[500] flex items-center justify-center hover:bg-[#222] transition-colors">
+          View Details
+        </div>
       </div>
-    </div>
+    </Link>
   );
 });
 
@@ -108,7 +68,6 @@ export default function Templates() {
   const { data } = useListTemplates();
   const templates = Array.isArray(data) ? data : [];
   const [activeFilter, setActiveFilter] = useState("All");
-  const { buy, loading } = useCreateCheckoutSession();
   const scrollRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const columns = useColumnCount(gridRef);
@@ -178,8 +137,6 @@ export default function Templates() {
                     <TemplateCard
                       key={template.id}
                       template={template}
-                      onBuy={buy}
-                      loading={loading}
                     />
                   ))}
                 </div>

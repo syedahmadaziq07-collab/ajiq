@@ -36,6 +36,8 @@ export interface Wallpaper {
   category: string;
   imageUrl: string;
   downloadUrl: string;
+  description?: string | null;
+  content?: string | null;
   price?: number | null;
   createdAt: string;
 }
@@ -47,6 +49,8 @@ export interface Template {
   category: string;
   imageUrl: string;
   downloadUrl: string;
+  description?: string | null;
+  content?: string | null;
   price?: number | null;
   createdAt: string;
 }
