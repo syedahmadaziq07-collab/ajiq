@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { useListGuides } from "@workspace/api-client-react";
 import type { Guide } from "@workspace/api-client-react";
@@ -7,34 +8,17 @@ export default function Guides() {
   const guides = Array.isArray(data) ? data : [];
 
   return (
-    <div className="w-full min-h-screen pb-10">
-      <section className="px-4 sm:px-8 pt-12 pb-4 max-w-[1200px] mx-auto">
-        <h1 className="text-[32px] md:text-[64px] font-[800] tracking-[-2px] md:tracking-[-5px] leading-[0.9] text-[#000]">
-          Guides
-        </h1>
-        <p className="text-[#747474] text-[15px] mt-4">
-          Step-by-step guides to build a cleaner digital life.
-        </p>
+    <div className="w-full min-h-screen pb-20">
+      <section className="px-4 sm:px-8 pt-12 pb-4 max-w-[680px] mx-auto">
+        <h1 className="text-[32px] md:text-[48px] font-[700] tracking-[-1.5px] leading-[1.05] text-[#000]">Guides</h1>
       </section>
 
-      <section className="mt-8">
+      <section className="px-4 sm:px-8 max-w-[680px] mx-auto">
         {guides.map((guide: Guide) => (
-          <div key={guide.id} className="border-b border-[#EEEEEE]">
-            <div className="flex items-center gap-4 py-5 max-w-[1200px] mx-auto px-4 sm:px-8">
-              <div className="w-[80px] h-[80px] shrink-0 rounded-[8px] overflow-hidden bg-[#F5F5F5]">
-                <img src={guide.imageUrl} alt={guide.title} className="w-full h-full object-cover" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-[700] text-[15px] text-[#000]">{guide.title}</h3>
-                <p className="text-[#747474] text-[13px] mt-1 line-clamp-2">{guide.description}</p>
-              </div>
-              <div className="shrink-0 pl-2">
-                <Link href={`/guides/${guide.slug}`} className="text-[#0000EE] text-[13px] hover:underline underline-offset-2">
-                  Read Guide →
-                </Link>
-              </div>
-            </div>
-          </div>
+          <Link key={guide.id} href={`/guides/${guide.slug}`} className="block py-5 border-b border-[#eee] group">
+            <span className="text-[15px] font-[600] text-[#000]">{guide.title}</span>
+            <p className="text-[14px] text-[#747474] mt-0.5 leading-relaxed">{guide.description}</p>
+          </Link>
         ))}
       </section>
     </div>
