@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "wouter";
 import { useListGuides } from "@workspace/api-client-react";
 import type { Guide } from "@workspace/api-client-react";
@@ -14,10 +13,10 @@ export default function Guides() {
       </section>
 
       <section className="px-4 sm:px-8 max-w-[680px] mx-auto">
-        {guides.map((guide: Guide) => (
-          <Link key={guide.id} href={`/guides/${guide.slug}`} className="block py-5 border-b border-[#eee] group">
-            <span className="text-[15px] font-[600] text-[#000]">{guide.title}</span>
-            <p className="text-[14px] text-[#747474] mt-0.5 leading-relaxed">{guide.description}</p>
+        {guides.map((g: Guide) => (
+          <Link key={g.id} href={`/guides/${g.slug}`} className="block py-5 border-b border-[#eee] group">
+            <span className="text-[15px] font-[600] text-[#000]">{g.title}</span>
+            <p className="text-[14px] text-[#747474] mt-0.5 leading-relaxed">{g.description}</p>
           </Link>
         ))}
       </section>
