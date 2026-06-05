@@ -2,7 +2,7 @@ import { memo, useRef, useState, useEffect, useCallback } from "react";
 import { useListWallpapers } from "@workspace/api-client-react";
 import type { Wallpaper } from "@workspace/api-client-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { optimizeImage } from "../lib/image";
+import { optimizeImage, srcset } from "../lib/image";
 
 const API = import.meta.env.VITE_API_URL ?? "";
 
@@ -48,7 +48,9 @@ const WallpaperCard = memo(function WallpaperCard({
     <div className="border border-[#EEEEEE] rounded-[10px] overflow-hidden group hover:scale-[1.01] transition-transform duration-200 bg-white flex flex-col">
       <div className="relative aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
         <img
-          src={optimizeImage(wallpaper.imageUrl, 600)}
+          src={optimizeImage(wallpaper.imageUrl, 400)}
+          srcSet={srcset(wallpaper.imageUrl)}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           alt={wallpaper.title}
           loading="lazy"
           decoding="async"

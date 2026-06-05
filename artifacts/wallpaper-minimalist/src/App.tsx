@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Lenis from "lenis";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { setBaseUrl } from "@workspace/api-client-react";
@@ -50,16 +48,6 @@ function Router() {
 }
 
 function App() {
-  useEffect(() => {
-    const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-    return () => lenis.destroy();
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

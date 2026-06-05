@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useListBlogPosts, useSubscribeNewsletter } from "@workspace/api-client-react";
-import { useScrollReveal } from "../lib/use-scroll-reveal";
+import { optimizeImage, srcset } from "../lib/image";
 
 const API = import.meta.env.VITE_API_URL ?? "";
 
@@ -83,11 +83,6 @@ export default function Home() {
   const BLOG_DESC = settings.blog_description || "Insights and practical tips to create a clean, functional environment and digital life across devices and workspaces.";
   const NEWSLETTER_TEXT = settings.newsletter_text || "Join for thoughtful insights, exclusive offers, and ideas to create more balanced and functional setups.";
 
-  const heroReveal = useScrollReveal();
-  const catsReveal = useScrollReveal();
-  const featuredReveal = useScrollReveal();
-  const blogReveal = useScrollReveal();
-  const newsletterReveal = useScrollReveal();
 
   const posts = (Array.isArray(blogPosts) && blogPosts.length ? blogPosts : FALLBACK_POSTS).slice(0, 3);
   const [first, second, third] = posts.length === 3 ? posts : [];
@@ -119,22 +114,17 @@ export default function Home() {
         </motion.p>
       </section>
 
-      <section ref={catsReveal.ref} className={`px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden scroll-reveal ${catsReveal.visible ? "visible" : ""}`}>
+      <section className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden">
         {[
-          { href: "/wallpapers", label: "Wallpapers", desc: "Browse all Wallpapers", img: WALLPAPERS_IMG, delay: 0, priority: "high" },
-          { href: "/guides", label: "Guides", desc: "Browse all Guides", img: GUIDES_IMG, delay: 0.1 },
-          { href: "/templates", label: "Templates", desc: "Browse all Templates", img: TEMPLATES_IMG, delay: 0.2 },
+          { href: "/wallpapers", label: "Wallpapers", desc: "Browse all Wallpapers", img: WALLPAPERS_IMG },
+          { href: "/guides", label: "Guides", desc: "Browse all Guides", img: GUIDES_IMG },
+          { href: "/templates", label: "Templates", desc: "Browse all Templates", img: TEMPLATES_IMG },
         ].map((cat) => (
-          <motion.div
-            key={cat.href}
-            initial={{ y: 200, opacity: 0 }}
-            animate={catsReveal.visible ? { y: 0, opacity: 1 } : {}}
-            transition={{ type: "spring", damping: 60, stiffness: 400, delay: cat.delay }}
-          >
+          <div key={cat.href}>
             <Link href={cat.href} className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa]">
               <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
                 <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
-                  <img src={cat.img} alt={cat.label} width="308" height="247" loading={cat.priority ? "eager" : "lazy"} decoding="async" fetchpriority={cat.priority} className="w-[308px] h-[247px] object-contain bg-[#f5f5f5]" />
+                  <img src={optimizeImage(cat.img, 400)} srcSet={srcset(cat.img)} sizes="(max-width: 640px) 100vw, 33vw" alt={cat.label} width="308" height="247" loading="lazy" decoding="async" className="w-[308px] h-[247px] object-contain bg-[#f5f5f5]" />
                 </div>
                 <div>
                   <h3 className="text-[#000] text-[15px] font-[600] tracking-[-0.02em]">{cat.label}</h3>
@@ -147,11 +137,11 @@ export default function Home() {
                 </svg>
               </div>
             </Link>
-          </motion.div>
-        ))}
-      </section>
+            </div>
+          ))}
+        </section>
 
-      <section ref={featuredReveal.ref} className={`px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden scroll-reveal ${featuredReveal.visible ? "visible" : ""}`}>
+      <section className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden">
         <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-[500] tracking-[-1.5px] leading-[1.05] text-[#000] mb-4">
           {FEATURED_HEADING}
         </h2>
@@ -180,12 +170,13 @@ export default function Home() {
                 <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <div style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}>
                     <img
-                      src={url}
+                      src={optimizeImage(url, 400)}
+                      srcSet={srcset(url)}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       alt=""
                       loading="lazy"
                       decoding="async"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05] will-change-transform bg-[#f5f5f5]"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05] bg-[#f5f5f5]"
                     />
                   </div>
                 </div>
@@ -195,7 +186,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section ref={blogReveal.ref} className={`px-6 sm:px-10 pt-[100px] pb-0 max-w-[1240px] mx-auto overflow-hidden scroll-reveal ${blogReveal.visible ? "visible" : ""}`}>
+      <section className="px-6 sm:px-10 pt-[100px] pb-0 max-w-[1240px] mx-auto overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[35px] sm:gap-10 mb-[50px] sm:mb-[70px]">
           <h2 className="text-[44px] sm:text-[31px] lg:text-[54px] font-[600] tracking-[-0.03em] leading-[1.6] text-[#000]">
             {BLOG_HEADING}
@@ -210,7 +201,7 @@ export default function Home() {
               <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {first.imageUrl ? (
-                    <img src={first.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
+                    <img src={optimizeImage(first.imageUrl, 400)} srcSet={srcset(first.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -229,7 +220,7 @@ export default function Home() {
               <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {second.imageUrl ? (
-                    <img src={second.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
+                    <img src={optimizeImage(second.imageUrl, 400)} srcSet={srcset(second.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -248,7 +239,7 @@ export default function Home() {
               <div className="aspect-[4/3] w-full p-[9px]">
                 <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
                   {third.imageUrl ? (
-                    <img src={third.imageUrl} alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
+                    <img src={optimizeImage(third.imageUrl, 400)} srcSet={srcset(third.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
                   )}
@@ -265,7 +256,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section ref={newsletterReveal.ref} className={`px-6 sm:px-10 pt-10 pb-20 max-w-[1240px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden scroll-reveal ${newsletterReveal.visible ? "visible" : ""}`}>
+      <section className="px-6 sm:px-10 pt-10 pb-20 max-w-[1240px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden">
         <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[420px]">
           {NEWSLETTER_TEXT}
         </p>
