@@ -32,11 +32,11 @@ export default function Templates() {
       <section className="px-4 sm:px-8 max-w-[680px] mx-auto">
         {filtered.map((template: Template) => (
           <Link key={template.id} href={`/templates/${template.slug}`} className="block py-5 border-b border-[#eee] group">
-            <span className="text-[15px] font-[600] text-[#000]">{template.title}</span>
+            <p className="text-[15px] font-[600] text-[#000]">{template.title}</p>
             {template.price && (
-              <span className="text-[15px] text-[#747474] ml-2">${(template.price / 100).toFixed(2)}</span>
+              <p className="text-[15px] text-[#000] mt-1">${(template.price / 100).toFixed(2)}</p>
             )}
-            <p className="text-[14px] text-[#747474] mt-0.5 leading-relaxed">{template.description}</p>
+            <p className="text-[14px] text-[#747474] mt-1 leading-relaxed">{template.description}</p>
           </Link>
         ))}
       </section>
