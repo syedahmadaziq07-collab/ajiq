@@ -1,6 +1,8 @@
 import { Link } from "wouter";
+import { motion } from "framer-motion";
 import { useListBlogPosts } from "@workspace/api-client-react";
 import { optimizeImage } from "../lib/image";
+import { staggerContainer, fadeInLeft, fadeInUp } from "../lib/animations";
 
 const FALLBACK_POSTS = [
   {
@@ -44,17 +46,28 @@ export default function Blog() {
 
   return (
     <div className="w-full min-h-screen pb-12">
-      <section className="px-4 sm:px-8 pt-12 pb-4 max-w-[1200px] mx-auto">
+      <motion.section
+        className="px-4 sm:px-8 pt-12 pb-4 max-w-[1200px] mx-auto"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      >
         <h1 className="text-[32px] md:text-[64px] font-[800] tracking-[-2px] md:tracking-[-5px] leading-[0.9] text-[#000]">
           Blog
         </h1>
         <p className="text-[#747474] text-[15px] mt-4">
           Insights and practical tips for a cleaner digital life.
         </p>
-      </section>
+      </motion.section>
 
       {top && (
-        <section className="px-4 sm:px-8 mt-8 mb-8 max-w-[1200px] mx-auto border-b border-[#EEEEEE] pb-8">
+        <motion.section
+          className="px-4 sm:px-8 mt-8 mb-8 max-w-[1200px] mx-auto border-b border-[#EEEEEE] pb-8"
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           <Link href={`/blog/${top.slug}`} className="block group" data-testid="featured-post">
             <div className="w-full h-[240px] rounded-[10px] overflow-hidden bg-gradient-to-b from-[#e0e0e0] to-[#b0b0b0]">
               <img
@@ -73,19 +86,25 @@ export default function Blog() {
             <p className="text-[#747474] text-[14px] mt-2 leading-[1.6]">{top.excerpt || ""}</p>
             <p className="text-[#747474] text-[12px] mt-2">{formatDate(top.publishedAt)}</p>
           </Link>
-        </section>
+        </motion.section>
       )}
 
-      <section className="px-4 sm:px-8 max-w-[1200px] mx-auto">
+      <motion.section
+        className="px-4 sm:px-8 max-w-[1200px] mx-auto"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
         {rest.map((post, i) => (
-          <div key={post.id} className="flex justify-between items-center border-b border-[#EEEEEE] py-4">
+          <motion.div key={post.id} variants={fadeInLeft} className="flex justify-between items-center border-b border-[#EEEEEE] py-4">
             <span className="text-[#747474] text-[12px] shrink-0 mr-4">{formatDate(post.publishedAt)}</span>
             <Link href={`/blog/${post.slug}`} className="font-[700] text-[14px] text-[#000] hover:underline underline-offset-2 text-right" data-testid={`post-${post.id}`}>
               {post.title}
             </Link>
-          </div>
+          </motion.div>
         ))}
-      </section>
+      </motion.section>
     </div>
   );
 }

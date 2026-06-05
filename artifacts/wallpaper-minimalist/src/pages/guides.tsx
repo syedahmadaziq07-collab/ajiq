@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
+import { motion } from "framer-motion";
 import { useListGuides } from "@workspace/api-client-react";
 import type { Guide } from "@workspace/api-client-react";
 import { optimizeImage } from "../lib/image";
+import { staggerContainer, fadeInUpDelayed } from "../lib/animations";
 
 export default function Guides() {
   const { data, isLoading, error } = useListGuides();
@@ -69,11 +71,22 @@ export default function Guides() {
 
   return (
     <div className="w-full min-h-screen pb-20">
-      <section className="px-4 sm:px-8 pt-12 pb-8 max-w-[1200px] mx-auto">
+      <motion.section
+        className="px-4 sm:px-8 pt-12 pb-8 max-w-[1200px] mx-auto"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      >
         <h1 className="text-[32px] md:text-[48px] font-[700] tracking-[-1.5px] leading-[1.05] text-[#000]">Guides</h1>
-      </section>
+      </motion.section>
 
-      <section className="px-4 sm:px-8 max-w-[1200px] mx-auto">
+      <motion.section
+        className="px-4 sm:px-8 max-w-[1200px] mx-auto"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.05 }}
+      >
         {guides.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <p className="text-[#747474] text-[16px]">No guides yet. Check back soon!</p>
@@ -83,7 +96,7 @@ export default function Guides() {
             {guides.map((g: Guide, i: number) => {
               const price = (g as any).price as number | null | undefined;
               return (
-                <div key={g.id} data-idx={i} style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}>
+                <motion.div key={g.id} variants={fadeInUpDelayed} custom={i} data-idx={i} style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}>
                   <Link href={`/guides/${g.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow no-underline">
                     <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
                       <img src={optimizeImage(g.imageUrl, 400)} alt={g.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
@@ -101,12 +114,12 @@ export default function Guides() {
                       </div>
                     </div>
                   </Link>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         )}
-      </section>
+      </motion.section>
     </div>
   );
 }

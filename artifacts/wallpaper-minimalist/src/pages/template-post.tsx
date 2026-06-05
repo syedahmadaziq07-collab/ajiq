@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGetTemplate } from "@workspace/api-client-react";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 
@@ -64,33 +65,44 @@ export default function TemplatePost() {
           <div className="w-full lg:w-[60%]">
             <div className="relative bg-[#f9f9f9] rounded-[16px] overflow-hidden shadow-sm">
               <div className="aspect-[4/3] relative flex items-center justify-center p-4">
-                <img
-                  src={images[imgIndex] || item.imageUrl}
-                  alt={item.title}
-                  width="4"
-                  height="3"
-                  className="w-full h-full object-contain rounded-[8px]"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={imgIndex}
+                    src={images[imgIndex] || item.imageUrl}
+                    alt={item.title}
+                    width="4"
+                    height="3"
+                    className="w-full h-full object-contain rounded-[8px]"
+                    loading="lazy"
+                    decoding="async"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  />
+                </AnimatePresence>
               </div>
 
               {images.length > 1 && (
                 <>
-                  <button
+                  <motion.button
                     onClick={prevImg}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm transition-colors"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm"
                     aria-label="Previous image"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     <ChevronLeft className="w-5 h-5 text-[#444]" />
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
                     onClick={nextImg}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm"
                     aria-label="Next image"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     <ChevronRight className="w-5 h-5 text-[#444]" />
-                  </button>
+                  </motion.button>
 
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
                     {images.map((_: string, i: number) => (

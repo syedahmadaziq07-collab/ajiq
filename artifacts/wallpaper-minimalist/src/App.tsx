@@ -1,5 +1,5 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { setBaseUrl } from "@workspace/api-client-react";
@@ -15,22 +15,14 @@ import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
 import Contact from "@/pages/contact";
 import Success from "@/pages/success";
-import Admin from "@/pages/admin";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
+const Admin = lazy(() => import("@/pages/admin"));
+
 const API_URL = import.meta.env.VITE_API_URL ?? "";
 if (API_URL) setBaseUrl(API_URL);
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: Infinity,
-      gcTime: 1000 * 60 * 60,
-    },
-  },
-});
 
 function Router() {
   return (
@@ -49,7 +41,11 @@ function Router() {
           <Route path="/blog/:slug" component={BlogPost} />
           <Route path="/success" component={Success} />
           <Route path="/contact" component={Contact} />
-          <Route path="/admin" component={Admin} />
+          <Route path="/admin">
+            <Suspense fallback={<div className="w-full min-h-screen flex items-center justify-center"><p className="text-[#747474]">Loading...</p></div>}>
+              <Admin />
+            </Suspense>
+          </Route>
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -60,14 +56,12 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <TooltipProvider>
+      <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+        <Router />
+      </WouterRouter>
+      <Toaster />
+    </TooltipProvider>
   );
 }
 

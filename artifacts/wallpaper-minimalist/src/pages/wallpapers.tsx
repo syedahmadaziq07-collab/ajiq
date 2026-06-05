@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
+import { motion } from "framer-motion";
 import { useListWallpapers } from "@workspace/api-client-react";
 import type { Wallpaper } from "@workspace/api-client-react";
 import { optimizeImage } from "../lib/image";
+import { staggerContainer, fadeInUpDelayed } from "../lib/animations";
 
 export default function Wallpapers() {
   const { data, isLoading, error } = useListWallpapers();
@@ -69,11 +71,22 @@ export default function Wallpapers() {
 
   return (
     <div className="w-full min-h-screen pb-20">
-      <section className="px-4 sm:px-8 pt-12 pb-8 max-w-[1200px] mx-auto">
+      <motion.section
+        className="px-4 sm:px-8 pt-12 pb-8 max-w-[1200px] mx-auto"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      >
         <h1 className="text-[32px] md:text-[48px] font-[700] tracking-[-1.5px] leading-[1.05] text-[#000]">Wallpapers</h1>
-      </section>
+      </motion.section>
 
-      <section className="px-4 sm:px-8 max-w-[1200px] mx-auto">
+      <motion.section
+        className="px-4 sm:px-8 max-w-[1200px] mx-auto"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.05 }}
+      >
         {wallpapers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <p className="text-[#747474] text-[16px]">No wallpapers yet. Check back soon!</p>
@@ -81,7 +94,7 @@ export default function Wallpapers() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {wallpapers.map((w: Wallpaper, i: number) => (
-              <div key={w.id} data-idx={i} style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}>
+              <motion.div key={w.id} variants={fadeInUpDelayed} custom={i} data-idx={i} style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}>
                 <Link href={`/wallpapers/${w.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow no-underline">
                   <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
                     <img src={optimizeImage(w.imageUrl, 400)} alt={w.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
@@ -99,11 +112,11 @@ export default function Wallpapers() {
                     </div>
                   </div>
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
-      </section>
+      </motion.section>
     </div>
   );
 }

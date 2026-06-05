@@ -1,8 +1,10 @@
 import { Link } from "wouter";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+
 import { useListBlogPosts, useSubscribeNewsletter } from "@workspace/api-client-react";
 import { optimizeImage, srcset } from "../lib/image";
+import { fadeInUp, staggerContainer, fadeInUpDelayed, scaleIn } from "../lib/animations";
 
 const API = import.meta.env.VITE_API_URL ?? "";
 
@@ -104,29 +106,35 @@ export default function Home() {
       <section className="pt-[79px] pb-[13px] px-6 sm:px-10 md:pt-[128px] md:pb-[51px] max-w-[1200px] mx-auto overflow-hidden">
         <motion.h1
           className="text-[93px] sm:text-[195px] md:text-[335px] font-[600] tracking-[-0.06em] leading-[0.9] text-[#000]"
-          initial={{ y: 200, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", damping: 80, stiffness: 400 }}
+          initial={{ opacity: 0, y: 120 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           {HERO_HEADING}
         </motion.h1>
         <motion.p
           className="text-[#747474] text-[15px] sm:text-[21px] md:text-[24px] font-[500] leading-[1.2] max-w-[600px] mt-6"
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", damping: 60, stiffness: 400, delay: 0.75 }}
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
           {HERO_SUBTEXT}
         </motion.p>
       </section>
 
-      <section className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden">
+      <motion.section
+        className="px-6 sm:px-10 pb-10 max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5 overflow-hidden"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         {[
           { href: "/wallpapers", label: WALLPAPERS_LABEL, desc: WALLPAPERS_DESC, img: WALLPAPERS_IMG },
           { href: "/guides", label: GUIDES_LABEL, desc: GUIDES_DESC, img: GUIDES_IMG },
           { href: "/templates", label: TEMPLATES_LABEL, desc: TEMPLATES_DESC, img: TEMPLATES_IMG },
-        ].map((cat) => (
-          <div key={cat.href}>
+        ].map((cat, i) => (
+          <motion.div key={cat.href} variants={fadeInUpDelayed} custom={i}>
             <Link href={cat.href} className="group block relative rounded-[16px] overflow-hidden bg-[#fafafa]">
               <div className="pt-[55px] px-[25px] pb-[30px] flex flex-col gap-[27px]">
                 <div className="h-[262px] pt-[10px] pb-[10px] px-[15px] flex items-center justify-center overflow-visible">
@@ -143,11 +151,17 @@ export default function Home() {
                 </svg>
               </div>
             </Link>
-            </div>
+            </motion.div>
           ))}
-        </section>
+        </motion.section>
 
-      <section className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden">
+      <motion.section
+        className="px-6 sm:px-10 py-10 max-w-[1200px] mx-auto border-t border-[#EEEEEE] overflow-hidden"
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+      >
         <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-[500] tracking-[-1.5px] leading-[1.05] text-[#000] mb-4">
           {FEATURED_HEADING}
         </h2>
@@ -193,79 +207,110 @@ export default function Home() {
             );
           })}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="px-6 sm:px-10 pt-[100px] pb-0 max-w-[1240px] mx-auto overflow-hidden">
+      <motion.section
+        className="px-6 sm:px-10 pt-[100px] pb-0 max-w-[1240px] mx-auto overflow-hidden"
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+      >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[35px] sm:gap-10 mb-[50px] sm:mb-[70px]">
-          <h2 className="text-[44px] sm:text-[31px] lg:text-[54px] font-[600] tracking-[-0.03em] leading-[1.6] text-[#000]">
+          <motion.h2
+            className="text-[44px] sm:text-[31px] lg:text-[54px] font-[600] tracking-[-0.03em] leading-[1.6] text-[#000]"
+            variants={fadeInUpDelayed} custom={0}
+          >
             {BLOG_HEADING}
-          </h2>
-          <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[620px] shrink-0">
+          </motion.h2>
+          <motion.p
+            className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[620px] shrink-0"
+            variants={fadeInUpDelayed} custom={1}
+          >
             {BLOG_DESC}
-          </p>
+          </motion.p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" style={{ gridAutoRows: 'minmax(0, 1fr)' }}>
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          style={{ gridAutoRows: 'minmax(0, 1fr)' }}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
           {first && (
-            <Link href={`/blog/${first.slug}`} className="group block rounded-[18px] overflow-hidden">
-              <div className="aspect-[4/3] w-full p-[9px]">
-                <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
-                  {first.imageUrl ? (
-                    <img src={optimizeImage(first.imageUrl, 400)} srcSet={srcset(first.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
-                  )}
+            <motion.div variants={scaleIn}>
+              <Link href={`/blog/${first.slug}`} className="group block rounded-[18px] overflow-hidden">
+                <div className="aspect-[4/3] w-full p-[9px]">
+                  <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
+                    {first.imageUrl ? (
+                      <img src={optimizeImage(first.imageUrl, 400)} srcSet={srcset(first.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
-                <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
-                  On <span className="text-[#000]">{formatDate(first.publishedAt)}</span>
-                </p>
-                <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{first.title}</h3>
-              </div>
-            </Link>
+                <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
+                  <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
+                    On <span className="text-[#000]">{formatDate(first.publishedAt)}</span>
+                  </p>
+                  <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{first.title}</h3>
+                </div>
+              </Link>
+            </motion.div>
           )}
           {second && (
-            <Link href={`/blog/${second.slug}`} className="group block rounded-[18px] overflow-hidden">
-              <div className="aspect-[4/3] w-full p-[9px]">
-                <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
-                  {second.imageUrl ? (
-                    <img src={optimizeImage(second.imageUrl, 400)} srcSet={srcset(second.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
-                  )}
+            <motion.div variants={scaleIn}>
+              <Link href={`/blog/${second.slug}`} className="group block rounded-[18px] overflow-hidden">
+                <div className="aspect-[4/3] w-full p-[9px]">
+                  <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
+                    {second.imageUrl ? (
+                      <img src={optimizeImage(second.imageUrl, 400)} srcSet={srcset(second.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
-                <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
-                  On <span className="text-[#000]">{formatDate(second.publishedAt)}</span>
-                </p>
-                <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{second.title}</h3>
-              </div>
-            </Link>
+                <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
+                  <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
+                    On <span className="text-[#000]">{formatDate(second.publishedAt)}</span>
+                  </p>
+                  <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{second.title}</h3>
+                </div>
+              </Link>
+            </motion.div>
           )}
           {third && (
-            <Link href={`/blog/${third.slug}`} className="group block rounded-[18px] overflow-hidden">
-              <div className="aspect-[4/3] w-full p-[9px]">
-                <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
-                  {third.imageUrl ? (
-                    <img src={optimizeImage(third.imageUrl, 400)} srcSet={srcset(third.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
-                  )}
+            <motion.div variants={scaleIn}>
+              <Link href={`/blog/${third.slug}`} className="group block rounded-[18px] overflow-hidden">
+                <div className="aspect-[4/3] w-full p-[9px]">
+                  <div className="w-full h-full border-[3px] border-white/40 rounded-[10px] overflow-hidden">
+                    {third.imageUrl ? (
+                      <img src={optimizeImage(third.imageUrl, 400)} srcSet={srcset(third.imageUrl)} sizes="(max-width: 640px) 100vw, 50vw" alt="" width="800" height="600" loading="lazy" decoding="async" className="w-full h-full object-cover bg-[#f5f5f5]" />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#f0f0f0] to-[#e0e0e0]" />
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
-                <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
-                  On <span className="text-[#000]">{formatDate(third.publishedAt)}</span>
-                </p>
-                <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{third.title}</h3>
-              </div>
-            </Link>
+                <div className="px-[25px] pt-[7px] pb-[25px] flex flex-col gap-5">
+                  <p className="text-[15px] sm:text-[14px] lg:text-[15px] font-[500] tracking-[-0.03em] leading-[1.2] text-[#545454]">
+                    On <span className="text-[#000]">{formatDate(third.publishedAt)}</span>
+                  </p>
+                  <h3 className="text-[#000] text-[23px] font-[600] tracking-[-0.02em] leading-[1.4]">{third.title}</h3>
+                </div>
+              </Link>
+            </motion.div>
           )}
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
-      <section className="px-6 sm:px-10 pt-10 pb-20 max-w-[1240px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden">
+      <motion.section
+        className="px-6 sm:px-10 pt-10 pb-20 max-w-[1240px] mx-auto border-t border-[#EEEEEE] flex flex-col sm:flex-row sm:items-center justify-between gap-6 overflow-hidden"
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+      >
         <p className="text-[#747474] text-[15px] sm:text-[19px] font-[600] tracking-[-0.03em] leading-[1.6] max-w-[420px]">
           {NEWSLETTER_TEXT}
         </p>
@@ -286,7 +331,7 @@ export default function Home() {
             {newsletter.isPending ? "Sending..." : newsletter.isSuccess ? "Subscribed!" : "Subscribe"}
           </button>
         </form>
-      </section>
+      </motion.section>
     </div>
   );
 }
