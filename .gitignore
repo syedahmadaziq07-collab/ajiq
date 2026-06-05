@@ -55,3 +55,8 @@ summary_current.md
 .env.vercel
 .env.prod
 scripts/
+
+
+# Pulled env files
+.env.pulled
+.env.api.pulled
