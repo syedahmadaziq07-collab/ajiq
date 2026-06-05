@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { useListWallpapers } from "@workspace/api-client-react";
@@ -9,6 +9,10 @@ import { staggerContainer, fadeInUpDelayed } from "../lib/animations";
 export default function Wallpapers() {
   const { data, isLoading, error } = useListWallpapers();
   const wallpapers = Array.isArray(data) ? data : [];
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const categories = ["All", ...new Set(wallpapers.map((w: Wallpaper) => w.category))];
+  const filtered = activeFilter === "All" ? wallpapers : wallpapers.filter((w: Wallpaper) => w.category === activeFilter);
 
   useEffect(() => {
     if (wallpapers.length === 0) return;
@@ -81,19 +85,36 @@ export default function Wallpapers() {
       </motion.section>
 
       <motion.section
+        className="px-4 sm:px-8 pb-4 max-w-[1200px] mx-auto flex gap-3 flex-wrap"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        {categories.map(filter => (
+          <button
+            key={filter}
+            className={`text-[14px] transition-colors ${activeFilter === filter ? 'text-[#000] font-[600]' : 'text-[#747474] hover:text-[#000]'}`}
+            onClick={() => setActiveFilter(filter)}
+          >
+            {filter}
+          </button>
+        ))}
+      </motion.section>
+
+      <motion.section
         className="px-4 sm:px-8 max-w-[1200px] mx-auto"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.05 }}
       >
-        {wallpapers.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="text-[#747474] text-[16px]">No wallpapers yet. Check back soon!</p>
+            <p className="text-[#747474] text-[16px]">No wallpapers found in this category.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {wallpapers.map((w: Wallpaper, i: number) => (
+            {filtered.map((w: Wallpaper, i: number) => (
               <motion.div key={w.id} variants={fadeInUpDelayed} custom={i} data-idx={i} style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}>
                 <Link href={`/wallpapers/${w.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow no-underline">
                   <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
