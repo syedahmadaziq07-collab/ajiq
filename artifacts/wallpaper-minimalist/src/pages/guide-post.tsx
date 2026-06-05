@@ -162,7 +162,7 @@ export default function GuidePost() {
             <div>
               <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px] mb-3">Product Description:</p>
               <div className="text-[15px] text-[#000] leading-relaxed space-y-3">
-                {guide.content.split("\n").filter(Boolean).map((p: string, i: number) => (
+                {(guide.content || "").split("\n").filter(Boolean).map((p: string, i: number) => (
                   <p key={i}>{p}</p>
                 ))}
               </div>
