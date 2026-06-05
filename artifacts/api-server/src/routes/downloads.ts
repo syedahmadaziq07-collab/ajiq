@@ -10,13 +10,16 @@ router.get("/download/:itemType/:itemId", async (req, res) => {
     const id = Number(itemId);
 
     // Check if item is premium (has a price) - if so, verify purchase
-    const { wallpapersTable, templatesTable } = await import("@workspace/db");
+    const { wallpapersTable, templatesTable, guidesTable } = await import("@workspace/db");
     let item;
     if (itemType === "wallpaper") {
       const result = await db.select().from(wallpapersTable).where(eq(wallpapersTable.id, id)).limit(1);
       item = result[0];
     } else if (itemType === "template") {
       const result = await db.select().from(templatesTable).where(eq(templatesTable.id, id)).limit(1);
+      item = result[0];
+    } else if (itemType === "guide") {
+      const result = await db.select().from(guidesTable).where(eq(guidesTable.id, id)).limit(1);
       item = result[0];
     }
 
@@ -33,6 +36,11 @@ router.get("/download/:itemType/:itemId", async (req, res) => {
         res.status(403).json({ error: "Purchase required" });
         return;
       }
+    }
+
+    if (!item.downloadUrl) {
+      res.status(404).json({ error: "Download file not available for this item" });
+      return;
     }
 
     // Track download

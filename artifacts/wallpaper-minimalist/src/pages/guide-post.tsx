@@ -136,14 +136,14 @@ export default function GuidePost() {
               >
                 {buyLoading ? "Redirecting..." : `Buy Now $${(price / 100).toFixed(2)}`}
               </button>
-            ) : (
+            ) : ((guide as any)?.downloadUrl ? (
               <a
                 href={`${API}/api/download/guide/${guide.id}`}
                 className="w-full bg-[#000] text-white rounded-[10px] h-[52px] text-[16px] font-[600] flex items-center justify-center hover:bg-[#222] transition-colors no-underline"
               >
                 Download Free
               </a>
-            )}
+            ) : null)}
 
             {whatsIncluded.length > 0 && (
               <div>
