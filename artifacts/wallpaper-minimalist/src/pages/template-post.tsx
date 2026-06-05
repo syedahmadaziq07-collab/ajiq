@@ -49,17 +49,15 @@ export default function TemplatePost() {
 
   return (
     <div className="w-full min-h-screen pb-20">
-      <section className="px-4 sm:px-8 pt-12 pb-4 max-w-[680px] mx-auto">
-        <Link href="/templates" className="text-[#747474] text-[13px] hover:underline underline-offset-2">&larr; Back to Templates</Link>
-      </section>
-
-      <section className="px-4 sm:px-8 max-w-[680px] mx-auto">
+      <section className="px-4 sm:px-8 max-w-[680px] mx-auto pt-12">
         <h4 className="text-[22px] font-[700] text-[#000]">{item.title}</h4>
 
-        <div className="mt-8">
-          <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px]">Product Description:</p>
-          <p className="text-[15px] text-[#000] mt-2 leading-relaxed">{item.description}</p>
-        </div>
+        {item.description && (
+          <div className="mt-8">
+            <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px]">Product Description:</p>
+            <p className="text-[15px] text-[#000] mt-2 leading-relaxed">{item.description}</p>
+          </div>
+        )}
 
         <div className="mt-8">
           {item.price ? (

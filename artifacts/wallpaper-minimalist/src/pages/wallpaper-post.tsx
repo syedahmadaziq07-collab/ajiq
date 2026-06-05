@@ -49,17 +49,8 @@ export default function WallpaperPost() {
 
   return (
     <div className="w-full min-h-screen pb-20">
-      <section className="px-4 sm:px-8 pt-12 pb-4 max-w-[680px] mx-auto">
-        <Link href="/wallpapers" className="text-[#747474] text-[13px] hover:underline underline-offset-2">&larr; Back to Wallpapers</Link>
-      </section>
-
-      <section className="px-4 sm:px-8 max-w-[680px] mx-auto">
+      <section className="px-4 sm:px-8 max-w-[680px] mx-auto pt-12">
         <h4 className="text-[22px] font-[700] text-[#000]">{item.title}</h4>
-
-        <div className="mt-8">
-          <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px]">Product Description:</p>
-          <p className="text-[15px] text-[#000] mt-2 leading-relaxed">{item.description}</p>
-        </div>
 
         <div className="mt-8">
           {item.price ? (
@@ -82,12 +73,19 @@ export default function WallpaperPost() {
 
         {features.length > 0 && (
           <div className="mt-10">
-            <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px]">You will get:</p>
+            <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px]">Content:</p>
             <ul className="mt-3 space-y-1">
               {features.map((f, i) => (
                 <li key={i} className="text-[15px] text-[#000]">&bull; {f}</li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {item.description && (
+          <div className="mt-10">
+            <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px]">Product Description:</p>
+            <p className="text-[15px] text-[#000] mt-2 leading-relaxed">{item.description}</p>
           </div>
         )}
       </section>
