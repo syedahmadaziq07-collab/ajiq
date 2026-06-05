@@ -53,7 +53,7 @@ router.post("/create-checkout-session", async (req, res) => {
         quantity: 1,
       }],
       metadata: { itemType, itemId: String(itemId) },
-      success_url: `${apiOrigin}/api/download/${itemType}/${itemId}?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${frontendOrigin}/success?itemType=${itemType}&itemId=${itemId}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${frontendOrigin}/${itemType === "wallpaper" ? "wallpapers" : "templates"}`,
     });
 
