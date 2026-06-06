@@ -717,7 +717,7 @@ function MediaTable({ prefix, onEdit: _onEdit, onClose: _onClose }: { prefix: st
       <Table columns={[{ key: "title", label: "Title" }, { key: "category", label: "Category" }]} data={items as Record<string, unknown>[]} onEdit={openEdit} onDelete={(item) => delMut.mutate(item.id as number)} />
       <Modal open={modal} onClose={() => setModal(false)} title={editId ? `Edit ${label.slice(0, -1)}` : `New ${label.slice(0, -1)}`}>
         <form onSubmit={(e) => { e.preventDefault(); saveMut.mutate(); }} className="flex flex-col gap-3">
-          <FormField label="Title"><input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
+          <FormField label="Title"><input value={form.title} onChange={(e) => { const v = e.target.value; setForm({ ...form, title: v, slug: form.slug || v.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") }); }} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
           <FormField label="Slug"><SlugInput value={form.slug} onChange={(s) => setForm({ ...form, slug: s })} /></FormField>
           <FormField label="Category"><input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full border border-[#ddd] rounded px-3 py-2 text-[13px] outline-none focus:border-[#000] text-[#000]" required /></FormField>
           <FormField label="Cover Image URL">

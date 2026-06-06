@@ -3,6 +3,13 @@ import { db, blogPostsTable, newsletterSubscribersTable, contactMessagesTable, w
 import { eq, desc } from "drizzle-orm";
 import { notifyAllSubscribers } from "../email.js";
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 const router: IRouter = Router();
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -57,14 +64,18 @@ router.get("/admin/wallpapers", async (_req, res) => {
 });
 
 router.post("/admin/wallpapers", async (req, res) => {
-  const item = await db.insert(wallpapersTable).values(req.body).returning();
+  const body = { ...req.body };
+  if (!body.slug || !body.slug.trim()) body.slug = slugify(body.title || "untitled");
+  const item = await db.insert(wallpapersTable).values(body).returning();
   notifyAllSubscribers("wallpaper", item[0].title, item[0].slug);
   res.status(201).json(item[0]);
 });
 
 router.put("/admin/wallpapers/:id", async (req, res) => {
   const id = Number(req.params.id);
-  const item = await db.update(wallpapersTable).set(req.body).where(eq(wallpapersTable.id, id)).returning();
+  const body = { ...req.body };
+  if (body.title && (!body.slug || !body.slug.trim())) body.slug = slugify(body.title);
+  const item = await db.update(wallpapersTable).set(body).where(eq(wallpapersTable.id, id)).returning();
   res.json(item[0]);
 });
 
@@ -81,14 +92,18 @@ router.get("/admin/templates", async (_req, res) => {
 });
 
 router.post("/admin/templates", async (req, res) => {
-  const item = await db.insert(templatesTable).values(req.body).returning();
+  const body = { ...req.body };
+  if (!body.slug || !body.slug.trim()) body.slug = slugify(body.title || "untitled");
+  const item = await db.insert(templatesTable).values(body).returning();
   notifyAllSubscribers("template", item[0].title, item[0].slug);
   res.status(201).json(item[0]);
 });
 
 router.put("/admin/templates/:id", async (req, res) => {
   const id = Number(req.params.id);
-  const item = await db.update(templatesTable).set(req.body).where(eq(templatesTable.id, id)).returning();
+  const body = { ...req.body };
+  if (body.title && (!body.slug || !body.slug.trim())) body.slug = slugify(body.title);
+  const item = await db.update(templatesTable).set(body).where(eq(templatesTable.id, id)).returning();
   res.json(item[0]);
 });
 
@@ -105,14 +120,18 @@ router.get("/admin/guides", async (_req, res) => {
 });
 
 router.post("/admin/guides", async (req, res) => {
-  const item = await db.insert(guidesTable).values(req.body).returning();
+  const body = { ...req.body };
+  if (!body.slug || !body.slug.trim()) body.slug = slugify(body.title || "untitled");
+  const item = await db.insert(guidesTable).values(body).returning();
   notifyAllSubscribers("guide", item[0].title, item[0].slug);
   res.status(201).json(item[0]);
 });
 
 router.put("/admin/guides/:id", async (req, res) => {
   const id = Number(req.params.id);
-  const item = await db.update(guidesTable).set(req.body).where(eq(guidesTable.id, id)).returning();
+  const body = { ...req.body };
+  if (body.title && (!body.slug || !body.slug.trim())) body.slug = slugify(body.title);
+  const item = await db.update(guidesTable).set(body).where(eq(guidesTable.id, id)).returning();
   res.json(item[0]);
 });
 
