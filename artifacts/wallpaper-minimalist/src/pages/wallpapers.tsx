@@ -12,6 +12,12 @@ export default function Wallpapers() {
   const [, setLocation] = useLocation();
   const [activeFilter, setActiveFilter] = useState("All");
 
+  useEffect(() => {
+    if (wallpapers.length > 0) {
+      console.log("All wallpapers:", wallpapers.map(w => ({ id: w.id, title: w.title, slug: w.slug, category: w.category, price: w.price })));
+    }
+  }, [wallpapers.length]);
+
   const categories = ["All", ...new Set(wallpapers.map((w: Wallpaper) => w.category))];
   const filtered = activeFilter === "All" ? wallpapers : wallpapers.filter((w: Wallpaper) => w.category === activeFilter);
 
@@ -121,12 +127,18 @@ export default function Wallpapers() {
                 variants={fadeInUpDelayed}
                 custom={i}
                 data-idx={i}
-                onClick={() => setLocation(`/wallpapers/${w.slug}`)}
+                onClick={() => {
+                  const navSlug = w.slug || String(w.id);
+                  setLocation(`/wallpapers/${navSlug}`);
+                }}
                 className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow cursor-pointer"
                 style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}
                 role="link"
                 tabIndex={0}
-                onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Enter') setLocation(`/wallpapers/${w.slug}`); }}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  const navSlug = w.slug || String(w.id);
+                  if (e.key === 'Enter') setLocation(`/wallpapers/${navSlug}`);
+                }}
               >
                 <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
                   <img src={optimizeImage(w.imageUrl, 400)} alt={w.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
