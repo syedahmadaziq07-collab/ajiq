@@ -8,8 +8,8 @@ router.get("/guides", async (_req, res) => {
   try {
     const guides = await db.select().from(guidesTable).orderBy(desc(guidesTable.createdAt));
     res.json(guides);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch guides" });
+  } catch {
+    res.json([]);
   }
 });
 
@@ -21,8 +21,8 @@ router.get("/guides/:slug", async (req, res) => {
       return;
     }
     res.json(guide[0]);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch guide" });
+  } catch {
+    res.status(404).json({ error: "Guide not found" });
   }
 });
 

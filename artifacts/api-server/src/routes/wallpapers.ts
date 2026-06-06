@@ -8,8 +8,8 @@ router.get("/wallpapers", async (_req, res) => {
   try {
     const wallpapers = await db.select().from(wallpapersTable).orderBy(desc(wallpapersTable.createdAt));
     res.json(wallpapers);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch wallpapers" });
+  } catch {
+    res.json([]);
   }
 });
 
@@ -21,8 +21,8 @@ router.get("/wallpapers/:slug", async (req, res) => {
       return;
     }
     res.json(item[0]);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch wallpaper" });
+  } catch {
+    res.status(404).json({ error: "Wallpaper not found" });
   }
 });
 
