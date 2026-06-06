@@ -36,18 +36,16 @@ export default function Templates() {
   if (isLoading) {
     return (
       <div className="w-full min-h-screen pb-20">
-        <section className="px-4 sm:px-8 pt-16 max-w-[1200px] mx-auto">
-          <h1 className="text-[60px] sm:text-[96px] font-[800] leading-[1] text-[#000]">Templates</h1>
-        </section>
-        <section className="px-6 max-w-[1200px] mx-auto mt-8 flex gap-12">
-          <div className="hidden sm:flex flex-col gap-3 w-[200px] shrink-0">
+        <div className="max-w-[1400px] mx-auto px-12 pt-12">
+          <h1 className="text-[clamp(80px,12vw,160px)] font-[900] leading-[0.9] tracking-[-2px] text-[#000] mb-20">Templates</h1>
+          <div className="flex flex-col gap-2 mb-12">
             {[1,2,3].map((s) => (
-              <div key={s} className="h-5 bg-[#f0f0f0] rounded w-16 animate-pulse" />
+              <div key={s} className="h-6 bg-[#f0f0f0] rounded w-20 animate-pulse" />
             ))}
           </div>
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1,2,3,4,5,6].map((s) => (
-              <div key={s} className="bg-[#f5f5f5] rounded-[8px] overflow-hidden">
+              <div key={s} className="bg-[#F2F2F2] rounded-[12px] overflow-hidden">
                 <div className="h-[300px] bg-[#e8e8e8] animate-pulse" />
                 <div className="p-4 space-y-2">
                   <div className="h-4 bg-[#e0e0e0] rounded w-1/2 animate-pulse" />
@@ -56,7 +54,7 @@ export default function Templates() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
       </div>
     );
   }
@@ -64,33 +62,31 @@ export default function Templates() {
   if (error) {
     return (
       <div className="w-full min-h-screen pb-20">
-        <section className="px-4 sm:px-8 pt-16 max-w-[1200px] mx-auto">
-          <h1 className="text-[60px] sm:text-[96px] font-[800] leading-[1] text-[#000] mb-12">Templates</h1>
-        </section>
-        <section className="px-4 sm:px-8 max-w-[1200px] mx-auto mt-8">
+        <div className="max-w-[1400px] mx-auto px-12 pt-12">
+          <h1 className="text-[clamp(80px,12vw,160px)] font-[900] leading-[0.9] tracking-[-2px] text-[#000] mb-20">Templates</h1>
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <p className="text-[#747474] text-[16px]">Failed to load templates. Please try again later.</p>
           </div>
-        </section>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="w-full min-h-screen pb-20">
-      <motion.section
-        className="px-6 pt-12 max-w-[1200px] mx-auto"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <h1 className="text-[60px] sm:text-[96px] font-[800] leading-[1] text-[#000]">Templates</h1>
-      </motion.section>
+      <div className="max-w-[1400px] mx-auto px-12 pt-12">
+        <motion.h1
+          className="text-[clamp(80px,12vw,160px)] font-[900] leading-[0.9] tracking-[-2px] text-[#000] mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        >
+          Templates
+        </motion.h1>
 
-      <div className="px-6 max-w-[1200px] mx-auto mt-8 flex gap-12">
         {/* Vertical Category Filter */}
-        <motion.aside
-          className="hidden sm:flex flex-col gap-3 w-[200px] shrink-0"
+        <motion.div
+          className="flex flex-col gap-2 mb-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.15 }}
@@ -98,7 +94,7 @@ export default function Templates() {
           {categories.map(filter => (
             <button
               key={filter}
-              className={`text-left text-[20px] transition-colors ${
+              className={`text-left text-[28px] transition-colors ${
                 activeFilter === filter
                   ? "text-[#000] font-[600]"
                   : "text-[#999] font-[400] hover:text-[#000]"
@@ -108,31 +104,10 @@ export default function Templates() {
               {filter}
             </button>
           ))}
-        </motion.aside>
-
-        {/* Mobile Category Filter (horizontal) */}
-        <motion.div
-          className="sm:hidden flex gap-3 flex-wrap mb-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
-        >
-          {categories.map(filter => (
-            <button
-              key={filter}
-              className={`text-[14px] transition-colors ${
-                activeFilter === filter ? "text-[#000] font-[600]" : "text-[#999] font-[400] hover:text-[#000]"
-              }`}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
         </motion.div>
 
         {/* Grid */}
-        <motion.section
-          className="flex-1"
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
@@ -142,7 +117,7 @@ export default function Templates() {
               <p className="text-[#747474] text-[16px]">No templates found in this category.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((t: Template, i: number) => (
                 <motion.div
                   key={t.id}
@@ -151,11 +126,11 @@ export default function Templates() {
                     hidden: { opacity: 0, y: 20 },
                     visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
                   }}
-                  style={{ contentVisibility: 'auto', containIntrinsicSize: '420px' }}
+                  style={{ contentVisibility: 'auto', containIntrinsicSize: '440px' }}
                 >
                   <Link href={`/templates/${t.slug}`} className="group block no-underline">
-                    <div className="bg-[#F5F5F5] rounded-[8px] overflow-hidden transition-transform duration-300 ease-out group-hover:scale-[1.02]">
-                      {/* Image area */}
+                    <div className="bg-[#F2F2F2] rounded-[12px] overflow-hidden transition-transform duration-300 ease-out group-hover:scale-[1.02]">
+                      {/* Image area with text overlay */}
                       <div className="relative h-[300px] overflow-hidden">
                         <img
                           src={optimizeImage(t.imageUrl, 400)}
@@ -166,29 +141,27 @@ export default function Templates() {
                           loading="lazy"
                           decoding="async"
                         />
-                        <h3 className="absolute bottom-0 left-0 p-4 text-[60px] sm:text-[72px] font-[800] leading-[0.9] text-[#000]">
+                        <h3
+                          className="absolute bottom-4 left-4 z-[2] text-[clamp(40px,6vw,72px)] font-[800] leading-[0.9] text-[#000]"
+                          style={{ textWrap: 'pretty' }}
+                        >
                           {t.title}
                         </h3>
                       </div>
 
                       {/* Card bottom */}
-                      <div className="p-4 space-y-2">
-                        <div className="flex items-center justify-between">
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-1">
                           <span className="text-[16px] font-[500] text-[#000]">{t.title}</span>
-                          <span className="text-[14px] font-[500] text-[#000] shrink-0">
+                          <span className="text-[16px] font-[400] text-[#000] shrink-0 ml-4">
                             {t.price ? `$${(t.price / 100).toFixed(2)}` : "Free"}
                           </span>
                         </div>
                         {t.description && (
-                          <p className="text-[13px] text-[#666] leading-relaxed line-clamp-2">
+                          <p className="text-[13px] text-[#888] leading-relaxed line-clamp-2">
                             {t.description}
                           </p>
                         )}
-                        <div className="flex justify-end pt-2">
-                          <span className="bg-[#000] text-white rounded-[4px] px-4 py-2 text-[13px] font-[500]">
-                            View Template
-                          </span>
-                        </div>
                       </div>
                     </div>
                   </Link>
@@ -196,7 +169,7 @@ export default function Templates() {
               ))}
             </div>
           )}
-        </motion.section>
+        </motion.div>
       </div>
     </div>
   );
