@@ -19,7 +19,7 @@ async function generateSignedUrl(publicUrl: string, expiresInSec = 3600): Promis
     });
     if (!res.ok) return null;
     const data = await res.json() as { signedURL: string };
-    return data.signedURL;
+    return data.signedURL.startsWith("http") ? data.signedURL : `${SUPABASE_URL}${data.signedURL}`;
   } catch { return null; }
 }
 
@@ -57,7 +57,8 @@ router.get("/download/:itemType/:itemId", async (req, res) => {
       }
     }
 
-    if (!item.downloadUrl) {
+    if (!item.downloadUrl || !item.downloadUrl.trim()) {
+      console.error(`Download blocked: itemType=${itemType} itemId=${itemId} has no downloadUrl`);
       res.status(404).json({ error: "Download file not available for this item" });
       return;
     }
@@ -73,8 +74,10 @@ router.get("/download/:itemType/:itemId", async (req, res) => {
     // If Supabase URL, generate signed URL (expires in 1 hour) instead of redirecting directly
     const signedUrl = await generateSignedUrl(item.downloadUrl);
     if (signedUrl) {
+      console.log(`Download redirect: ${itemType}/${itemId} -> signed URL`);
       res.redirect(signedUrl);
     } else {
+      console.log(`Download redirect: ${itemType}/${itemId} -> ${item.downloadUrl}`);
       res.redirect(item.downloadUrl);
     }
   } catch (error) {

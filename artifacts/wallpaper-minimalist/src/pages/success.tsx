@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { CheckCircle } from "lucide-react";
 import { optimizeImage } from "../lib/image";
 const API = import.meta.env.VITE_API_URL ?? "";
@@ -15,10 +14,12 @@ export default function Success() {
 
   useEffect(() => {
     if (!itemType || !itemId) return;
-    fetch(`${API}/api/${itemType}s/${itemId}`)
-      .then(r => r.json())
-      .then(d => setItem(d))
-      .catch(() => {});
+    const url = `${API}/api/${itemType}s/${itemId}`;
+    console.log("Success page fetching item:", url);
+    fetch(url)
+      .then(r => { if (!r.ok) throw new Error("Fetch failed"); return r.json(); })
+      .then(d => { console.log("Item data:", d); setItem(d); })
+      .catch(e => console.error("Item fetch failed:", e));
   }, [itemType, itemId]);
 
   if (!sessionId) {
