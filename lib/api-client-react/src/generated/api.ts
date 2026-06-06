@@ -1,13 +1,3 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
-import type {
-  QueryFunction,
-  QueryKey,
-  UseQueryOptions,
-  UseQueryResult,
-  UseMutationOptions,
-  UseMutationResult,
-} from "@tanstack/react-query";
-
 import type {
   HealthStatus,
   BlogPost,
@@ -21,10 +11,10 @@ import type {
 
 import { customFetch } from "../custom-fetch";
 import type { ErrorType } from "../custom-fetch";
+import { useFetch, useCustomMutation } from "../use-fetch";
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 // ---------------------------------------------------------------------------
 // Health
@@ -38,35 +28,11 @@ export const healthCheck = async (options?: RequestInit): Promise<HealthStatus> 
 
 export const getHealthCheckQueryKey = () => [`/api/healthz`] as const;
 
-export const getHealthCheckQueryOptions = <
-  TData = Awaited<ReturnType<typeof healthCheck>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getHealthCheckQueryKey();
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheck>>> = ({ signal }) =>
-    healthCheck({ signal, ...requestOptions });
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof healthCheck>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type HealthCheckQueryResult = NonNullable<Awaited<ReturnType<typeof healthCheck>>>;
 export type HealthCheckQueryError = ErrorType<unknown>;
 
-export function useHealthCheck<
-  TData = Awaited<ReturnType<typeof healthCheck>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getHealthCheckQueryOptions(options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useHealthCheck() {
+  return useFetch(getHealthCheckQueryKey().join("/"), () => healthCheck());
 }
 
 export const getGetGuideUrl = (slug: string) => `/api/guides/${slug}`;
@@ -77,35 +43,11 @@ export const getGuide = async (slug: string, options?: RequestInit): Promise<Gui
 
 export const getGetGuideQueryKey = (slug: string) => [`/api/guides/${slug}`] as const;
 
-export const getGetGuideQueryOptions = <
-  TData = Awaited<ReturnType<typeof getGuide>>,
-  TError = ErrorType<unknown>,
->(slug: string, options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getGuide>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getGetGuideQueryKey(slug);
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuide>>> = ({ signal }) =>
-    getGuide(slug, { signal, ...requestOptions });
-  return { queryKey, queryFn, enabled: !!slug, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getGuide>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type GetGuideQueryResult = NonNullable<Awaited<ReturnType<typeof getGuide>>>;
 export type GetGuideQueryError = ErrorType<unknown>;
 
-export function useGetGuide<
-  TData = Awaited<ReturnType<typeof getGuide>>,
-  TError = ErrorType<unknown>,
->(slug: string, options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getGuide>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetGuideQueryOptions(slug, options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useGetGuide(slug: string) {
+  return useFetch(getGetGuideQueryKey(slug).join("/"), () => getGuide(slug), { enabled: !!slug });
 }
 
 // ---------------------------------------------------------------------------
@@ -120,35 +62,11 @@ export const listBlogPosts = async (options?: RequestInit): Promise<BlogPost[]> 
 
 export const getListBlogPostsQueryKey = () => [`/api/blog-posts`] as const;
 
-export const getListBlogPostsQueryOptions = <
-  TData = Awaited<ReturnType<typeof listBlogPosts>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof listBlogPosts>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getListBlogPostsQueryKey();
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof listBlogPosts>>> = ({ signal }) =>
-    listBlogPosts({ signal, ...requestOptions });
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof listBlogPosts>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type ListBlogPostsQueryResult = NonNullable<Awaited<ReturnType<typeof listBlogPosts>>>;
 export type ListBlogPostsQueryError = ErrorType<unknown>;
 
-export function useListBlogPosts<
-  TData = Awaited<ReturnType<typeof listBlogPosts>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof listBlogPosts>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getListBlogPostsQueryOptions(options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useListBlogPosts() {
+  return useFetch(getListBlogPostsQueryKey().join("/"), () => listBlogPosts());
 }
 
 export const getGetBlogPostUrl = (slug: string) => `/api/blog-posts/${slug}`;
@@ -159,35 +77,11 @@ export const getBlogPost = async (slug: string, options?: RequestInit): Promise<
 
 export const getGetBlogPostQueryKey = (slug: string) => [`/api/blog-posts/${slug}`] as const;
 
-export const getGetBlogPostQueryOptions = <
-  TData = Awaited<ReturnType<typeof getBlogPost>>,
-  TError = ErrorType<unknown>,
->(slug: string, options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getBlogPost>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getGetBlogPostQueryKey(slug);
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBlogPost>>> = ({ signal }) =>
-    getBlogPost(slug, { signal, ...requestOptions });
-  return { queryKey, queryFn, enabled: !!slug, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getBlogPost>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type GetBlogPostQueryResult = NonNullable<Awaited<ReturnType<typeof getBlogPost>>>;
 export type GetBlogPostQueryError = ErrorType<unknown>;
 
-export function useGetBlogPost<
-  TData = Awaited<ReturnType<typeof getBlogPost>>,
-  TError = ErrorType<unknown>,
->(slug: string, options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getBlogPost>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetBlogPostQueryOptions(slug, options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useGetBlogPost(slug: string) {
+  return useFetch(getGetBlogPostQueryKey(slug).join("/"), () => getBlogPost(slug), { enabled: !!slug });
 }
 
 // ---------------------------------------------------------------------------
@@ -210,27 +104,10 @@ export const subscribeNewsletter = async (
 export type SubscribeNewsletterMutationResult = NonNullable<Awaited<ReturnType<typeof subscribeNewsletter>>>;
 export type SubscribeNewsletterMutationError = ErrorType<unknown>;
 
-export function useSubscribeNewsletter<
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof subscribeNewsletter>>,
-    TError,
-    { data: NewsletterInput },
-    TContext
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof subscribeNewsletter>>,
-  TError,
-  { data: NewsletterInput },
-  TContext
-> {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
-  const mutationFn = (variables: { data: NewsletterInput }) =>
-    subscribeNewsletter(variables.data, requestOptions);
-  return useMutation({ mutationFn, ...mutationOptions });
+export function useSubscribeNewsletter() {
+  return useCustomMutation<{ data: NewsletterInput }, SuccessResponse>(
+    (variables) => subscribeNewsletter(variables.data),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -253,27 +130,10 @@ export const submitContact = async (
 export type SubmitContactMutationResult = NonNullable<Awaited<ReturnType<typeof submitContact>>>;
 export type SubmitContactMutationError = ErrorType<unknown>;
 
-export function useSubmitContact<
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof submitContact>>,
-    TError,
-    { data: ContactInput },
-    TContext
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof submitContact>>,
-  TError,
-  { data: ContactInput },
-  TContext
-> {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
-  const mutationFn = (variables: { data: ContactInput }) =>
-    submitContact(variables.data, requestOptions);
-  return useMutation({ mutationFn, ...mutationOptions });
+export function useSubmitContact() {
+  return useCustomMutation<{ data: ContactInput }, SuccessResponse>(
+    (variables) => submitContact(variables.data),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -288,35 +148,11 @@ export const listWallpapers = async (options?: RequestInit): Promise<Wallpaper[]
 
 export const getListWallpapersQueryKey = () => [`/api/wallpapers`] as const;
 
-export const getListWallpapersQueryOptions = <
-  TData = Awaited<ReturnType<typeof listWallpapers>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof listWallpapers>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getListWallpapersQueryKey();
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof listWallpapers>>> = ({ signal }) =>
-    listWallpapers({ signal, ...requestOptions });
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof listWallpapers>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type ListWallpapersQueryResult = NonNullable<Awaited<ReturnType<typeof listWallpapers>>>;
 export type ListWallpapersQueryError = ErrorType<unknown>;
 
-export function useListWallpapers<
-  TData = Awaited<ReturnType<typeof listWallpapers>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof listWallpapers>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getListWallpapersQueryOptions(options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useListWallpapers() {
+  return useFetch(getListWallpapersQueryKey().join("/"), () => listWallpapers());
 }
 
 export const getGetWallpaperUrl = (slug: string) => `/api/wallpapers/${slug}`;
@@ -327,35 +163,11 @@ export const getWallpaper = async (slug: string, options?: RequestInit): Promise
 
 export const getGetWallpaperQueryKey = (slug: string) => [`/api/wallpapers/${slug}`] as const;
 
-export const getGetWallpaperQueryOptions = <
-  TData = Awaited<ReturnType<typeof getWallpaper>>,
-  TError = ErrorType<unknown>,
->(slug: string, options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getWallpaper>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getGetWallpaperQueryKey(slug);
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getWallpaper>>> = ({ signal }) =>
-    getWallpaper(slug, { signal, ...requestOptions });
-  return { queryKey, queryFn, enabled: !!slug, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getWallpaper>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type GetWallpaperQueryResult = NonNullable<Awaited<ReturnType<typeof getWallpaper>>>;
 export type GetWallpaperQueryError = ErrorType<unknown>;
 
-export function useGetWallpaper<
-  TData = Awaited<ReturnType<typeof getWallpaper>>,
-  TError = ErrorType<unknown>,
->(slug: string, options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getWallpaper>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetWallpaperQueryOptions(slug, options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useGetWallpaper(slug: string) {
+  return useFetch(getGetWallpaperQueryKey(slug).join("/"), () => getWallpaper(slug), { enabled: !!slug });
 }
 
 // ---------------------------------------------------------------------------
@@ -370,35 +182,11 @@ export const listTemplates = async (options?: RequestInit): Promise<Template[]> 
 
 export const getListTemplatesQueryKey = () => [`/api/templates`] as const;
 
-export const getListTemplatesQueryOptions = <
-  TData = Awaited<ReturnType<typeof listTemplates>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof listTemplates>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getListTemplatesQueryKey();
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof listTemplates>>> = ({ signal }) =>
-    listTemplates({ signal, ...requestOptions });
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof listTemplates>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type ListTemplatesQueryResult = NonNullable<Awaited<ReturnType<typeof listTemplates>>>;
 export type ListTemplatesQueryError = ErrorType<unknown>;
 
-export function useListTemplates<
-  TData = Awaited<ReturnType<typeof listTemplates>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof listTemplates>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getListTemplatesQueryOptions(options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useListTemplates() {
+  return useFetch(getListTemplatesQueryKey().join("/"), () => listTemplates());
 }
 
 export const getGetTemplateUrl = (slug: string) => `/api/templates/${slug}`;
@@ -409,35 +197,11 @@ export const getTemplate = async (slug: string, options?: RequestInit): Promise<
 
 export const getGetTemplateQueryKey = (slug: string) => [`/api/templates/${slug}`] as const;
 
-export const getGetTemplateQueryOptions = <
-  TData = Awaited<ReturnType<typeof getTemplate>>,
-  TError = ErrorType<unknown>,
->(slug: string, options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getTemplate>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getGetTemplateQueryKey(slug);
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getTemplate>>> = ({ signal }) =>
-    getTemplate(slug, { signal, ...requestOptions });
-  return { queryKey, queryFn, enabled: !!slug, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getTemplate>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type GetTemplateQueryResult = NonNullable<Awaited<ReturnType<typeof getTemplate>>>;
 export type GetTemplateQueryError = ErrorType<unknown>;
 
-export function useGetTemplate<
-  TData = Awaited<ReturnType<typeof getTemplate>>,
-  TError = ErrorType<unknown>,
->(slug: string, options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getTemplate>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetTemplateQueryOptions(slug, options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useGetTemplate(slug: string) {
+  return useFetch(getGetTemplateQueryKey(slug).join("/"), () => getTemplate(slug), { enabled: !!slug });
 }
 
 // ---------------------------------------------------------------------------
@@ -452,33 +216,9 @@ export const listGuides = async (options?: RequestInit): Promise<Guide[]> => {
 
 export const getListGuidesQueryKey = () => [`/api/guides`] as const;
 
-export const getListGuidesQueryOptions = <
-  TData = Awaited<ReturnType<typeof listGuides>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof listGuides>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-  const queryKey = queryOptions?.queryKey ?? getListGuidesQueryKey();
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof listGuides>>> = ({ signal }) =>
-    listGuides({ signal, ...requestOptions });
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof listGuides>>, TError, TData
-  > & { queryKey: QueryKey };
-};
-
 export type ListGuidesQueryResult = NonNullable<Awaited<ReturnType<typeof listGuides>>>;
 export type ListGuidesQueryError = ErrorType<unknown>;
 
-export function useListGuides<
-  TData = Awaited<ReturnType<typeof listGuides>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof listGuides>>, TError, TData>;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getListGuidesQueryOptions(options);
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey };
-  return { ...query, queryKey: queryOptions.queryKey };
+export function useListGuides() {
+  return useFetch(getListGuidesQueryKey().join("/"), () => listGuides());
 }

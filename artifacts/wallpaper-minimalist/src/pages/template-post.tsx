@@ -60,10 +60,10 @@ export default function TemplatePost() {
       <div className="max-w-[1200px] mx-auto px-4 sm:px-8 pt-8">
         <Link href="/templates" className="text-[13px] text-[#747474] hover:text-[#000] transition-colors no-underline">&larr; Back to Templates</Link>
 
-        <div className="flex flex-col lg:flex-row gap-8 mt-6">
-          {/* Left - Image Carousel */}
-          <div className="w-full lg:w-[60%]">
-            <div className="relative bg-[#f9f9f9] rounded-[16px] overflow-hidden shadow-sm">
+        <div className="flex flex-col lg:flex-row gap-10 mt-6">
+          {/* Left - Image Carousel (55%) */}
+          <div className="w-full lg:w-[55%]">
+            <div className="relative bg-[#F5F5F5] rounded-[16px] overflow-hidden">
               <div className="aspect-[4/3] relative flex items-center justify-center p-4">
                 <AnimatePresence mode="wait">
                   <motion.img
@@ -121,8 +121,8 @@ export default function TemplatePost() {
             </div>
           </div>
 
-          {/* Right - Details */}
-          <div className="w-full lg:w-[40%] flex flex-col gap-6">
+          {/* Right - Details (45%) */}
+          <div className="w-full lg:w-[45%] flex flex-col gap-6">
             <div>
               <h1 className="text-[28px] sm:text-[36px] font-[700] text-[#000] leading-tight">{item.title}</h1>
               {item.description && (
@@ -159,13 +159,13 @@ export default function TemplatePost() {
                 Download Free
               </a>
             ) : (
-              <div className="w-full bg-[#ccc] text-white rounded-[10px] h-[52px] text-[16px] font-[600] flex items-center justify-center cursor-not-allowed">
+              <div className="w-full bg-[#aaa] text-white rounded-[10px] h-[52px] text-[16px] font-[600] flex items-center justify-center cursor-not-allowed">
                 File not available
               </div>
             ))}
 
             {whatsIncluded.length > 0 && (
-              <div>
+              <div className="border-t border-[#eee] pt-5">
                 <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px] mb-3">You'll get:</p>
                 <ul className="space-y-2">
                   {whatsIncluded.map((w: string, i: number) => (
@@ -178,8 +178,8 @@ export default function TemplatePost() {
               </div>
             )}
 
-            <div>
-              <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px] mb-3">Product Description:</p>
+            <div className="border-t border-[#eee] pt-5">
+              <p className="text-[13px] font-[600] text-[#747474] uppercase tracking-[0.5px] mb-3">Product Description</p>
               <div className="text-[15px] text-[#000] leading-relaxed space-y-3">
                 {(item.content || "").split("\n").filter(Boolean).map((p: string, i: number) => (
                   <p key={i}>{p}</p>

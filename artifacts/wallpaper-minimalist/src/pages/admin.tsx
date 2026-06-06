@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+const adminQueryClient = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity, gcTime: 1000 * 60 * 60 } } });
 
 const ADMIN_TOKEN_KEY = "blanc_admin_token";
 const API = import.meta.env.VITE_API_URL ?? "";
@@ -197,6 +198,7 @@ export default function Admin() {
   }
 
   return (
+    <QueryClientProvider client={adminQueryClient}>
     <div className="w-full min-h-screen bg-white">
       <div className="flex items-center justify-between px-6 py-3 border-b border-[#eee]">
         <div className="flex items-center gap-1">
@@ -220,6 +222,7 @@ export default function Admin() {
         </div>
       </div>
     </div>
+    </QueryClientProvider>
   );
 }
 
