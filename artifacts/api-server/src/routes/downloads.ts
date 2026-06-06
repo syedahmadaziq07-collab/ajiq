@@ -23,7 +23,8 @@ async function generateSignedUrl(publicUrl: string, expiresInSec = 3600): Promis
     // Extract the query string (token) and construct the correct absolute URL
     const qsIdx = data.signedURL.indexOf("?");
     const qs = qsIdx >= 0 ? data.signedURL.slice(qsIdx) : "";
-    return `${SUPABASE_URL}/storage/v1/object/sign/${objectPath}${qs}`;
+    // Append download flag to force browser download instead of displaying inline
+    return `${SUPABASE_URL}/storage/v1/object/sign/${objectPath}${qs}${qs ? "&" : "?"}download`;
   } catch { return null; }
 }
 
