@@ -19,7 +19,11 @@ async function generateSignedUrl(publicUrl: string, expiresInSec = 3600): Promis
     });
     if (!res.ok) return null;
     const data = await res.json() as { signedURL: string };
-    return data.signedURL.startsWith("http") ? data.signedURL : `${SUPABASE_URL}${data.signedURL}`;
+    // signedURL from Supabase is a relative path like '/object/sign/...?token=xxx'
+    // Extract the query string (token) and construct the correct absolute URL
+    const qsIdx = data.signedURL.indexOf("?");
+    const qs = qsIdx >= 0 ? data.signedURL.slice(qsIdx) : "";
+    return `${SUPABASE_URL}/storage/v1/object/sign/${objectPath}${qs}`;
   } catch { return null; }
 }
 
