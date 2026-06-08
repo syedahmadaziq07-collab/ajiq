@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, ordersTable, wallpapersTable, templatesTable } from "@workspace/db";
+import { db, ordersTable, wallpapersTable, templatesTable, guidesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import Stripe from "stripe";
 
@@ -21,6 +21,9 @@ router.post("/create-checkout-session", async (req, res) => {
       item = result[0];
     } else if (itemType === "template") {
       const result = await db.select().from(templatesTable).where(eq(templatesTable.id, itemId)).limit(1);
+      item = result[0];
+    } else if (itemType === "guide") {
+      const result = await db.select().from(guidesTable).where(eq(guidesTable.id, itemId)).limit(1);
       item = result[0];
     } else {
       res.status(400).json({ error: "Invalid item type" });
@@ -54,7 +57,7 @@ router.post("/create-checkout-session", async (req, res) => {
       }],
       metadata: { itemType, itemId: String(itemId) },
       success_url: `${frontendOrigin}/success?itemType=${itemType}&itemId=${itemId}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${frontendOrigin}/${itemType === "wallpaper" ? "wallpapers" : "templates"}`,
+      cancel_url: `${frontendOrigin}/${itemType === "wallpaper" ? "wallpapers" : itemType === "template" ? "templates" : "guides"}`,
     });
 
     res.json({ url: session.url });
