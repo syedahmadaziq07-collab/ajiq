@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, downloadsTable, ordersTable } from "@workspace/db";
 import { and, eq } from "drizzle-orm";
+import Stripe from "stripe";
 
 const router: IRouter = Router();
 
@@ -55,8 +56,48 @@ router.get("/download/:itemType/:itemId", async (req, res) => {
     // If premium, check they paid
     if (item.price) {
       const sessionId = req.query.session_id as string;
-      const order = await db.select().from(ordersTable).where(eq(ordersTable.stripeSessionId, sessionId)).limit(1);
-      if (order.length === 0) {
+      let order = await db.select().from(ordersTable).where(eq(ordersTable.stripeSessionId, sessionId)).limit(1);
+
+      // If webhook hasn't arrived yet, try Stripe API directly
+      if (order.length === 0 && sessionId) {
+        const stripeKey = process.env.STRIPE_SECRET_KEY;
+        if (stripeKey) {
+          try {
+            const s = new Stripe(stripeKey);
+            const session = await s.checkout.sessions.retrieve(sessionId);
+            if (session.payment_status === "paid") {
+              const metaItemId = session.metadata?.itemId;
+              const metaItemType = session.metadata?.itemType;
+              if (metaItemId && Number(metaItemId) === id && metaItemType === itemType) {
+                await db.insert(ordersTable).values({
+                  customerEmail: session.customer_details?.email || "unknown",
+                  customerName: session.customer_details?.name || undefined,
+                  amount: session.amount_total || 0,
+                  currency: session.currency || "usd",
+                  itemType,
+                  itemId: id,
+                  stripeSessionId: sessionId,
+                  stripePaymentIntent: typeof session.payment_intent === "string" ? session.payment_intent : undefined,
+                  status: "completed",
+                });
+                console.log(`Order auto-created from Stripe session ${sessionId}`);
+              } else {
+                res.status(403).json({ error: "Purchase required" });
+                return;
+              }
+            } else {
+              res.status(403).json({ error: "Payment not completed" });
+              return;
+            }
+          } catch {
+            res.status(403).json({ error: "Purchase required" });
+            return;
+          }
+        } else {
+          res.status(403).json({ error: "Purchase required" });
+          return;
+        }
+      } else if (order.length === 0) {
         res.status(403).json({ error: "Purchase required" });
         return;
       }
