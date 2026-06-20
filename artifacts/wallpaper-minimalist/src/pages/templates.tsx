@@ -129,7 +129,11 @@ export default function Templates() {
                   style={{ contentVisibility: 'auto', containIntrinsicSize: '440px' }}
                 >
                   <Link href={`/templates/${t.slug}`} className="group block no-underline">
-                    <div className="bg-[#F2F2F2] rounded-[12px] overflow-hidden transition-transform duration-300 ease-out group-hover:scale-[1.02]">
+                    <motion.div
+                      className="bg-[#F2F2F2] rounded-[12px] overflow-hidden"
+                      whileHover={{ y: -4 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                    >
                       {/* Image area with text overlay */}
                       <div className="relative h-[300px] overflow-hidden">
                         <img
@@ -137,7 +141,7 @@ export default function Templates() {
                           alt={t.title}
                           width="400"
                           height="300"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           loading="lazy"
                           decoding="async"
                         />
@@ -163,7 +167,7 @@ export default function Templates() {
                           </p>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   </Link>
                 </motion.div>
               ))}

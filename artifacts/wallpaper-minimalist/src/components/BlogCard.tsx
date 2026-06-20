@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { optimizeImage } from "../lib/image";
 
 interface BlogCardProps {
   date: string;
@@ -9,9 +10,9 @@ interface BlogCardProps {
 export function BlogCard({ date, title, image }: BlogCardProps) {
   return (
     <Link href="/blog" className="block group" data-testid={`blog-card-${title.toLowerCase().replace(/\s+/g, '-')}`}>
-      <div className="flex flex-col gap-2 hover:scale-[1.01] transition-transform duration-200">
-        <div className="h-[90px] rounded-[8px] bg-[#F5F5F5] overflow-hidden">
-          <img src={image} alt={title} width="400" height="300" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+      <div className="flex flex-col gap-2">
+        <div className="aspect-[4/3] rounded-[8px] bg-[#F5F5F5] overflow-hidden">
+          <img src={optimizeImage(image, 400)} alt={title} width="400" height="300" loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
         </div>
         <div className="mt-[2px]">
           <p className="text-[11px]">

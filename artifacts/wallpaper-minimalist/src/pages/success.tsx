@@ -15,11 +15,10 @@ export default function Success() {
   useEffect(() => {
     if (!itemType || !itemId) return;
     const url = `${API}/api/${itemType}s/${itemId}`;
-    console.log("Success page fetching item:", url);
     fetch(url)
       .then(r => { if (!r.ok) throw new Error("Fetch failed"); return r.json(); })
-      .then(d => { console.log("Item data:", d); setItem(d); })
-      .catch(e => console.error("Item fetch failed:", e));
+      .then(d => { setItem(d); })
+      .catch(() => {});
   }, [itemType, itemId]);
 
   if (!sessionId) {

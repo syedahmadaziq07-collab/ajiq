@@ -3,6 +3,7 @@ import { useParams, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGetGuide } from "@workspace/api-client-react";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { optimizeImage } from "../lib/image";
 
 const API = import.meta.env.VITE_API_URL ?? "";
 
@@ -69,7 +70,7 @@ export default function GuidePost() {
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={imgIndex}
-                    src={images[imgIndex] || guide.imageUrl}
+                    src={optimizeImage(images[imgIndex] || guide.imageUrl, 800)}
                     alt={guide.title}
                     width="4"
                     height="3"

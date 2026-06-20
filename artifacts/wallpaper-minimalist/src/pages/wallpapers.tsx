@@ -14,7 +14,7 @@ export default function Wallpapers() {
 
   useEffect(() => {
     if (wallpapers.length > 0) {
-      console.log("All wallpapers:", wallpapers.map(w => ({ id: w.id, title: w.title, slug: w.slug, category: w.category, price: w.price })));
+    
     }
   }, [wallpapers.length]);
 
@@ -131,8 +131,10 @@ export default function Wallpapers() {
                   const navSlug = w.slug || String(w.id);
                   setLocation(`/wallpapers/${navSlug}`);
                 }}
-                className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white hover:shadow-sm transition-shadow cursor-pointer"
+                className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white cursor-pointer"
                 style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 role="link"
                 tabIndex={0}
                 onKeyDown={(e: React.KeyboardEvent) => {

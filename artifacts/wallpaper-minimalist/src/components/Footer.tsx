@@ -15,7 +15,7 @@ const DEFAULT_LINKS = [
   { labelKey: "footer_pinterest_label", urlKey: "footer_pinterest_url", defaultLabel: "Pinterest", defaultUrl: "https://pinterest.com/wallpcom", internal: false },
 ];
 
-export function Footer() {
+export default function Footer() {
   const [settings, setSettings] = useState<Record<string, string>>({});
   useEffect(() => {
     fetch(`${API}/api/settings`)

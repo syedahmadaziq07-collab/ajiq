@@ -17,10 +17,10 @@ import BlogPost from "@/pages/blog-post";
 import Contact from "@/pages/contact";
 import Success from "@/pages/success";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const Admin = lazy(() => import("@/pages/admin"));
+const FooterLazy = lazy(() => import("@/components/Footer"));
 
 const API_URL = import.meta.env.VITE_API_URL ?? "";
 if (API_URL) setBaseUrl(API_URL);
@@ -50,7 +50,7 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </main>
-      <Footer />
+      <FooterLazy />
     </ErrorBoundary>
   );
 }
