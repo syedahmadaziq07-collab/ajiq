@@ -4,9 +4,16 @@ import { desc, eq } from "drizzle-orm";
 
 const router: IRouter = Router();
 
-router.get("/guides", async (_req, res) => {
+router.get("/guides", async (req, res) => {
   try {
-    const guides = await db.select().from(guidesTable).orderBy(desc(guidesTable.createdAt));
+    const limit = req.query.limit ? Math.min(Math.max(1, Number(req.query.limit)), 100) : null;
+    const offset = req.query.offset ? Math.max(0, Number(req.query.offset)) : 0;
+
+    let query = db.select().from(guidesTable).orderBy(desc(guidesTable.createdAt));
+    if (limit) query = query.limit(limit).offset(offset);
+
+    const guides = await query;
+    res.setHeader("Cache-Control", "public, max-age=300, s-maxage=600");
     res.json(guides);
   } catch {
     res.json([]);

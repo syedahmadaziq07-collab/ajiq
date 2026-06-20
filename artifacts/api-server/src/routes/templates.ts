@@ -4,9 +4,16 @@ import { eq, desc } from "drizzle-orm";
 
 const router: IRouter = Router();
 
-router.get("/templates", async (_req, res) => {
+router.get("/templates", async (req, res) => {
   try {
-    const templates = await db.select().from(templatesTable).orderBy(desc(templatesTable.createdAt));
+    const limit = req.query.limit ? Math.min(Math.max(1, Number(req.query.limit)), 100) : null;
+    const offset = req.query.offset ? Math.max(0, Number(req.query.offset)) : 0;
+
+    let query = db.select().from(templatesTable).orderBy(desc(templatesTable.createdAt));
+    if (limit) query = query.limit(limit).offset(offset);
+
+    const templates = await query;
+    res.setHeader("Cache-Control", "public, max-age=300, s-maxage=600");
     res.json(templates);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch templates" });

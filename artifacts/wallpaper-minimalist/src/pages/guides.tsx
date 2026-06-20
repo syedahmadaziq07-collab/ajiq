@@ -1,34 +1,43 @@
-import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { useListGuides } from "@workspace/api-client-react";
 import type { Guide } from "@workspace/api-client-react";
 import { optimizeImage } from "../lib/image";
-import { staggerContainer, fadeInUpDelayed } from "../lib/animations";
+
+const PAGE_SIZE = 12;
+
+function GuideCard({ guide, idx }: { guide: Guide; idx: number }) {
+  const price = (guide as any).price as number | null | undefined;
+  return (
+    <div
+      data-idx={idx}
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}
+      className="hover:-translate-y-1 transition-all duration-200"
+    >
+      <Link href={`/guides/${guide.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white no-underline">
+        <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
+          <img src={optimizeImage(guide.imageUrl, 400)} alt={guide.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
+        </div>
+        <div className="flex flex-col gap-2 p-4">
+          <p className="text-[16px] font-[600] text-[#000] leading-snug">{guide.title}</p>
+          <p className="text-[14px] text-[#747474] mt-1 leading-relaxed line-clamp-2">{guide.description}</p>
+          <div className="flex items-center justify-between mt-2">
+            {price ? (
+              <span className="text-[16px] font-[700] text-[#000]">${(price / 100).toFixed(2)}</span>
+            ) : (
+              <span className="text-[14px] text-[#747474]">Free</span>
+            )}
+            <span className="bg-[#000] text-white rounded-[8px] px-4 py-2 text-[13px] font-[500]">View Guide</span>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
+}
 
 export default function Guides() {
   const { data, isLoading, error } = useListGuides();
   const guides = Array.isArray(data) ? data : [];
-
-  useEffect(() => {
-    if (guides.length === 0) return;
-    const urls = guides.map((g: Guide) => optimizeImage(g.imageUrl, 400));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const idx = Number(entry.target.getAttribute("data-idx"));
-          for (let i = 1; i <= 4; i++) {
-            const next = idx + i;
-            if (next < urls.length) { const img = new Image(); img.src = urls[next]; }
-          }
-        });
-      },
-      { rootMargin: "400px" }
-    );
-    document.querySelectorAll("[data-idx]").forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [guides.length]);
 
   if (isLoading) {
     return (
@@ -80,49 +89,19 @@ export default function Guides() {
         <h1 className="text-[32px] md:text-[48px] font-[700] tracking-[-1.5px] leading-[1.05] text-[#000]">Guides</h1>
       </motion.section>
 
-      <motion.section
-        className="px-4 sm:px-8 max-w-[1200px] mx-auto"
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.05 }}
-      >
+      <section className="px-4 sm:px-8 max-w-[1200px] mx-auto">
         {guides.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <p className="text-[#747474] text-[16px]">No guides yet. Check back soon!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {guides.map((g: Guide, i: number) => {
-              const price = (g as any).price as number | null | undefined;
-              return (
-                <motion.div key={g.id} variants={fadeInUpDelayed} custom={i} data-idx={i} style={{ contentVisibility: 'auto', containIntrinsicSize: '450px' }}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                >
-                  <Link href={`/guides/${g.slug}`} className="group flex flex-col border border-[#eee] rounded-[14px] overflow-hidden bg-white no-underline">
-                    <div className="aspect-[4/3] overflow-hidden bg-[#f5f5f5]">
-                      <img src={optimizeImage(g.imageUrl, 400)} alt={g.title} width="400" height="300" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
-                    </div>
-                    <div className="flex flex-col gap-2 p-4">
-                      <p className="text-[16px] font-[600] text-[#000] leading-snug">{g.title}</p>
-                      <p className="text-[14px] text-[#747474] mt-1 leading-relaxed line-clamp-2">{g.description}</p>
-                      <div className="flex items-center justify-between mt-2">
-                        {price ? (
-                          <span className="text-[16px] font-[700] text-[#000]">${(price / 100).toFixed(2)}</span>
-                        ) : (
-                          <span className="text-[14px] text-[#747474]">Free</span>
-                        )}
-                        <span className="bg-[#000] text-white rounded-[8px] px-4 py-2 text-[13px] font-[500]">View Guide</span>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
+            {guides.slice(0, PAGE_SIZE).map((g: Guide, i: number) => (
+              <GuideCard key={g.id} guide={g} idx={i} />
+            ))}
           </div>
         )}
-      </motion.section>
+      </section>
     </div>
   );
 }

@@ -3,7 +3,7 @@ const SUPABASE_CDN = "dwovtevztmolttpohvym.supabase.co";
 function transformUrl(url: string, width: number): string {
   if (url.includes(SUPABASE_CDN)) {
     const prefix = url.includes("?") ? "&" : "?";
-    return `${url}${prefix}width=${width}&quality=75&resize=cover&format=webp`;
+    return `${url}${prefix}width=${width}&quality=60&resize=cover&format=webp`;
   }
   return url;
 }
@@ -11,7 +11,7 @@ function transformUrl(url: string, width: number): string {
 export function optimizeImage(url: string, width = 400): string {
   if (url.includes(SUPABASE_CDN)) {
     const prefix = url.includes("?") ? "&" : "?";
-    return `${url}${prefix}width=${width}&quality=75&resize=cover&format=webp`;
+    return `${url}${prefix}width=${width}&quality=60&resize=cover&format=webp`;
   }
   return url.includes("?") ? url : `${url}?width=${width}`;
 }

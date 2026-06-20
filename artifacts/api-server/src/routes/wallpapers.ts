@@ -11,19 +11,17 @@ function slugify(text: string): string {
 
 const router: IRouter = Router();
 
-router.get("/wallpapers", async (_req, res) => {
+router.get("/wallpapers", async (req, res) => {
   try {
-    const wallpapers = await db.select().from(wallpapersTable).orderBy(desc(wallpapersTable.createdAt));
-    let fixed = false;
-    for (const wp of wallpapers) {
-      if (!wp.slug || !wp.slug.trim()) {
-        const newSlug = slugify(wp.title || "untitled") + "-" + wp.id;
-        await db.update(wallpapersTable).set({ slug: newSlug }).where(eq(wallpapersTable.id, wp.id));
-        wp.slug = newSlug;
-        fixed = true;
-      }
-    }
-    if (fixed) console.log("Auto-fixed empty slugs for wallpapers");
+    const limit = req.query.limit ? Math.min(Math.max(1, Number(req.query.limit)), 100) : null;
+    const offset = req.query.offset ? Math.max(0, Number(req.query.offset)) : 0;
+
+    let query = db.select().from(wallpapersTable).orderBy(desc(wallpapersTable.createdAt));
+    if (limit) query = query.limit(limit).offset(offset);
+
+    const wallpapers = await query;
+
+    res.setHeader("Cache-Control", "public, max-age=300, s-maxage=600");
     res.json(wallpapers);
   } catch {
     res.json([]);

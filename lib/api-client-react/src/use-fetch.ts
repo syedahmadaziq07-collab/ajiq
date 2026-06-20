@@ -7,16 +7,35 @@ export interface FetchState<T> {
   error: unknown;
 }
 
+const cache = new Map<string, { data: unknown; timestamp: number }>();
+
+const DEFAULT_STALE_MS = 5 * 60 * 1000;
+
+function getCached<T>(key: string, staleMs: number): T | undefined {
+  const entry = cache.get(key);
+  if (!entry) return undefined;
+  if (Date.now() - entry.timestamp > staleMs) {
+    cache.delete(key);
+    return undefined;
+  }
+  return entry.data as T;
+}
+
+function setCache(key: string, data: unknown): void {
+  cache.set(key, { data, timestamp: Date.now() });
+}
+
 export function useFetch<T>(
   queryKey: string,
   fetcher: () => Promise<T>,
-  options?: { enabled?: boolean },
+  options?: { enabled?: boolean; staleMs?: number },
 ): FetchState<T> {
-  const [state, setState] = useState<FetchState<T>>({
-    data: undefined,
-    isLoading: true,
-    isPending: true,
-    error: null,
+  const staleMs = options?.staleMs ?? DEFAULT_STALE_MS;
+  const [state, setState] = useState<FetchState<T>>(() => {
+    const cached = getCached<T>(queryKey, staleMs);
+    return cached !== undefined
+      ? { data: cached, isLoading: false, isPending: false, error: null }
+      : { data: undefined, isLoading: true, isPending: true, error: null };
   });
 
   useEffect(() => {
@@ -25,12 +44,21 @@ export function useFetch<T>(
       return;
     }
 
+    const cached = getCached<T>(queryKey, staleMs);
+    if (cached !== undefined) {
+      setState({ data: cached, isLoading: false, isPending: false, error: null });
+      return;
+    }
+
     let cancelled = false;
     setState((prev: FetchState<T>) => ({ ...prev, isLoading: true, isPending: true }));
 
     fetcher()
       .then((data: T) => {
-        if (!cancelled) setState({ data, isLoading: false, isPending: false, error: null });
+        if (!cancelled) {
+          setCache(queryKey, data);
+          setState({ data, isLoading: false, isPending: false, error: null });
+        }
       })
       .catch((error: unknown) => {
         if (!cancelled) setState({ data: undefined, isLoading: false, isPending: false, error });
